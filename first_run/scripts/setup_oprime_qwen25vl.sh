@@ -6,7 +6,10 @@ PACKAGE_DIR="${PACKAGE_DIR:-/mnt/sun/shared/datasets/surgical_skill/.python/qwen
 TMPDIR="${TMPDIR:-/mnt/sun/shared/datasets/surgical_skill/.tmp/qwen25vl}"
 PIP_CACHE_DIR="${PIP_CACHE_DIR:-/mnt/sun/shared/datasets/surgical_skill/.cache/pip/mairuili-qwen25vl}"
 HF_HOME="${HF_HOME:-/mnt/sun/shared/datasets/surgical_skill/.cache/huggingface/mairuili}"
-REPO_DIR="${REPO_DIR:-$PWD}"
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+FIRST_RUN_DIR="$(cd -- "$SCRIPT_DIR/.." && pwd)"
+REPO_DIR="${REPO_DIR:-$FIRST_RUN_DIR}"
+REQUIREMENTS_FILE="${REQUIREMENTS_FILE:-$REPO_DIR/requirements-qwen25vl.txt}"
 MODEL_ID="${MODEL_ID:-Qwen/Qwen2.5-VL-7B-Instruct}"
 
 mkdir -p "$ENV_DIR" "$PACKAGE_DIR" "$TMPDIR" "$PIP_CACHE_DIR" "$HF_HOME"
@@ -28,7 +31,7 @@ if [ "$USE_VENV" -eq 1 ]; then
 
   python -m pip install --upgrade pip setuptools wheel
   python -m pip install --extra-index-url https://download.pytorch.org/whl/cu124 \
-    -r "$REPO_DIR/requirements-qwen25vl.txt"
+    -r "$REQUIREMENTS_FILE"
   PYTHON_BIN="python"
 else
   echo "python3 -m venv is unavailable or incomplete; using PACKAGE_DIR with PYTHONPATH instead."
@@ -36,7 +39,7 @@ else
   export PYTHONPATH="$PACKAGE_DIR${PYTHONPATH:+:$PYTHONPATH}"
   python3 -m pip install --upgrade --target "$PACKAGE_DIR" \
     --extra-index-url https://download.pytorch.org/whl/cu124 \
-    -r "$REPO_DIR/requirements-qwen25vl.txt"
+    -r "$REQUIREMENTS_FILE"
   PYTHON_BIN="python3"
 fi
 

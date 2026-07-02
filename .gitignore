@@ -3,4 +3,14 @@ __pycache__/
 *.log
 .DS_Store
 outputs/
+first_run/outputs/
+first_run/results/*dry-run*.jsonl
+logs/
 *.core
+.venv/
+.venv-*/
+.env/
+.envs/
+.python/
+.cache/
+.tmp/
