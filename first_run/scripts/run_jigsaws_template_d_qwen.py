@@ -1,6 +1,15 @@
 #!/usr/bin/env python3
 """Run a first Template D coaching QA pass on JIGSAWS Suturing.
 
+DEPRECATED - DO NOT USE FOR DATASET GENERATION.
+This script writes label-templated canned text (build_label_supported_answer /
+LOW_SCORE_FEEDBACK) into the record's top-level `answer` field, so its records
+look like model-generated QA but are not (the actual model output lives only
+under `model.output` and can even contradict the canned answer). For the
+current annotation-only pipeline use
+surgical-error-detection/scripts/run_annotation_qa_jigsaws.py, where every
+answer comes from the model and provenance is stamped on each record.
+
 The runner supports two modes:
 - dry run: builds the prompt and label-supported expected record without loading Qwen.
 - inference: samples frames from the gesture span and sends them to Qwen2.5-VL.
@@ -10,6 +19,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import shutil
 import subprocess
 from dataclasses import dataclass
@@ -120,6 +130,29 @@ HIGH_SCORE_FEEDBACK = {
     "overall_performance": "consistent overall suturing technique",
     "quality_of_final_product": "consistent final stitch quality",
 }
+
+QUESTION_TEMPLATE_PATH = (
+    Path(__file__).resolve().parents[2]
+    / "Prompts_And_Pipeline"
+    / "template-d-question-templates.md"
+)
+_QUESTION_TEMPLATE_CACHE: dict[str, str] | None = None
+
+
+def load_question_templates() -> dict[str, str]:
+    global _QUESTION_TEMPLATE_CACHE
+    if _QUESTION_TEMPLATE_CACHE is not None:
+        return _QUESTION_TEMPLATE_CACHE
+
+    text = QUESTION_TEMPLATE_PATH.read_text(encoding="utf-8")
+    templates: dict[str, str] = {}
+    for match in re.finditer(r"^## Template (D[1-5]): .+\n\n(.+)$", text, re.MULTILINE):
+        templates[match.group(1)] = match.group(2).strip()
+    missing = sorted(set(f"D{index}" for index in range(1, 6)) - set(templates))
+    if missing:
+        raise ValueError(f"Missing Template D question wording in {QUESTION_TEMPLATE_PATH}: {missing}")
+    _QUESTION_TEMPLATE_CACHE = templates
+    return templates
 
 
 def evidence_span(span: GestureSpan) -> dict[str, Any]:
@@ -358,13 +391,8 @@ def build_expected_response(
 
 def build_question(template_id: str, trial_id: str, span: GestureSpan) -> str:
     location = f"frames {span.frame_label}" if span.frame_label != "trial_level" else "this trial"
-    if template_id == "D3":
-        return f"What should the trainee do immediately to improve the situation during {location} of {trial_id}?"
-    if template_id == "D4":
-        return f"Based on the observed weakness labels for {trial_id}, what simulation drill should the trainee practice next?"
-    if template_id == "D5":
-        return f"What did the trainee do well during {location} of {trial_id}, and why is it good technique?"
-    return f"If you were the supervising surgeon, what one sentence of feedback would you give during {location} of {trial_id}?"
+    template = load_question_templates()[template_id]
+    return template.replace("[a certain video span]", location)
 
 
 def build_record(
@@ -475,6 +503,9 @@ none_visible_or_not_annotated, not_assessable_from_clip.
     return f"""You are reviewing sampled frames from a JIGSAWS Suturing simulation clip.
 
 Task: produce Template D coaching feedback.
+
+Question template source:
+Prompts_And_Pipeline/template-d-question-templates.md
 
 Response format:
 {response_format}

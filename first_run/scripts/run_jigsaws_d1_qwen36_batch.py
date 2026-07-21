@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
-"""Generate Template D1 SurgCoach QA pairs for JIGSAWS Suturing in shards."""
+"""Generate Template D1 SurgCoach QA pairs for JIGSAWS Suturing in shards.
+
+NOTE: this runner is frame-based. For the current annotation-only phase use
+surgical-error-detection/scripts/run_annotation_qa_jigsaws.py. Records are
+stamped with model.backend ("real" or "mock"); mock output never goes to the
+main output JSONL, only to a sibling *.mock.jsonl file.
+
+The LOW_SCORE_FEEDBACK / label_supported_reference_feedback values below are
+reference metadata derived from GRS labels; they are never emitted as the QA
+answer (the answer always comes from the model output).
+"""
 
 from __future__ import annotations
 
@@ -23,13 +33,54 @@ GRS_NAMES = [
 ]
 
 LOW_SCORE_FEEDBACK = {
-    "respect_for_tissue": ("tissue handling", "Use gentler traction and avoid unnecessary force."),
-    "suture_needle_handling": ("needle control", "Stabilize the needle angle before driving through the target."),
-    "time_and_motion": ("economy of motion", "Reduce extra instrument travel and plan the next movement before advancing."),
-    "flow_of_operation": ("procedural flow", "Pause, reorient, and complete one step cleanly before repositioning."),
-    "overall_performance": ("overall technique", "Focus on controlled bimanual movement and consistent needle handling."),
-    "quality_of_final_product": ("final product quality", "Practice consistent spacing, depth, and tension across the stitch."),
+    "respect_for_tissue": (
+        "tissue handling",
+        "Lighten traction on the simulated tissue, use the assisting instrument only to expose the bite, and stop pulling once the needle path is visible.",
+    ),
+    "suture_needle_handling": (
+        "needle control",
+        "Set the needle angle for the intended bite, stabilize the needle with the driver before entry, and drive with a controlled wrist rotation instead of pushing or dragging.",
+    ),
+    "time_and_motion": (
+        "economy of motion",
+        "Before advancing, choose the next bite point, set the needle angle, drive through in one controlled arc, and avoid extra instrument travel between those steps.",
+    ),
+    "flow_of_operation": (
+        "procedural flow",
+        "Stop the extra repositioning, identify the next bite point, align both instruments, and complete that single pass before changing tasks.",
+    ),
+    "overall_performance": (
+        "overall technique",
+        "Slow the sequence down, keep both instruments coordinated at the needle, and complete one clean grasp-drive-release cycle before adjusting.",
+    ),
+    "quality_of_final_product": (
+        "final product quality",
+        "Aim for equal bite spacing and depth, remove only the slack needed, and check tension before placing the next bite.",
+    ),
 }
+
+QUESTION_TEMPLATE_PATH = (
+    Path(__file__).resolve().parents[2]
+    / "Prompts_And_Pipeline"
+    / "template-d-question-templates.md"
+)
+_QUESTION_TEMPLATE_CACHE: dict[str, str] | None = None
+
+
+def load_question_templates() -> dict[str, str]:
+    global _QUESTION_TEMPLATE_CACHE
+    if _QUESTION_TEMPLATE_CACHE is not None:
+        return _QUESTION_TEMPLATE_CACHE
+
+    text = QUESTION_TEMPLATE_PATH.read_text(encoding="utf-8")
+    templates: dict[str, str] = {}
+    for match in re.finditer(r"^## Template (D[1-5]): .+\n\n(.+)$", text, re.MULTILINE):
+        templates[match.group(1)] = match.group(2).strip()
+    missing = sorted(set(f"D{index}" for index in range(1, 6)) - set(templates))
+    if missing:
+        raise ValueError(f"Missing Template D question wording in {QUESTION_TEMPLATE_PATH}: {missing}")
+    _QUESTION_TEMPLATE_CACHE = templates
+    return templates
 
 
 @dataclass(frozen=True)
@@ -173,18 +224,18 @@ def build_question(candidate: Candidate) -> str:
         if candidate.span.start_frame == candidate.span.end_frame
         else f"frames {candidate.evidence_label}"
     )
-    return (
-        "If you were the supervising surgeon, what one sentence of feedback would you give "
-        f"during {frame_text} of {candidate.trial.trial_id}?"
-    )
+    return load_question_templates()["D1"].replace("[a certain video span]", frame_text)
 
 
 def build_prompt(candidate: Candidate) -> str:
     focus, _ = expected_feedback(candidate.trial)
     weak_name, weak_score = weakest_subscore(candidate.trial)
-    return f"""You are an expert surgical evaluator and AI surgical copilot.
+    return f"""You are an expert surgical evaluator, attending physician, and AI surgical copilot. Your objective is to analyze surgical video data, including frames, clips, or sequential metadata, and provide precise, objective assessments aligned with JIGSAWS/Suturing. When the available evidence is insufficient, explicitly state that the observation cannot be determined rather than making speculative conclusions.
 
 Task: Generate exactly one Template D1 coaching-feedback QA pair for a JIGSAWS Suturing simulation clip.
+
+Question template source:
+Prompts_And_Pipeline/template-d-question-templates.md
 
 Critical output rule:
 The next assistant message must begin with {{ and end with }}. Do not write analysis, notes, markdown, or prose before or after the JSON object.
@@ -192,16 +243,32 @@ The next assistant message must begin with {{ and end with }}. Do not write anal
 Execution rules:
 1. Output one valid JSON object only. Do not wrap it in markdown.
 2. The JSON object must contain exactly these keys: question, answer, rationale.
-3. Prioritize visual evidence from the provided frame images.
-4. Use the annotations as ground truth context, but do not treat trial-level GRS scores as proof of a specific visual error in a single frame.
-5. Do not invent anatomy, bleeding, complications, patient-specific risk, or events that are not visible or annotated.
-6. Keep Template D1 focused: the answer must be one concise attending-style feedback sentence.
-7. Make the answer trainee-facing, specific, and actionable: name the movement adjustment and why it helps.
-8. Do not mention rubric field names, scores, metadata keys, or dataset labels in the answer.
-9. The rationale is evaluator-facing: explain how the visible evidence and annotations support the feedback in natural clinical language.
-10. Put all support details in the rationale: the relevant frame or frame range, visible evidence, and the specific improvement target.
-11. If the task asks for a rating, put the rating in the answer and put the rating scale, visible evidence, improvement, and evidence timestamp in the rationale.
-12. If visual evidence is weak, still answer conservatively and state the limitation in the rationale without sounding like a database record.
+3. Use annotations. Treat provided annotations, kinematic telemetry, or multimodal tracking data as ground-truth context, but keep the final answer honest about what is visually observable.
+4. JIGSAWS provides trial-level skill ratings and gesture frame spans. Trial-level scores can explain the coaching focus for the overall trial, but they do not prove that every individual frame or gesture shows the same error.
+5. Every output must anchor on the specific question, provide the requested coaching feedback, and supply a clinical rationale that includes the relevant frame or frame range in prose.
+6. Do not invent tissue tearing, injury, bleeding, anatomy, complications, patient-specific risk, or tool actions that are not visible or annotated.
+7. If the annotations do not support a reliable answer, write "cannot determine" in the answer and explain the limitation in the rationale.
+
+Field routing:
+1. Put only the exact requested question in the `question` field.
+2. Put trainee-facing coaching in the `answer` field. Make it detailed, specific, and instructive. It may mention the relevant technical field or domain in prose when useful, but never as a separate JSON field.
+3. Put detailed evidence analysis, the exact frame or frame range, and any visual-limitation statement in the `rationale` field.
+4. Do not add extra top-level fields.
+
+Generation behavior for `answer`:
+1. Do not limit the feedback to a single sentence. Write a detailed, instructive coaching note.
+2. Be mechanically specific. Name the visible or annotated movement problem, the next movement the trainee should perform, and how to perform it.
+3. If you use planning language, spell out the plan: choose the next bite point or target, set the needle angle, align the instruments, drive or regrasp, then continue.
+4. Do not copy canned reference feedback. If a coaching focus such as "economy of motion" or "tissue handling" is provided, use it as a clinical direction, not as a sentence template.
+5. Do not mention raw rubric field names, metadata keys, or numeric dataset labels in the answer.
+
+Generation behavior for `rationale`:
+1. Explain in detail why the answer is supported using natural clinical language.
+2. State the relevant frame or frame range.
+3. Describe visible evidence when available, and mention annotation context only when it helps ground the answer.
+4. Choose one primary feedback priority for each QA item: patient safety-critical, procedural efficiency, or technique-execution. Prioritize the most clinically relevant one, and mention secondary issues only lightly if they are visible and useful.
+5. Combine related dataset fields when grounding the rationale. For example, if the answer is about tissue handling, consider both respect for tissue and suture/needle handling, along with any relevant gesture annotations, rather than relying on a single subscore in isolation.
+6. If visual evidence is limited, say that briefly in the rationale while still giving the best supported answer.
 
 Dataset and labels:
 - dataset: JIGSAWS/Suturing
@@ -219,20 +286,14 @@ Label-supported coaching focus:
 - weakest_subscore: {weak_name}={weak_score}
 - coaching_focus: {focus}
 
-Style target:
-- answer: direct attending-to-trainee coaching, polished but plainspoken.
-- answer: avoid generic phrases like "improve technique"; give a concrete next movement or habit.
-- rationale: concise evaluator note, not bedside feedback; include the evidence frame or range and any rating context in prose, not as separate JSON fields.
-- rationale: it may cite the time-and-motion concern, but should not expose raw label syntax.
-
 Question:
 {build_question(candidate)}
 
 Return this exact JSON shape:
 {{
   "question": "{build_question(candidate)}",
-  "answer": "one specific, actionable attending-style feedback sentence addressed to the trainee",
-  "rationale": "one natural evaluator-facing sentence that includes the evidence frame or range and grounds the answer in visible evidence and/or the provided annotations"
+  "answer": "field: answer; detailed trainee-facing coaching with concrete movement instructions, or cannot determine",
+  "rationale": "field: rationale; detailed evidence analysis that includes the exact frame or frame range, uncertainty, and avoids unsupported conclusions"
 }}
 """
 
@@ -449,7 +510,7 @@ def run_generation(
         messages,
         tokenize=False,
         add_generation_prompt=True,
-        enable_thinking=False,
+        enable_thinking=True,
     )
     image_inputs, video_inputs = process_vision_info(messages)
     inputs = processor(
@@ -530,6 +591,11 @@ def append_jsonl(path: Path, record: dict[str, Any]) -> None:
         handle.flush()
 
 
+def mock_output_path(output_jsonl: str) -> Path:
+    path = Path(output_jsonl)
+    return path.with_name(path.stem + ".mock" + path.suffix)
+
+
 def build_base_record(
     candidate: Candidate,
     visual_evidence: dict[str, Any],
@@ -568,6 +634,7 @@ def build_base_record(
         "visual_evidence": visual_evidence,
         "model": {
             "model_id": model_id,
+            "backend": None,
             "sampled_frames": list(visual_evidence.get("frame_paths", [])),
         },
         "prompt": prompt,
@@ -682,11 +749,28 @@ def main() -> None:
 
         try:
             if args.dry_run:
-                record["model"]["raw_output"] = None
-                record["parsed_output"] = None
-                record["validation_status"] = "dry_run"
-                dry_run_count += 1
-                append_jsonl(Path(args.output_jsonl), record)
+                if args.mock_raw_output is None:
+                    record["model"]["raw_output"] = None
+                    record["parsed_output"] = None
+                    record["validation_status"] = "dry_run"
+                    dry_run_count += 1
+                    continue
+
+                parsed_output, error = parse_model_json(args.mock_raw_output)
+                if error is None and parsed_output is not None:
+                    if parsed_output.get("question") != build_question(candidate):
+                        error = "question_mismatch"
+                record["model"]["backend"] = "mock"
+                record["model"]["raw_output"] = args.mock_raw_output
+                record["parsed_output"] = parsed_output
+                record["validation_status"] = "valid_mock" if error is None else "rejected"
+                record["validation_error"] = error
+                if error is None:
+                    valid_count += 1
+                    append_jsonl(mock_output_path(args.output_jsonl), record)
+                else:
+                    rejected_count += 1
+                    append_jsonl(Path(args.rejected_jsonl), record)
                 continue
             visual_evidence = extract_visual_evidence(
                 dataset_root,
@@ -707,6 +791,7 @@ def main() -> None:
                 raise ValueError(f"No generation frame paths for {candidate.qa_id}")
             record["model"]["generation_captures"] = generation_captures
             record["model"]["generation_frame_paths"] = [str(path) for path in generation_frame_paths]
+            backend = "mock" if args.mock_raw_output is not None else "real"
             if args.mock_raw_output is not None:
                 raw_output = args.mock_raw_output
             else:
@@ -715,13 +800,20 @@ def main() -> None:
             if error is None and parsed_output is not None:
                 if parsed_output.get("question") != build_question(candidate):
                     error = "question_mismatch"
+            record["model"]["backend"] = backend
             record["model"]["raw_output"] = raw_output
             record["parsed_output"] = parsed_output
-            record["validation_status"] = "valid" if error is None else "rejected"
+            if error is None:
+                record["validation_status"] = "valid" if backend == "real" else "valid_mock"
+            else:
+                record["validation_status"] = "rejected"
             record["validation_error"] = error
             if error is None:
                 valid_count += 1
-                append_jsonl(Path(args.output_jsonl), record)
+                if backend == "mock":
+                    append_jsonl(mock_output_path(args.output_jsonl), record)
+                else:
+                    append_jsonl(Path(args.output_jsonl), parsed_output)
             else:
                 rejected_count += 1
                 append_jsonl(Path(args.rejected_jsonl), record)
@@ -732,6 +824,7 @@ def main() -> None:
             record["model"].setdefault("sampled_frames", [])
             record["model"].setdefault("generation_captures", generation_captures)
             record["model"].setdefault("generation_frame_paths", [])
+            record["model"]["backend"] = "mock" if args.mock_raw_output is not None else "real"
             record["model"]["raw_output"] = None
             record["parsed_output"] = None
             record["validation_status"] = "error"
@@ -748,7 +841,7 @@ def main() -> None:
         "fail_on_rejected": args.fail_on_rejected,
     }
     print(json.dumps(summary, indent=2), flush=True)
-    success_count = dry_run_count if args.dry_run else valid_count
+    success_count = dry_run_count + valid_count if args.dry_run else valid_count
     if success_count < args.min_valid:
         row_kind = "dry-run rows" if args.dry_run else "valid rows"
         print(f"Expected at least {args.min_valid} {row_kind}, got {success_count}.", file=sys.stderr)

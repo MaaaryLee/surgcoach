@@ -4,6 +4,16 @@ Purpose: define two middle-ground answer formats for Template D coaching QA. Bot
 
 Use these formats for JIGSAWS Suturing first runs, especially when the available labels are trial-level GRS scores plus gesture frame spans rather than frame-level error annotations.
 
+Canonical D1-D5 question wording lives in [Template D question templates](../../Prompts_And_Pipeline/template-d-question-templates.md). Copy the selected template exactly and replace `[a certain video span]` with the target video span when generating an item.
+
+Route content by field:
+
+- `question`: exact question text only.
+- `answer`: trainee-facing feedback only. Do not limit it to one sentence; use 2-4 short, concrete instructional sentences.
+- `rationale`: exact frame or frame range, evidence support, and uncertainty or weak visual-grounding notes.
+
+Avoid vague planning language. If the feedback says to plan a movement, specify the plan: choose the next bite point, set the needle angle, align the instruments, drive or regrasp, then continue.
+
 ## Format A: Component-Structured Free Response
 
 Training instruction:
@@ -28,8 +38,8 @@ Example output:
 
 ```json
 {
-  "best_next_step": "Reduce extra instrument travel and plan the next movement before advancing.",
-  "one_sentence_rationale": "The label-supported target is economy of motion because time_and_motion is the weakest GRS subscore (1/5), with frames 371-590 used as the visual evidence span.",
+  "best_next_step": "Choose the next bite point, set the needle angle, drive through in one controlled arc, and avoid extra instrument travel between those steps.",
+  "one_sentence_rationale": "The label-supported target is economy of motion because trial-level ratings flag inefficient motion, with frames 371-590 used as the visual evidence span.",
   "supporting_evidence_span": {
     "type": "frame_range",
     "start_frame": 371,
@@ -46,7 +56,7 @@ Example output:
 
 | Component | 0 | 1 | 2 |
 |---|---|---|---|
-| best_next_step | Unsafe, irrelevant, or unsupported | Reasonable but generic | Specific, action-oriented, and aligned with labels/evidence |
+| best_next_step | Unsafe, irrelevant, or unsupported | Reasonable but generic | Specific, mechanically instructive, and aligned with labels/evidence |
 | one_sentence_rationale | Missing, contradictory, or not one sentence | One sentence but generic | One sentence tied to GRS label and/or visual evidence |
 | supporting_evidence_span | Missing | Broad/incomplete | Correct frame range or clear trial-level evidence statement |
 
@@ -98,7 +108,7 @@ Example output:
     "complication": "none_visible_or_not_annotated",
     "coaching_feedback_category": "economy_of_motion"
   },
-  "short_explanation": "The label-supported target is economy of motion because time_and_motion is the weakest GRS subscore (1/5), with frames 371-590 used as the visual evidence span.",
+  "short_explanation": "The label-supported target is economy of motion because trial-level ratings flag inefficient motion, with frames 371-590 used as the visual evidence span.",
   "supporting_evidence_span": {
     "type": "frame_range",
     "start_frame": 371,

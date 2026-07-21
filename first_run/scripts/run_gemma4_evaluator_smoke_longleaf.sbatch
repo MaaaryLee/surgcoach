@@ -2,7 +2,8 @@
 #SBATCH --job-name=surgcoach-eval-smoke
 #SBATCH --partition=l40-gpu
 #SBATCH --gres=gpu:2
-#SBATCH --account=rc_chudi_pi
+# NOTE: pass the Slurm account for THIS project at submit time:
+#   sbatch --account=<your-project-account> <this-file>
 #SBATCH --qos=gpu_access
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=128G

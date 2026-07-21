@@ -55,10 +55,11 @@ Observed OPrime layout:
 
 Use these Template D variants first:
 
-- `D1` one-sentence attending feedback.
-- `D3` immediate corrective action.
-- `D4` practice recommendation.
-- `D5` positive reinforcement.
+- `D1` One-Sentence Attending Feedback.
+- `D2` Feedback With Priority.
+- `D3` Corrective Action.
+- `D4` Practice Recommendation.
+- `D5` Positive Reinforcement.
 
 Use `D2` cautiously. In JIGSAWS, "safety" should mean simulation/task safety, needle control, tissue handling, or instrument handling. Do not claim patient harm or intraoperative anatomy risk.
 
@@ -86,13 +87,22 @@ Input:
 
 Generate one Template D QA item. The answer must be specific, action-oriented, and grounded in the provided labels and visual evidence.
 
+Canonical D1-D5 question wording lives in ../../Prompts_And_Pipeline/template-d-question-templates.md. Copy the selected template exactly and replace `[a certain video span]` with the target video span when generating an item.
+
+Field routing:
+
+- `question`: exact question text only.
+- `answer`: detailed trainee-facing feedback only. Name the exact movement or habit the trainee should change, the technical field/domain when helpful, and the next concrete motion sequence.
+- `rationale`: detailed analysis including frame range, visible evidence, annotation support, and any uncertainty or weak visual-evidence statement.
+
 Rules:
 1. Do not invent anatomy, bleeding, complications, or patient-specific risk.
 2. Do not call something an error unless the visual evidence or annotation supports it.
 3. Use low GRS subscores as weakness signals, not as direct proof of what happened in one frame.
 4. If visual evidence is missing, say the feedback is label-supported and requires visual confirmation.
-5. Keep the coaching tone professional and concise.
-6. Include source labels used and evidence status.
+5. Keep the coaching tone professional and concise, but do not force D1 feedback into a single sentence.
+6. Do not add metadata fields. If source labels, evidence status, technical domain, or uncertainty matter, write them in prose inside `answer` or `rationale`.
+7. Avoid vague phrases such as "plan the next movement" unless the output states the actual plan: choose the next bite point, set the needle angle, align the instruments, drive or regrasp, then continue.
 ```
 
 ## Label-To-Feedback Mapping
@@ -101,12 +111,12 @@ Use this mapping to choose the feedback target:
 
 | Low subscore | Coaching focus | Example feedback direction |
 |---|---|---|
-| Respect for tissue <= 2 | Tissue handling | Use gentler traction and avoid unnecessary force. |
-| Suture/needle handling <= 2 | Needle control | Stabilize the needle angle before driving through the target. |
-| Time and motion <= 2 | Economy of motion | Reduce extra instrument travel and plan the next movement before advancing. |
-| Flow of operation <= 2 | Procedural flow | Pause, reorient, and complete one step cleanly before repositioning. |
-| Overall performance <= 2 | General technique | Focus on controlled bimanual movements and consistent needle handling. |
-| Final product quality <= 2 | Output quality | Practice consistent spacing, depth, and tension across the stitch. |
+| Respect for tissue <= 2 | Tissue handling | Lighten traction on the simulated tissue, use the assisting instrument only to expose the bite, and stop pulling once the needle path is visible. |
+| Suture/needle handling <= 2 | Needle control | Set the needle angle for the intended bite, stabilize the needle with the driver before entry, and drive with a controlled wrist rotation instead of pushing or dragging. |
+| Time and motion <= 2 | Economy of motion | Before advancing, choose the next bite point, set the needle angle, drive through in one controlled arc, and avoid extra instrument travel between those steps. |
+| Flow of operation <= 2 | Procedural flow | Stop the extra repositioning, identify the next bite point, align both instruments, and complete that single pass before changing tasks. |
+| Overall performance <= 2 | General technique | Slow the sequence down, keep both instruments coordinated at the needle, and complete one clean grasp-drive-release cycle before adjusting. |
+| Final product quality <= 2 | Output quality | Aim for equal bite spacing and depth, remove only the slack needed, and check tension before placing the next bite. |
 
 High subscore guidance:
 
@@ -120,115 +130,29 @@ High subscore guidance:
 
 ## Output Structure
 
-Each generated item should follow this shape:
+Each generated QA item should follow this shape:
 
 ```json
 {
-  "qa_id": "jigsaws_suturing_d_<trial>_<template>_<frame_range>",
-  "dataset": "JIGSAWS",
-  "procedure_or_task": "Suturing",
-  "video_id": "<trial_id>_<capture_id>",
-  "clip_id": "<trial_id>_<start_frame>_<end_frame>",
-  "frame_id": null,
-  "timestamp_or_frame": "<start_frame>-<end_frame>",
-  "template_category": "D",
-  "template_id": "D1",
-  "question_type": "coaching_feedback",
   "question": "...",
   "answer": "...",
-  "rationale": "...",
-  "visible_evidence": "...",
-  "source_labels_used": ["gesture_id", "gesture_frame_range", "skill_level", "grs_subscores"],
-  "skill_domain": ["needle handling", "economy of motion"],
-  "learner_level": "resident",
-  "confidence": "medium",
-  "evidence_status": "partially_supported",
-  "requires_expert_review": true,
-  "coaching": {
-    "feedback_type": "one_sentence",
-    "feedback_points": [
-      {
-        "priority": "technique",
-        "message": "..."
-      }
-    ],
-    "immediate_action": "...",
-    "practice_drill": null,
-    "tone": "supportive"
-  },
-  "source_annotation": {
-    "trial_id": "...",
-    "gesture_id": "...",
-    "start_frame": 0,
-    "end_frame": 0,
-    "skill_level": "N",
-    "grs_total": 0,
-    "grs_subscores": {
-      "respect_for_tissue": 0,
-      "suture_needle_handling": 0,
-      "time_and_motion": 0,
-      "flow_of_operation": 0,
-      "overall_performance": 0,
-      "quality_of_final_product": 0
-    }
-  }
+  "rationale": "..."
 }
 ```
 
-## Structured Free-Response Alternatives
+## Output Policy
 
-For the first run, use one of two middle-ground formats instead of fully open-ended answers.
-
-`component_structured` asks for:
+For the first run, use only the three-field free-response QA format:
 
 ```json
 {
-  "best_next_step": "...",
-  "one_sentence_rationale": "...",
-  "supporting_evidence_span": {
-    "type": "frame_range",
-    "start_frame": 371,
-    "end_frame": 590,
-    "gesture_id": "G8",
-    "evidence_source": ["gesture_transcription", "sampled_frames", "GRS_subscores"],
-    "evidence_status": "partially_supported"
-  },
-  "uncertainty": "..."
+  "question": "...",
+  "answer": "...",
+  "rationale": "..."
 }
 ```
 
-Score each component separately from 0-2:
-
-- `best_next_step`: correctness and actionability.
-- `one_sentence_rationale`: concise grounding in labels/evidence.
-- `supporting_evidence_span`: correct timestamp/frame span or explicit trial-level evidence statement.
-
-`taxonomy_structured` asks for:
-
-```json
-{
-  "taxonomy_version": "jigsaws_template_d_v0.1",
-  "taxonomy_labels": {
-    "anatomy": "suturing_pad_or_simulated_tissue",
-    "error_type": "inefficient_motion_label_supported",
-    "next_operative_step": "reduce_extra_motion",
-    "complication": "none_visible_or_not_annotated",
-    "coaching_feedback_category": "economy_of_motion"
-  },
-  "short_explanation": "...",
-  "supporting_evidence_span": {
-    "type": "frame_range",
-    "start_frame": 371,
-    "end_frame": 590,
-    "gesture_id": "G8",
-    "evidence_source": ["gesture_transcription", "sampled_frames", "GRS_subscores"],
-    "evidence_status": "partially_supported"
-  },
-  "uncertainty": "..."
-}
-```
-
-Score `taxonomy_label`, `rationale`, and `evidence_span` separately from 0-2. This format is useful when we want easier standardization across anatomy, error type, next operative step, complication, and coaching feedback category.
+Do not use component-structured or taxonomy-structured response formats for generated QA. If a technical category, evidence span, uncertainty statement, or annotation detail matters, write it in natural language inside `answer` or `rationale`.
 
 ## Seed Cases
 
@@ -239,9 +163,9 @@ Use these as first-run examples:
 
 ## First-Run Policy
 
-For tomorrow's first run, keep the answer space structured:
+For the first run, keep the answer space detailed but schema-simple:
 
-- one short coaching sentence for `D1`;
+- a detailed instructional coaching note for `D1`;
 - one immediate action for `D3`;
 - one drill name plus one reason for `D4`;
 - one positive behavior plus one reason for `D5`;
