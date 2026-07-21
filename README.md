@@ -2,9 +2,13 @@
 
 Structured prompt and evaluation materials for surgical coaching QA on intraoperative video.
 
+## New Here?
+
+Start with [QUICKSTART.md](QUICKSTART.md) — a from-zero guide to a first mock run, a first real run, and batching 50-100 runs. Real-backend dependencies are in [requirements-annotation.txt](requirements-annotation.txt) (mock mode needs no installs). Full environment/library reference: [docs/environment-and-libraries.md](docs/environment-and-libraries.md).
+
 ## Current Direction: Annotation-Only QA Generation
 
-QA pairs are currently generated from **real JIGSAWS annotations only** (skill level, GRS subscores, gesture spans) — no frames are extracted or sent to the model. The go-forward runner is `surgical-error-detection/scripts/run_annotation_qa_jigsaws.py` with the annotation-only prompts (`surgical-error-detection/outputs/system-prompt-A-D.md` and the annotation-only edits in [system-prompt-jigsaws-v1.1.md](Prompts_And_Pipeline/system-prompt-jigsaws-v1.1.md)). All answers come from the model; label-derived text is stored only in clearly named reference/metadata fields, never as the QA answer. Every record is stamped with `model.backend` (`real` or `mock`), and mock records are watermarked and kept out of the main output JSONL.
+QA pairs are currently generated from **real JIGSAWS annotations only** (skill level, GRS subscores, gesture spans) — no frames are extracted or sent to the model. The go-forward runner is [scripts/run_annotation_qa_jigsaws.py](scripts/run_annotation_qa_jigsaws.py) with the annotation-only prompts ([system-prompt-A-D.md](Prompts_And_Pipeline/system-prompt-A-D.md), the canonical [template-d-question-templates.md](Prompts_And_Pipeline/template-d-question-templates.md), and [system-prompt-jigsaws-v1.1.md](Prompts_And_Pipeline/system-prompt-jigsaws-v1.1.md)). All answers come from the model; label-derived text is stored only in clearly named reference/metadata fields, never as the QA answer. Every record is stamped with `model.backend` (`real` or `mock`), and mock records are watermarked and kept out of the main output JSONL.
 
 Deprecated (frame-based / superseded):
 
@@ -26,8 +30,6 @@ python3 first_run/scripts/run_jigsaws_template_d_qwen.py \
 ```
 
 The full model run requires the JIGSAWS Suturing data, `ffmpeg`/`ffprobe`, a CUDA-capable runtime, and Hugging Face access for the configured Qwen model.
-
-Complete environment and library documentation (local, OPrime, Longleaf, dependency pins, models, env vars) lives in `surgical-error-detection/docs/environment-and-libraries.md`.
 
 ## Prompt and QA Pipeline
 

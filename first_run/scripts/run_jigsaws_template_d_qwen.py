@@ -7,7 +7,7 @@ LOW_SCORE_FEEDBACK) into the record's top-level `answer` field, so its records
 look like model-generated QA but are not (the actual model output lives only
 under `model.output` and can even contradict the canned answer). For the
 current annotation-only pipeline use
-surgical-error-detection/scripts/run_annotation_qa_jigsaws.py, where every
+scripts/run_annotation_qa_jigsaws.py, where every
 answer comes from the model and provenance is stamped on each record.
 
 The runner supports two modes:

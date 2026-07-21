@@ -2,7 +2,7 @@
 """Generate Template D1 SurgCoach QA pairs for JIGSAWS Suturing in shards.
 
 NOTE: this runner is frame-based. For the current annotation-only phase use
-surgical-error-detection/scripts/run_annotation_qa_jigsaws.py. Records are
+scripts/run_annotation_qa_jigsaws.py. Records are
 stamped with model.backend ("real" or "mock"); mock output never goes to the
 main output JSONL, only to a sibling *.mock.jsonl file.
 

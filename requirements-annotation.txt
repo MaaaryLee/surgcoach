@@ -1,0 +1,31 @@
+# Dependencies for the ANNOTATION-ONLY QA pipeline (scripts/run_annotation_qa_jigsaws.py)
+# with the REAL model backend.
+#
+# Mock mode (--backend mock) needs NONE of these — it runs on the Python
+# standard library alone. Only install this file where you will run real
+# inference (a CUDA GPU machine).
+#
+# Install torch FIRST with the CUDA wheel index that matches your cluster's
+# CUDA version (the project standard is CUDA 12.4):
+#
+#   pip install --extra-index-url https://download.pytorch.org/whl/cu124 torch==2.6.0+cu124
+#   pip install -r requirements-annotation.txt
+#
+# NOTE on transformers: the default model Qwen/Qwen3.6-35B-A3B requires the
+# LATEST transformers. If loading fails with an unrecognized architecture,
+# upgrade to the newest release or install from git:
+#   pip install --no-deps "git+https://github.com/huggingface/transformers.git"
+
+accelerate>=0.26.0,<2.0.0
+huggingface_hub>=0.30.0,<1.0.0
+numpy>=1.24.0,<3.0.0
+protobuf
+regex
+safetensors>=0.4.0
+sentencepiece
+tokenizers>=0.22
+torch>=2.6.0
+transformers>=4.51.0
+
+# Deliberately ABSENT (frame-pipeline only, not used annotation-only):
+# decord, pillow, torchvision, qwen-vl-utils
