@@ -31,6 +31,13 @@ GRS_NAMES = [
     "quality_of_final_product",
 ]
 
+# JIGSAWS self-proclaimed experience levels (Gao et al., 2014).
+SKILL_LEVELS = {
+    "N": "novice, <10 hours robotic surgical practice",
+    "I": "intermediate, 10-100 hours robotic surgical practice",
+    "E": "expert, >100 hours robotic surgical practice",
+}
+
 # Standard JIGSAWS gesture vocabulary (Gao et al., 2014).
 GESTURE_DEFINITIONS = {
     "G1": "Reaching for needle with right hand",
@@ -176,7 +183,7 @@ def build_user_prompt(
         "- number_of_questions: 1",
         "- available_annotations:",
         f"  - trial_id: {meta['trial_id']}",
-        f"  - skill_level: {meta['skill_level']}",
+        f"  - skill_level: {meta['skill_level']} ({SKILL_LEVELS.get(meta['skill_level'], 'unknown')})",
         f"  - grs_total: {meta['grs_total']}",
         f"  - grs_subscores: {json.dumps(meta['grs_subscores'], sort_keys=True)}",
         f"  - gesture_id: {span['gesture_id']} ({gesture_definition})",
@@ -254,24 +261,51 @@ def normalize_qa_objects(payload: Any) -> list[dict[str, Any]] | None:
 
 def load_text_model(model_id: str, device_map: str) -> tuple[Any, Any]:
     import torch
-    from transformers import AutoModelForCausalLM, AutoTokenizer
+    import transformers
+    from transformers import AutoProcessor
 
-    log(f"loading tokenizer for {model_id}")
-    tokenizer = AutoTokenizer.from_pretrained(model_id, trust_remote_code=True)
-    log(f"loading model {model_id}")
-    model = AutoModelForCausalLM.from_pretrained(
-        model_id,
-        device_map=device_map,
-        trust_remote_code=True,
-        dtype=torch.bfloat16 if torch.cuda.is_available() else "auto",
-    )
-    model.eval()
-    log(f"model loaded: {type(model)}")
-    return tokenizer, model
+    log(f"loading processor for {model_id}")
+    processor = AutoProcessor.from_pretrained(model_id, trust_remote_code=True)
+    kwargs: dict[str, Any] = {
+        "device_map": device_map,
+        "trust_remote_code": True,
+        "dtype": torch.bfloat16 if torch.cuda.is_available() else "auto",
+    }
+    # Qwen3.6 is a multimodal architecture; try VL model classes before CausalLM
+    # (same proven chain as the legacy runner). Text-only prompts work fine.
+    class_names = [
+        "AutoModelForImageTextToText",
+        "AutoModelForVision2Seq",
+        "AutoModelForMultimodalLM",
+        "AutoModelForCausalLM",
+    ]
+    errors: list[str] = []
+    for class_name in class_names:
+        model_cls = getattr(transformers, class_name, None)
+        if model_cls is None:
+            continue
+        try:
+            log(f"loading model with {class_name}")
+            model = model_cls.from_pretrained(model_id, **kwargs)
+            model.eval()
+            log(f"model loaded: {type(model)}")
+            hf_map = getattr(model, "hf_device_map", None) or {}
+            devices = sorted({str(v) for v in hf_map.values()})
+            log(f"device map devices: {devices}")
+            offloaded = [k for k, v in hf_map.items() if str(v) in {"cpu", "disk"}]
+            if offloaded:
+                raise RuntimeError(
+                    f"{len(offloaded)} modules offloaded to CPU/disk (insufficient free "
+                    f"GPU memory); refusing to run — first offloaded: {offloaded[:5]}"
+                )
+            return processor, model
+        except Exception as exc:  # noqa: BLE001
+            errors.append(f"{class_name}: {exc}")
+    raise RuntimeError("Could not load model with any AutoModel class:\n" + "\n".join(errors))
 
 
 def run_generation(
-    tokenizer: Any,
+    processor: Any,
     model: Any,
     system_prompt: str,
     user_prompt: str,
@@ -283,16 +317,23 @@ def run_generation(
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": user_prompt},
     ]
-    text = tokenizer.apply_chat_template(
-        messages, tokenize=False, add_generation_prompt=True
+    text = processor.apply_chat_template(
+        messages,
+        tokenize=False,
+        add_generation_prompt=True,
+        enable_thinking=True,
     )
-    inputs = tokenizer([text], return_tensors="pt").to(model.device)
+    inputs = processor(text=[text], padding=True, return_tensors="pt")
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    inputs = inputs.to(device)
     with torch.no_grad():
         generated_ids = model.generate(
             **inputs, max_new_tokens=max_new_tokens, do_sample=False
         )
     trimmed = generated_ids[0][inputs.input_ids.shape[1] :]
-    return tokenizer.decode(trimmed, skip_special_tokens=False)
+    return processor.batch_decode(
+        [trimmed], skip_special_tokens=False, clean_up_tokenization_spaces=False
+    )[0]
 
 
 def mock_raw_output(
@@ -321,6 +362,7 @@ def main() -> None:
     parser.add_argument("--model-id", default="Qwen/Qwen3.6-35B-A3B")
     parser.add_argument("--trial-id", default="Suturing_B001")
     parser.add_argument("--gesture-id", default=None, help="Restrict to one gesture ID (default: all spans in the trial)")
+    parser.add_argument("--max-spans", type=int, default=0, help="Cap the number of gesture spans processed (0 = all)")
     parser.add_argument("--templates", default="A3,C1,C2,C3,C6,C7,D1,D2,D3,D4,D5")
     parser.add_argument("--max-new-tokens", type=int, default=2048)
     parser.add_argument("--device-map", default="auto")
@@ -361,10 +403,12 @@ def main() -> None:
         spans = [span for span in spans if span["gesture_id"] == args.gesture_id]
         if not spans:
             raise SystemExit(f"Gesture {args.gesture_id} not found for {args.trial_id}")
+    if args.max_spans > 0:
+        spans = spans[: args.max_spans]
 
-    tokenizer = model = None
+    processor = model = None
     if args.backend == "real":
-        tokenizer, model = load_text_model(args.model_id, args.device_map)
+        processor, model = load_text_model(args.model_id, args.device_map)
 
     output_name = "qa_records.jsonl" if args.backend == "real" else "qa_records.mock.jsonl"
     output_path = output_dir / output_name
@@ -377,7 +421,7 @@ def main() -> None:
                     raw_output = mock_raw_output(template_id, span, d_templates)
                 else:
                     raw_output = run_generation(
-                        tokenizer, model, system_prompt, user_prompt, args.max_new_tokens
+                        processor, model, system_prompt, user_prompt, args.max_new_tokens
                     )
 
                 qa_objects = None
@@ -390,9 +434,17 @@ def main() -> None:
                     error = repr(exc)
 
                 expected_question = expected_d_question(template_id, span, d_templates)
+                model_question = None
                 if error is None and expected_question is not None:
-                    if qa_objects[0]["question"] != expected_question:
-                        error = "question_mismatch: D question must match template wording exactly"
+                    model_question = qa_objects[0]["question"]
+                    first_paragraph = expected_question.split("\n\n")[0].strip()
+                    if model_question.strip() in (expected_question.strip(), first_paragraph):
+                        # The D question is a deterministic template constant, so
+                        # canonicalize it; the model's literal echo is preserved in
+                        # model.question_echo and raw_output.
+                        qa_objects[0]["question"] = expected_question
+                    else:
+                        error = "question_mismatch: D question must match template wording"
 
                 if error is None:
                     status = "valid" if args.backend == "real" else "valid_mock"
@@ -428,6 +480,7 @@ def main() -> None:
                         "system_prompt_path": str(system_prompt_path),
                         "prompt": user_prompt,
                         "raw_output": raw_output,
+                        "question_echo": model_question,
                     },
                     "qa": qa_objects,
                     "validation_status": status,
