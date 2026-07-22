@@ -12,6 +12,7 @@ The two batches cover the same 10 gesture spans, so C and D records align span-f
 Notes:
 
 - Generated with the prompt stack at commit `26cb846` (before the D1-template simplification and field-name-leakage rule in `7721df0` were live on the cluster). Known cosmetic issues in this batch: some answers name raw GRS field names, and skill-level codes were unglossed (one C7 answer calls level `I` "novice"; `I` = intermediate). Both prompt fixes are in place for future batches.
-- `qa_records.jsonl`: one full-provenance record per line; the QA pair itself is in the `qa` field (`question`/`answer`/`rationale`).
+- `qa_records.jsonl`: one full-provenance record per line (source of truth); the QA pair itself is in the `qa` field.
+- `qa_pairs.jsonl` / `qa_pairs.md`: clean extracted views of just the QA pairs (minimal JSONL for machines, Markdown grouped by template for humans). Regenerate with `python3 scripts/extract_qa_pairs.py <batch>/qa_records.jsonl` after any new batch.
 - Use only records with `validation_status: "valid"` downstream (all records in these files are valid).
 - Pending human/expert review per pipeline step 7 (`Prompts_And_Pipeline/pipeline-notes.md`).
