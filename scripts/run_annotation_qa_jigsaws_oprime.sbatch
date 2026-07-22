@@ -11,7 +11,8 @@
 set -euo pipefail
 
 WORK_DIR="${WORK_DIR:-/home/mairuili/annotation_qa}"
-DATASET_ROOT="${DATASET_ROOT:-/mnt/sun/shared/datasets/surgical_skill/JIGSAWS/Suturing}"
+TASK="${TASK:-Suturing}"
+DATASET_ROOT="${DATASET_ROOT:-/mnt/sun/shared/datasets/surgical_skill/JIGSAWS/$TASK}"
 SYSTEM_PROMPT="${SYSTEM_PROMPT:-$WORK_DIR/system-prompt-A-D.md}"
 MODEL_ID="${MODEL_ID:-Qwen/Qwen3.6-35B-A3B}"
 TRIAL_ID="${TRIAL_ID:-Suturing_B001}"
@@ -33,17 +34,28 @@ cd "$WORK_DIR"
 # This cluster does not isolate GPUs between jobs: other users' processes can
 # occupy GPUs Slurm hands us, which silently forces accelerate to squeeze or
 # offload layers and later OOM mid-generation. Pin to GPUs that are actually
-# free (<2GB used) and fail fast if too few remain.
-FREE_GPUS=$(nvidia-smi --query-gpu=index,memory.used --format=csv,noheader,nounits | awk -F', ' '$2 < 2000 {print $1}' | paste -sd, -)
-NUM_FREE=$(echo "$FREE_GPUS" | tr ',' '\n' | grep -c .)
+# free (<2GB used). If too few are free, wait and re-check every 5 minutes
+# (up to GPU_WAIT_TRIES polls) instead of dying.
+NUM_FREE=0
+FREE_GPUS=""
+for attempt in $(seq 1 "${GPU_WAIT_TRIES:-60}"); do
+  FREE_GPUS=$(nvidia-smi --query-gpu=index,memory.used --format=csv,noheader,nounits | awk -F', ' '$2 < 2000 {print $1}' | paste -sd, -)
+  NUM_FREE=$(echo "$FREE_GPUS" | tr ',' '\n' | grep -c .)
+  if [ "$NUM_FREE" -ge "${MIN_FREE_GPUS:-3}" ]; then
+    break
+  fi
+  echo "poll $attempt/${GPU_WAIT_TRIES:-60}: only $NUM_FREE free GPUs (<${MIN_FREE_GPUS:-3}); sleeping 300s"
+  sleep 300
+done
 echo "free GPUs: [$FREE_GPUS] count=$NUM_FREE"
 if [ "$NUM_FREE" -lt "${MIN_FREE_GPUS:-3}" ]; then
-  echo "ERROR: only $NUM_FREE free GPUs (<${MIN_FREE_GPUS:-3}); refusing to start"
+  echo "ERROR: still only $NUM_FREE free GPUs after waiting; giving up"
   exit 1
 fi
 export CUDA_VISIBLE_DEVICES="$FREE_GPUS"
 
 python3 scripts/run_annotation_qa_jigsaws.py \
+  --task "$TASK" \
   --dataset-root "$DATASET_ROOT" \
   --system-prompt "$SYSTEM_PROMPT" \
   --model-id "$MODEL_ID" \

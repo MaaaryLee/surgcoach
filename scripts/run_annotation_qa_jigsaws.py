@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Annotation-only QA generation for JIGSAWS Suturing, templates A-D.
+"""Annotation-only QA generation for JIGSAWS tasks (Suturing, Knot_Tying, Needle_Passing), templates A-D.
 
 This runner never reads video or extracts frames. Prompts are built solely from
 real JIGSAWS annotations (meta_file GRS scores, skill level, gesture
@@ -125,8 +125,8 @@ def load_d_templates(path: Path) -> dict[str, str]:
     return templates
 
 
-def read_meta(dataset_root: Path, trial_id: str) -> dict[str, Any]:
-    meta_path = dataset_root / "meta_file_Suturing.txt"
+def read_meta(dataset_root: Path, trial_id: str, task: str) -> dict[str, Any]:
+    meta_path = dataset_root / f"meta_file_{task}.txt"
     for line in meta_path.read_text(encoding="utf-8").splitlines():
         if not line.strip():
             continue
@@ -169,13 +169,14 @@ def build_user_prompt(
     meta: dict[str, Any],
     span: dict[str, Any],
     d_templates: dict[str, str],
+    task: str,
 ) -> str:
     frame_label = f"{span['start_frame']}-{span['end_frame']}"
     gesture_definition = GESTURE_DEFINITIONS.get(span["gesture_id"], "unknown gesture")
     lines = [
         "Dataset-specific input (ANNOTATION-ONLY: no frames or images are attached):",
         "- dataset_name: JIGSAWS",
-        "- procedure_or_task: Suturing",
+        f"- procedure_or_task: {task.replace('_', ' ')}",
         f"- video_id: {meta['trial_id']}",
         f"- clip_id: {meta['trial_id']}_{frame_label}",
         f"- timestamp_or_frame: frames {frame_label}",
@@ -356,7 +357,8 @@ def mock_raw_output(
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--dataset-root", default="/mnt/sun/shared/datasets/surgical_skill/JIGSAWS/Suturing")
+    parser.add_argument("--task", default="Suturing", help="JIGSAWS task: Suturing, Knot_Tying, or Needle_Passing")
+    parser.add_argument("--dataset-root", default=None, help="Default: /mnt/sun/shared/datasets/surgical_skill/JIGSAWS/<task>")
     parser.add_argument("--system-prompt", required=True, help="Path to annotation-only system-prompt-A-D.md")
     parser.add_argument("--d-templates", default=None, help="Path to template-d-question-templates.md (default: alongside system prompt)")
     parser.add_argument("--model-id", default="Qwen/Qwen3.6-35B-A3B")
@@ -384,7 +386,10 @@ def main() -> None:
         )
     templates = [item for item in requested if item in SUPPORTED_TEMPLATES]
 
-    dataset_root = Path(args.dataset_root)
+    dataset_root = Path(
+        args.dataset_root
+        or f"/mnt/sun/shared/datasets/surgical_skill/JIGSAWS/{args.task}"
+    )
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -397,7 +402,7 @@ def main() -> None:
     )
     d_templates = load_d_templates(d_templates_path)
 
-    meta = read_meta(dataset_root, args.trial_id)
+    meta = read_meta(dataset_root, args.trial_id, args.task)
     spans = read_gesture_spans(dataset_root, args.trial_id)
     if args.gesture_id:
         spans = [span for span in spans if span["gesture_id"] == args.gesture_id]
@@ -416,7 +421,7 @@ def main() -> None:
     with output_path.open("w", encoding="utf-8") as handle:
         for span in spans:
             for template_id in templates:
-                user_prompt = build_user_prompt(template_id, meta, span, d_templates)
+                user_prompt = build_user_prompt(template_id, meta, span, d_templates, args.task)
                 if args.backend == "mock":
                     raw_output = mock_raw_output(template_id, span, d_templates)
                 else:
@@ -455,9 +460,9 @@ def main() -> None:
 
                 frame_label = f"{span['start_frame']}-{span['end_frame']}"
                 record = {
-                    "qa_id": f"jigsaws_suturing_{template_id.lower()}_{meta['trial_id']}_{span['gesture_id']}_{frame_label.replace('-', '_')}_anno",
+                    "qa_id": f"jigsaws_{args.task.lower()}_{template_id.lower()}_{meta['trial_id']}_{span['gesture_id']}_{frame_label.replace('-', '_')}_anno",
                     "dataset": "JIGSAWS",
-                    "procedure_or_task": "Suturing",
+                    "procedure_or_task": args.task.replace("_", " "),
                     "generation_mode": "annotation_only",
                     "template_id": template_id,
                     "template_support": SUPPORTED_TEMPLATES[template_id],
@@ -491,6 +496,7 @@ def main() -> None:
 
     summary = {
         "backend": args.backend,
+        "task": args.task,
         "trial_id": args.trial_id,
         "templates": templates,
         "spans": len(spans),
