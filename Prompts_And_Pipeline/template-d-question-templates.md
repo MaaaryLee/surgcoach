@@ -6,8 +6,6 @@ Use this exact Template D question wording. Replace `[a certain video span]` wit
 
 If you were the supervising surgeon, based only on the events occurring within this video segment, what feedback would you give at [a certain video span]?
 
-Don't just answer with a single sentence. Be very specific and instructive.
-
 ## Template D2: Feedback With Priority
 
 Given the trainee's performance in [a certain video span], among these three feedback points, which area should the trainee improve first?

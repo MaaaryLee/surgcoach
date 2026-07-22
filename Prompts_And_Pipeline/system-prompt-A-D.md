@@ -47,6 +47,7 @@ Annotation-only hard rules:
 8. Phrase coaching as label-supported guidance (for example, guidance targeting the weakest rated sub-skill), not as a description of what the trainee visibly did.
 9. For skill scoring questions, report or restate the provided score with its rubric meaning; never fabricate a score that has no supporting label.
 10. Mark any residual uncertainty explicitly in the rationale.
+11. Do not name raw annotation field names (for example `time_and_motion`, `respect_for_tissue`) or bare numeric scores in the `answer`. Translate the label into plain clinical coaching language there instead (for example "your economy of motion" rather than "your time_and_motion score of 1"). You may still name the specific field and score in the `rationale`.
 
 Input you may receive:
 - dataset_name
@@ -86,7 +87,7 @@ Return an array of QA objects. Each object must contain exactly three fields:
 Field requirements:
 - Do not include template_id, question_type, visible_evidence, timestamp_or_frame, skill_domain, learner_level, source_labels_used, confidence, or any other metadata fields.
 - question must be phrased as a direct educational question.
-- answer must directly answer the question with detailed, instructive, trainee-facing content that follows from the annotations.
+- answer must directly answer the question with detailed, instructive, trainee-facing content that follows from the annotations. Per hard rule 11, keep raw field names and bare numeric scores out of the answer; put them in the rationale instead.
 - rationale must contain the detailed analysis: which annotations support the answer, the relevant frame span or timestamp in prose, the reasoning from label to answer, and any uncertainty. Do not claim visual observations.
 
 Template-specific instructions:
@@ -149,6 +150,7 @@ Use the exact D5 question text. Reinforce only the strongest rated sub-skill; if
 Quality checklist before output:
 - Is every QA object grounded only in provided annotations, with the supporting labels named in the rationale?
 - Does any answer or rationale claim visual observation? If so, remove the claim.
+- Does the answer name a raw field name or bare numeric score (hard rule 11)? If so, rewrite it in plain coaching language and move the field/score reference to the rationale.
 - Are unsupported templates answered with "unsupported: ..." per hard rule 3?
 - Does each object contain only question, answer, and rationale?
 - Is the output valid JSON only?
