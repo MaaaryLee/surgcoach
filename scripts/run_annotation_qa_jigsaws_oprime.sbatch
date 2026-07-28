@@ -28,6 +28,11 @@ export TMPDIR="${TMPDIR:-/mnt/sun/shared/datasets/surgical_skill/.tmp/annotation
 export PYTORCH_CUDA_ALLOC_CONF="${PYTORCH_CUDA_ALLOC_CONF:-expandable_segments:True}"
 export PYTHONFAULTHANDLER=1
 
+# Some nodes lack system Python dev headers; Triton JIT-compiles CUDA helpers
+# with gcc and needs Python.h (see legacy run_real sbatch for this workaround).
+PYTHON_HEADER_ROOT="${PYTHON_HEADER_ROOT:-/mnt/sun/shared/datasets/surgical_skill/.tmp/python_headers/libroot}"
+export CPATH="$PYTHON_HEADER_ROOT/usr/include:$PYTHON_HEADER_ROOT/usr/include/python3.10${CPATH:+:$CPATH}"
+
 mkdir -p "$WORK_DIR/logs" "$OUTPUT_DIR" "$TMPDIR"
 cd "$WORK_DIR"
 
@@ -52,6 +57,9 @@ if [ "$NUM_FREE" -lt "${MIN_FREE_GPUS:-3}" ]; then
   echo "ERROR: still only $NUM_FREE free GPUs after waiting; giving up"
   exit 1
 fi
+# Cap how many free GPUs this job claims (lets two jobs split one node).
+FREE_GPUS=$(echo "$FREE_GPUS" | tr ',' '\n' | head -n "${MAX_GPUS:-8}" | paste -sd, -)
+echo "using GPUs: [$FREE_GPUS]"
 export CUDA_VISIBLE_DEVICES="$FREE_GPUS"
 
 python3 scripts/run_annotation_qa_jigsaws.py \
