@@ -51,7 +51,12 @@ def main() -> None:
                     "template_id": r["template_id"],
                     "trial_id": r["trial_id"],
                     "frames": r["timestamp_or_frame"],
-                    "gesture": r["source_annotation"]["gesture_id"],
+                    # Video-granularity records cover a whole trial and have no
+                    # single gesture; they carry a timestamp span and a gesture
+                    # count instead. Keep the key so both granularities produce
+                    # the same shape, and report the span rather than crashing.
+                    "gesture": r["source_annotation"].get("gesture_id")
+                    or f"whole video ({r['source_annotation'].get('gesture_count', '?')} gestures)",
                     "question": qa["question"],
                     "answer": qa["answer"],
                     "rationale": qa["rationale"],

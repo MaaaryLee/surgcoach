@@ -1,0 +1,17 @@
+{
+  "backend": "real",
+  "granularity": "video",
+  "trial_ids": "5 trials per task",
+  "templates": [
+    "D2"
+  ],
+  "units": 15,
+  "valid": 15,
+  "rejected": 0,
+  "output": "outputs\\local_video_d2_v4\\Suturing\\qa_records.jsonl",
+  "tasks": [
+    "Suturing",
+    "Knot_Tying",
+    "Needle_Passing"
+  ]
+}
