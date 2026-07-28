@@ -284,7 +284,7 @@ def feedback_points_label(
 ) -> str | None:
     """The formatted "[three feedback points]" substitution for D2/D3/D4, or
     None for templates whose wording doesn't reference it (D1, D5)."""
-    if not template_id.startswith("D"):
+    if template_id not in d_templates:
         return None
     if "[three feedback points]" not in d_templates[template_id]:
         return None
@@ -323,11 +323,7 @@ def build_user_prompt(
 ) -> str:
     frame_label = f"{span['start_frame']}-{span['end_frame']}"
     gesture_definition = GESTURE_DEFINITIONS.get(span["gesture_id"], "unknown gesture")
-    feedback_points = (
-        feedback_points_label(template_id, d_templates, meta["grs_subscores"])
-        if template_id.startswith("D")
-        else None
-    )
+    feedback_points = feedback_points_label(template_id, d_templates, meta["grs_subscores"])
     lines = [
         "Dataset-specific input (ANNOTATION-ONLY: no frames or images are attached):",
         "- dataset_name: JIGSAWS",
@@ -352,7 +348,7 @@ def build_user_prompt(
         "Ground the QA pair only in these annotations. Do not describe any visual",
         "content; no visual content was provided.",
     ]
-    if template_id.startswith("D"):
+    if template_id in d_templates:
         lines += recent_openers_block(recent_openers)
         question = render_d_question(template_id, d_templates, f"frames {frame_label}", feedback_points)
         lines += ["", "Use this exact question text:", question]
@@ -363,7 +359,7 @@ def build_user_prompt(
 def expected_d_question(
     template_id: str, span: dict[str, Any], d_templates: dict[str, str], meta: dict[str, Any]
 ) -> str | None:
-    if not template_id.startswith("D"):
+    if template_id not in d_templates:
         return None
     frame_label = f"{span['start_frame']}-{span['end_frame']}"
     feedback_points = feedback_points_label(template_id, d_templates, meta["grs_subscores"])
@@ -388,11 +384,7 @@ def build_user_prompt_video(
     recent_openers: list[str] | None = None,
 ) -> str:
     timestamp_label = video_timestamp_label(spans)
-    feedback_points = (
-        feedback_points_label(template_id, d_templates, meta["grs_subscores"])
-        if template_id.startswith("D")
-        else None
-    )
+    feedback_points = feedback_points_label(template_id, d_templates, meta["grs_subscores"])
     lines = [
         "Dataset-specific input (ANNOTATION-ONLY: no frames or images are attached):",
         "- dataset_name: JIGSAWS",
@@ -415,7 +407,7 @@ def build_user_prompt_video(
         "Ground the QA pair only in these annotations. Do not describe any visual",
         "content; no visual content was provided.",
     ]
-    if template_id.startswith("D"):
+    if template_id in d_templates:
         lines += recent_openers_block(recent_openers)
         question = render_d_question(template_id, d_templates, timestamp_label, feedback_points)
         lines += ["", "Use this exact question text:", question]
@@ -426,7 +418,7 @@ def build_user_prompt_video(
 def expected_d_question_video(
     template_id: str, spans: list[dict[str, Any]], d_templates: dict[str, str], meta: dict[str, Any]
 ) -> str | None:
-    if not template_id.startswith("D"):
+    if template_id not in d_templates:
         return None
     timestamp_label = video_timestamp_label(spans)
     feedback_points = feedback_points_label(template_id, d_templates, meta["grs_subscores"])
@@ -856,7 +848,7 @@ def main() -> None:
                     if error is None:
                         status = "valid" if args.backend == "real" else "valid_mock"
                         valid += 1
-                        if args.backend == "real" and template_id.startswith("D"):
+                        if args.backend == "real" and template_id in d_templates:
                             recent_openers_by_template.setdefault(template_id, []).append(
                                 first_sentence(qa_objects[0]["answer"])
                             )

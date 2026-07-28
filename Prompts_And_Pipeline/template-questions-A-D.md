@@ -127,77 +127,83 @@ Based on the frame at [t], is it medically safe to proceed with clipping or cutt
 
 **Dataset: JIGSAWS.**
 
-> **These are written for a model that can see the video.** Every C template
-> asks for visible evidence, and C1/C2 ask for a numeric score in the output.
-> Both conflict with how this pipeline currently runs -- see "Annotation-only
-> conflict" below the templates. The wording is recorded here verbatim as the
-> canonical version; it is **not** what the annotation-only runner sends today.
+Each template below carries the wording the annotation-only pipeline uses,
+followed by the canonical slide-deck wording quoted for reference. The two
+differ because the canonical version is written for a model that watches the
+clip: it asks for visible evidence, and C1/C2 ask for the numeric score in the
+output. Neither is possible here -- the model receives six GRS subscores and a
+skill level, hard rule 1 forbids inventing observations, and hard rule 11
+keeps bare scores out of the answer. The annotation-only wording assesses the
+same skill from the labels instead.
 
-## Template C1: Tissue Handling Score
+Reference wording is in blockquotes, which the loader ignores, so only the
+usable text is ever sent to the model.
 
-> status: requires-vision
+## Template C1: Tissue Handling
 
-Rate the trainee's tissue handling in [clip] from 1-5. Provide: score, visible evidence, potential tissue injury risk, and one concrete improvement.
+Based on this trainee's performance during [a certain video span], how would you characterize their tissue handling, and what is one specific thing they should change to improve it?
 
-## Template C2: Instrument Handling Score
+> Canonical (vision) wording: "Rate the trainee's tissue handling in [clip]
+> from 1-5. Provide: score, visible evidence, potential tissue injury risk, and
+> one concrete improvement."
 
-> status: requires-vision
+## Template C2: Instrument and Needle Handling
 
-Rate instrument handling from 1-5. Consider instrument steadiness, tip visibility, precision, angle of approach, wrist control, avoidance of off-screen movement, and prevention of unintended contact with adjacent tissue. Provide: score, key evidence, unsafe movement if present, and corrective suggestion.
+Based on this trainee's performance during [a certain video span], how would you characterize their instrument and needle handling, and what is one specific thing they should change to improve it?
 
-## Template C3: Economy Of Motion
+> Canonical (vision) wording: "Rate instrument handling from 1-5. Consider
+> instrument steadiness, tip visibility, precision, angle of approach, wrist
+> control, avoidance of off-screen movement, and prevention of unintended
+> contact with adjacent tissue. Provide: score, key evidence, unsafe movement
+> if present, and corrective suggestion."
 
-> status: requires-vision
+## Template C3: Economy of Motion
 
-Does the trainee use efficient motion in this clip? Identify unnecessary movements and suggest a more efficient alternative.
+Based on this trainee's performance during [a certain video span], how would you characterize their economy of motion, and what is one specific thing they should change to improve it?
+
+> Canonical (vision) wording: "Does the trainee use efficient motion in this
+> clip? Identify unnecessary movements and suggest a more efficient
+> alternative."
 
 ## Template C4: Bimanual Dexterity
 
-> status: requires-vision
+not yet specified -- JIGSAWS has no bimanual or coordination subscore, so
+there is nothing to ground an annotation-only variant in. Refused as
+unsupported.
 
-How well does the trainee coordinate both hands? Identify whether one hand is passive, obstructive, or not optimizing exposure.
+> Canonical (vision) wording: "How well does the trainee coordinate both hands?
+> Identify whether one hand is passive, obstructive, or not optimizing
+> exposure."
 
 ## Template C5: Depth Perception / Targeting
 
-> status: requires-vision
+not yet specified -- JIGSAWS has no targeting or accuracy subscore. Refused as
+unsupported.
 
-Does the trainee accurately direct the instrument tip to the intended plane or target? Identify evidence of overshooting, undershooting, repeated correction, unstable targeting, poor depth judgment, or contact with unintended tissue.
+> Canonical (vision) wording: "Does the trainee accurately direct the
+> instrument tip to the intended plane or target? Identify evidence of
+> overshooting, undershooting, repeated correction, unstable targeting, poor
+> depth judgment, or contact with unintended tissue."
 
-## Template C6: Flow Of Operation
+## Template C6: Flow of Operation
 
-> status: requires-vision
+Based on this trainee's performance during [a certain video span], how would you characterize their flow of operation, and what is one specific thing they should change to improve it?
 
-Does the trainee demonstrate smooth procedural flow and anticipation of the next operative step?
+> Canonical (vision) wording: "Does the trainee demonstrate smooth procedural
+> flow and anticipation of the next operative step?"
 
 ## Template C7: Autonomy Level
 
-> status: requires-vision
+Based on this trainee's overall performance, what level of supervision would they likely require: independent, minimal verbal cueing, repeated verbal cueing, hands-on guidance, or supervisor takeover?
 
-Based on the clip, what level of supervision would the trainee likely require? Classify as: Independent / minimal verbal cueing / repeated verbal cueing / hands-on guidance / supervisor takeover. Justify using visible evidence, including technical control, anatomical awareness, safety risk, ability to correct errors, and whether the trainee can proceed without compromising patient safety.
-
-### Annotation-only conflict for Type C
-
-The canonical wording above assumes the model watches the clip. The
-annotation-only pipeline gives it six GRS subscores and a skill level, so:
-
-- **Every template asks for visible evidence.** C1 "visible evidence", C2 "tip
-  visibility" and "off-screen movement", C3 "identify unnecessary movements",
-  C4 "whether one hand is passive", C5 "evidence of overshooting", C7 "justify
-  using visible evidence". Answering any of these from labels alone means
-  inventing observations, which hard rule 1 forbids.
-- **C1 and C2 ask for the score in the output.** Hard rule 11 keeps bare
-  numeric scores out of the `answer` and allows them only in the `rationale`.
-- **C4 and C5 have no supporting label at all.** JIGSAWS has no bimanual or
-  targeting subscore, so they are refused as unsupported regardless of wording.
-- **C7 asks about patient safety.** JIGSAWS is a bench-top exercise; hard rule
-  4 bars asserting patient outcomes.
-
-What actually runs today: C1, C2, C3, C6 and C7 are generated from the
-per-template instructions in the system prompt, which are an annotation-only
-adaptation of the above, not this wording. That is why C questions vary
-between records instead of being fixed like D. Reconciling the two -- either
-by agreeing annotation-only C wording, or by reserving these for a
-vision-capable run -- is an open decision.
+> Canonical (vision) wording: "Based on the clip, what level of supervision
+> would the trainee likely require? Classify as: Independent / minimal verbal
+> cueing / repeated verbal cueing / hands-on guidance / supervisor takeover.
+> Justify using visible evidence, including technical control, anatomical
+> awareness, safety risk, ability to correct errors, and whether the trainee
+> can proceed without compromising patient safety." The five-level
+> classification is kept verbatim; only the visible-evidence justification and
+> the patient-safety claim are dropped, per hard rules 1 and 4.
 
 ## Type D: Coaching Feedback
 

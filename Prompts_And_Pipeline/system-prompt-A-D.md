@@ -101,7 +101,7 @@ Template-specific instructions:
 
 A-D template question wording:
 {{include: template-questions-A-D.md}}
-For D templates, the `question` field must use the exact template wording after replacing bracketed placeholders: `[a certain video span]` with the provided timestamp or frame span, and (for D2, D3, D4) `[three feedback points]` with the three feedback points exactly as given to you -- verbatim, in the order given, never reordered, renamed, or left generic. Preserve punctuation and spacing from the template text.
+For any template that has canonical wording above (C1, C2, C3, C6, C7, D1-D5, and B6/B7 in their own runners), the `question` field must use that wording exactly, after replacing bracketed placeholders: `[a certain video span]` with the provided timestamp or frame span, and (for D2, D3, D4) `[three feedback points]` with the three feedback points exactly as given to you -- verbatim, in the order given, never reordered, renamed, or left generic. Preserve punctuation and spacing from the template text.
 
 A1 anatomy_identification:
 Supported only if anatomy or region labels are provided. Answer with the labeled structure. Otherwise unsupported.
@@ -125,7 +125,7 @@ B7 cvs_safety_check:
 Use the exact B7 question text from the Type B template wording above, replacing the bracketed placeholder. Supported only if Critical View of Safety criterion scores are provided. Answer yes or no (or "not yet" if the criteria are partially met), based only on whether the three CVS criteria are recorded as achieved; a criterion score is an average across expert annotators, where scores near 1 indicate achievement, scores near 0 indicate non-achievement, and values in between indicate annotator disagreement or partial achievement. Do not answer using tissue plane, hemostasis, instrument position, or energy safety; those are not labeled here. If anatomical structures are also identified in the input (for example the gallbladder or cystic duct), you may name them as structures involved in the assessment, but never describe their appearance, condition, or position. Per hard rule 11, this includes CVS criterion values: never write a bare number or phrase like "a score of 0.00" in the answer; describe achievement in plain language there (for example "the required structures have not yet been clearly identified") and keep the numeric criterion values in the rationale. Otherwise unsupported.
 
 C1 tissue_handling_score:
-Report the provided tissue-handling-related score (JIGSAWS: respect_for_tissue) on its own scale, state what that score band means in rubric terms, and give one label-supported improvement direction. Unsupported without such a label.
+Use the exact C1 question text from the Type C template wording above. Answer from the provided tissue-handling-related score (JIGSAWS: respect_for_tissue): characterize where that score band sits in rubric terms, in plain language, and give one label-supported thing to change. Per hard rule 11 the score itself belongs in the rationale, not the answer. Unsupported without such a label.
 
 C2 instrument_handling_score:
 Same pattern using the needle/instrument handling score (JIGSAWS: suture_needle_handling).
@@ -143,7 +143,7 @@ C6 flow_of_operation:
 Same pattern as C1 using the flow score (JIGSAWS: flow_of_operation).
 
 C7 autonomy_level:
-Estimate guidance need conservatively from skill_level and total score only (for example novice with low total -> repeated cueing). State in the rationale that this is a label-based estimate, not an observation.
+Use the exact C7 question text from the Type C template wording above, and answer with one of its five named levels. Estimate guidance need conservatively from skill_level and total score only (for example novice with low total -> repeated cueing). State in the rationale that this is a label-based estimate, not an observation. Do not justify using visible evidence and do not claim anything about patient safety; neither is available here.
 
 D1 coaching_feedback:
 Use the exact D1 question text from the Type D template wording. The answer must not be a single sentence; it must be detailed, specific, instructive, and derived from the rated weaknesses in the annotations (for example the weakest GRS subscores). Phrase it as forward-looking coaching. Per hard rule 1, "detailed and specific" means detailed and specific about the clinical reasoning and actionable guidance tied to the labeled weak area(s) -- not specific about invented behavior. Never write things like "you are applying unnecessary downward pressure," "your hands hesitate and over-adjust," or any other fabricated technique detail; nothing that granular exists in the input. Ground the answer in the general meaning of the weakest-rated subscore(s) and what any trainee at that skill level should generally focus on to improve it. Do not describe what the trainee visibly did.
