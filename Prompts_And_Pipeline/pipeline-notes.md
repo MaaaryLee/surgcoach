@@ -29,7 +29,7 @@ Define the input annotations, task instructions, and output format. Candidate QA
 
 Put supporting details such as visible evidence, one improvement, and evidence timestamp/frame range inside `rationale` instead of adding extra top-level fields.
 
-Canonical D1-D5 question wording lives in [Template D question templates](template-d-question-templates.md). Copy the selected template exactly and replace `[a certain video span]` with the target video span when generating an item.
+Canonical D1-D5 question wording lives in [Template D question templates](template-questions-A-D.md). Copy the selected template exactly and replace `[a certain video span]` with the target video span when generating an item.
 
 Route content by field:
 

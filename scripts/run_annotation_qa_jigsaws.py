@@ -140,7 +140,6 @@ GESTURE_DEFINITIONS = {
 # can actually support without visual input. Everything else is refused with a
 # reason instead of being generated from thin air.
 SUPPORTED_TEMPLATES = {
-    "A3": "gesture labels define the annotated action",
     "C1": "respect_for_tissue GRS subscore",
     "C2": "suture_needle_handling GRS subscore",
     "C3": "time_and_motion GRS subscore",
@@ -153,9 +152,11 @@ SUPPORTED_TEMPLATES = {
     "D5": "strongest GRS subscore supports reinforcement",
 }
 UNSUPPORTED_TEMPLATES = {
-    "A1": "JIGSAWS has no anatomy labels",
-    "A2": "JIGSAWS has no instrument labels",
-    "A4": "JIGSAWS has no visual-field-quality labels",
+    # Type A targets Endoscapes2023 (secondary PitVQA), not JIGSAWS.
+    "A1": "Type A is not a JIGSAWS type; JIGSAWS also has no anatomy or instrument labels",
+    "A2": "Type A is not a JIGSAWS type; phase/step identification needs MultiBypass140-style labels",
+    "A3": "Type A is not a JIGSAWS type; A3 is a two-clip comparison this one-clip-per-item pipeline cannot build",
+    "A4": "Type A is not a JIGSAWS type; JIGSAWS has no visual-field-quality labels",
     "B1": "JIGSAWS has no safety/error labels",
     "B2": "JIGSAWS has no safety/error labels",
     "B3": "JIGSAWS has no safety/error labels",
@@ -184,20 +185,49 @@ def extract_system_prompt(path: Path) -> str:
     return re.sub(r"\{\{include:\s*([^}]+?)\s*\}\}", include_file, prompt).strip()
 
 
-def load_d_templates(path: Path) -> dict[str, str]:
-    """Parse canonical D1-D5 question wording from the template markdown."""
+UNSPECIFIED_TEMPLATE = "not yet specified"
+
+
+def load_question_templates(path: Path) -> dict[str, str]:
+    """Parse canonical A-D question wording from the template markdown.
+
+    Templates whose body begins "not yet specified" have no agreed wording and
+    are omitted, so asking for one fails loudly rather than silently sending
+    the placeholder prose to the model as a question.
+    """
     text = path.read_text(encoding="utf-8")
     templates: dict[str, str] = {}
     for match in re.finditer(
-        r"## Template (D\d)[^\n]*\n+```text\n(.*?)\n```", text, flags=re.DOTALL
+        r"## Template ([A-D]\d)[^\n]*\n+```text\n(.*?)\n```", text, flags=re.DOTALL
     ):
         templates[match.group(1)] = match.group(2).strip()
     if not templates:
         # Fall back to fence-less section bodies.
         for match in re.finditer(
-            r"## Template (D\d)[^\n]*\n+(.*?)(?=\n## |\Z)", text, flags=re.DOTALL
+            r"## Template ([A-D]\d)[^\n]*\n+(.*?)(?=\n## |\Z)", text, flags=re.DOTALL
         ):
             templates[match.group(1)] = match.group(2).strip()
+    usable: dict[str, str] = {}
+    for tid, body in templates.items():
+        if body.lower().startswith(UNSPECIFIED_TEMPLATE):
+            continue
+        # Drop "> annotation-only status: ..." commentary; it documents the
+        # template for humans and is not part of the question.
+        lines = [ln for ln in body.splitlines() if not ln.lstrip().startswith(">")]
+        questions = [ln.strip() for ln in lines if ln.strip()]
+        # Type A templates list several alternative questions rather than one
+        # fixed wording. Returning them joined would send the model three
+        # questions as if they were one, so skip them here -- a runner that
+        # asks for one will fail loudly instead of generating nonsense.
+        if len(questions) != 1:
+            continue
+        usable[tid] = questions[0]
+    return usable
+
+
+def load_d_templates(path: Path) -> dict[str, str]:
+    """A-D templates, with D1-D5 required (this runner cannot work without them)."""
+    templates = load_question_templates(path)
     missing = {"D1", "D2", "D3", "D4", "D5"} - set(templates)
     if missing:
         raise ValueError(f"Missing D templates in {path}: {sorted(missing)}")
@@ -638,7 +668,7 @@ def main() -> None:
     parser.add_argument("--dataset-root", default=None,
                         help="Default: /mnt/sun/shared/datasets/surgical_skill/JIGSAWS/<task>")
     parser.add_argument("--system-prompt", required=True, help="Path to annotation-only system-prompt-A-D.md")
-    parser.add_argument("--d-templates", default=None, help="Path to template-d-question-templates.md (default: alongside system prompt)")
+    parser.add_argument("--d-templates", default=None, help="Path to template-questions-A-D.md (default: alongside system prompt)")
     parser.add_argument("--model-id", default="Qwen/Qwen3.6-35B-A3B")
     parser.add_argument("--task", choices=sorted(TASK_LABELS), default="Suturing",
                         help="Which JIGSAWS task --dataset-root points at (selects the meta_file name and procedure_or_task label)")
@@ -705,7 +735,7 @@ def main() -> None:
     d_templates_path = (
         Path(args.d_templates)
         if args.d_templates
-        else system_prompt_path.parent / "template-d-question-templates.md"
+        else system_prompt_path.parent / "template-questions-A-D.md"
     )
     d_templates = load_d_templates(d_templates_path)
 

@@ -8,7 +8,7 @@ Start with [QUICKSTART.md](QUICKSTART.md) — a from-zero guide to a first mock 
 
 ## Current Direction: Annotation-Only QA Generation
 
-QA pairs are currently generated from **real JIGSAWS annotations only** (skill level, GRS subscores, gesture spans) — no frames are extracted or sent to the model. The go-forward runner is [scripts/run_annotation_qa_jigsaws.py](scripts/run_annotation_qa_jigsaws.py) with the annotation-only prompts ([system-prompt-A-D.md](Prompts_And_Pipeline/system-prompt-A-D.md), the canonical [template-d-question-templates.md](Prompts_And_Pipeline/template-d-question-templates.md), and [system-prompt-jigsaws-v1.1.md](Prompts_And_Pipeline/system-prompt-jigsaws-v1.1.md)). All answers come from the model; label-derived text is stored only in clearly named reference/metadata fields, never as the QA answer. Every record is stamped with `model.backend` (`real` or `mock`), and mock records are watermarked and kept out of the main output JSONL.
+QA pairs are currently generated from **real JIGSAWS annotations only** (skill level, GRS subscores, gesture spans) — no frames are extracted or sent to the model. The go-forward runner is [scripts/run_annotation_qa_jigsaws.py](scripts/run_annotation_qa_jigsaws.py) with the annotation-only prompts ([system-prompt-A-D.md](Prompts_And_Pipeline/system-prompt-A-D.md), the canonical [template-questions-A-D.md](Prompts_And_Pipeline/template-questions-A-D.md), and the canonical [template-questions-A-D.md](Prompts_And_Pipeline/template-questions-A-D.md)). [system-prompt-jigsaws-v1.1.md](Prompts_And_Pipeline/system-prompt-jigsaws-v1.1.md) is an earlier evaluator-style prompt kept for reference; no runner loads it. All answers come from the model; label-derived text is stored only in clearly named reference/metadata fields, never as the QA answer. Every record is stamped with `model.backend` (`real` or `mock`), and mock records are watermarked and kept out of the main output JSONL.
 
 Deprecated (frame-based / superseded):
 
@@ -37,7 +37,8 @@ The prompt stack is designed for structured surgical coaching QA from intraopera
 
 ### Prompt Assets
 
-- [System prompt](Prompts_And_Pipeline/system-prompt-jigsaws-v1.1.md): instructs the model to act as a surgical evaluator for JIGSAWS Suturing and return only a compact three-field JSON answer with explicit field routing.
+- [System prompt](Prompts_And_Pipeline/system-prompt-A-D.md): the prompt every runner actually loads. Defines the annotation-only hard rules and the per-template instructions, and pulls in the canonical question wording via `{{include: template-questions-A-D.md}}`.
+- [Legacy system prompt](Prompts_And_Pipeline/system-prompt-jigsaws-v1.1.md): an earlier evaluator-style prompt for JIGSAWS Suturing. Kept for reference only — no runner loads it.
 - [Current prompt Python module](first_run/scripts/current_system_prompt.py): loads the latest system prompt Markdown and renders Template D questions from the canonical template file.
 - [LLM rubric](Prompts_And_Pipeline/llm-rubric-v1.1.md): scores the generated answer against verified ground truth for label accuracy, rationale quality, and evidence precision.
 - [VLM rubric](Prompts_And_Pipeline/vlm-rubric-v1.0.md): checks whether the proposed QA pair is visually supported by the relevant video frame, clip, or timestamp.
@@ -61,7 +62,7 @@ Constrain the model to the current dataset, task instructions, annotation rules,
 
 The `answer` field should be an exact taxonomy label or concise coaching response when the task requires one. The `rationale` should be a single clinically grounded justification that includes the relevant timestamp or frame range, plus any supporting details such as visible evidence or improvement target.
 
-Canonical D1-D5 question wording lives in [Template D question templates](Prompts_And_Pipeline/template-d-question-templates.md). Copy the selected template exactly and replace `[a certain video span]` with the target video span when generating an item.
+Canonical A-D question wording lives in [Template questions A-D](Prompts_And_Pipeline/template-questions-A-D.md). Copy the selected template exactly and replace `[a certain video span]` with the target video span when generating an item.
 
 Field routing:
 

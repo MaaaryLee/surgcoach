@@ -24,6 +24,7 @@ from __future__ import annotations
 import argparse
 import json
 import pickle
+import re
 import sys
 from pathlib import Path
 from typing import Any
@@ -60,7 +61,22 @@ UNSUPPORTED_TEMPLATES = {
     "B5": "requires a described visible event and at-risk anatomical structure not present in the labels",
 }
 
-B6_QUESTION = "At which timestamp should a supervisor pause the trainee for coaching, and why?"
+def load_template_question(template_id: str, system_prompt_path: Path) -> str:
+    """Read canonical question wording from template-questions-A-D.md.
+
+    Read rather than hardcoded: a local copy that drifted from the markdown
+    would have the model emit one wording while the validator checked another,
+    rejecting every record in the run.
+    """
+    path = system_prompt_path.parent / "template-questions-A-D.md"
+    pattern = r"## Template " + template_id + r"[^\n]*\n+(.*?)(?=\n## |\Z)"
+    match = re.search(pattern, path.read_text(encoding="utf-8"), flags=re.DOTALL)
+    if not match:
+        raise ValueError(f"{template_id} wording not found in {path}")
+    wording = match.group(1).strip()
+    if wording.lower().startswith("not yet specified"):
+        raise ValueError(f"{template_id} has no agreed wording yet in {path}")
+    return wording
 
 
 def find_video_record(iae_root: Path, center: str, split: str | None, video_id: str) -> tuple[Path, list[dict[str, Any]]]:
@@ -126,7 +142,7 @@ def extract_iae_events(frames: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return [events[event_id] for event_id in order]
 
 
-def build_user_prompt(template_id: str, video_id: str, event: dict[str, Any]) -> str:
+def build_user_prompt(template_id: str, video_id: str, event: dict[str, Any], b6_question: str) -> str:
     frame_label = f"{event['start_frame']}-{event['end_frame']}"
     severity_text = str(event["severity"]) if event["severity"] else "not specified in the annotation"
     lines = [
@@ -150,18 +166,18 @@ def build_user_prompt(template_id: str, video_id: str, event: dict[str, Any]) ->
         "content; no visual content was provided.",
         "",
         "Use this exact question text:",
-        B6_QUESTION,
+        b6_question,
         "",
         "Return valid JSON only, following the system prompt schema.",
     ]
     return "\n".join(lines)
 
 
-def mock_raw_output(template_id: str, event: dict[str, Any]) -> str:
+def mock_raw_output(template_id: str, event: dict[str, Any], b6_question: str) -> str:
     return json.dumps(
         [
             {
-                "question": B6_QUESTION,
+                "question": b6_question,
                 "answer": f"{MOCK_WATERMARK} placeholder answer for {template_id}",
                 "rationale": f"{MOCK_WATERMARK} placeholder rationale for {template_id}",
             }
@@ -215,6 +231,7 @@ def main() -> None:
 
     system_prompt_path = Path(args.system_prompt)
     system_prompt = extract_system_prompt(system_prompt_path)
+    b6_question = load_template_question("B6", system_prompt_path)
 
     pickle_path, frames = find_video_record(iae_root, args.center, args.split, args.video_id)
     log(f"loaded {args.video_id} from {pickle_path} ({len(frames)} frames)")
@@ -236,9 +253,9 @@ def main() -> None:
     with output_path.open("w", encoding="utf-8") as handle:
         for event in events:
             for template_id in templates:
-                user_prompt = build_user_prompt(template_id, args.video_id, event)
+                user_prompt = build_user_prompt(template_id, args.video_id, event, b6_question)
                 if args.backend == "mock":
-                    raw_output = mock_raw_output(template_id, event)
+                    raw_output = mock_raw_output(template_id, event, b6_question)
                 elif args.inference_engine == "ollama":
                     raw_output = run_generation_ollama(
                         args.ollama_host, args.ollama_model, system_prompt, user_prompt,
@@ -258,7 +275,7 @@ def main() -> None:
                 except Exception as exc:  # noqa: BLE001
                     error = repr(exc)
 
-                if error is None and qa_objects[0]["question"] != B6_QUESTION:
+                if error is None and qa_objects[0]["question"] != b6_question:
                     error = "question_mismatch: B6 question must match template wording exactly"
 
                 if error is None:

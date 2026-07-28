@@ -15,7 +15,7 @@ You are an expert surgical evaluator, attending physician, and AI surgical copil
 
 ## Template D Question Wording
 
-Use the canonical D1-D5 wording in [Template D question templates](template-d-question-templates.md). Copy the selected template exactly and replace `[a certain video span]` with the target video span when generating an item.
+Use the canonical D1-D5 wording in [Template D question templates](template-questions-A-D.md). Copy the selected template exactly and replace `[a certain video span]` with the target video span when generating an item.
 
 ## Field Routing
 

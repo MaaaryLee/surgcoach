@@ -23,6 +23,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import re
 import sys
 from pathlib import Path
 from typing import Any
@@ -52,7 +53,22 @@ UNSUPPORTED_TEMPLATES = {
     "B6": "no discrete adverse-event record with severity is provided",
 }
 
-B7_QUESTION_TEMPLATE = "Based on the frame at [t], is it medically safe to proceed with clipping or cutting the cystic duct or artery?"
+def load_template_question(template_id: str, system_prompt_path: Path) -> str:
+    """Read canonical question wording from template-questions-A-D.md.
+
+    Read rather than hardcoded: a local copy that drifted from the markdown
+    would have the model emit one wording while the validator checked another,
+    rejecting every record in the run.
+    """
+    path = system_prompt_path.parent / "template-questions-A-D.md"
+    pattern = r"## Template " + template_id + r"[^\n]*\n+(.*?)(?=\n## |\Z)"
+    match = re.search(pattern, path.read_text(encoding="utf-8"), flags=re.DOTALL)
+    if not match:
+        raise ValueError(f"{template_id} wording not found in {path}")
+    wording = match.group(1).strip()
+    if wording.lower().startswith("not yet specified"):
+        raise ValueError(f"{template_id} has no agreed wording yet in {path}")
+    return wording
 
 
 def load_cvs_keyframes(metadata_csv: Path, video_id: str) -> list[dict[str, Any]]:
@@ -89,9 +105,9 @@ def cvs_criterion_text(value: float | None) -> str:
     return f"{value:.2f} (not achieved - {qualifier})"
 
 
-def build_user_prompt(template_id: str, video_id: str, keyframe: dict[str, Any]) -> str:
+def build_user_prompt(template_id: str, video_id: str, keyframe: dict[str, Any], b7_template: str) -> str:
     frame_label = str(keyframe["frame"])
-    question = B7_QUESTION_TEMPLATE.replace("[t]", frame_label)
+    question = b7_template.replace("[t]", frame_label)
     lines = [
         "Dataset-specific input (ANNOTATION-ONLY: no frames or images are attached):",
         "- dataset_name: Endoscapes2023",
@@ -117,15 +133,15 @@ def build_user_prompt(template_id: str, video_id: str, keyframe: dict[str, Any])
     return "\n".join(lines)
 
 
-def expected_question(video_id: str, keyframe: dict[str, Any]) -> str:
-    return B7_QUESTION_TEMPLATE.replace("[t]", str(keyframe["frame"]))
+def expected_question(video_id: str, keyframe: dict[str, Any], b7_template: str) -> str:
+    return b7_template.replace("[t]", str(keyframe["frame"]))
 
 
 def mock_raw_output(template_id: str, video_id: str, keyframe: dict[str, Any]) -> str:
     return json.dumps(
         [
             {
-                "question": expected_question(video_id, keyframe),
+                "question": expected_question(video_id, keyframe, b7_template),
                 "answer": f"{MOCK_WATERMARK} placeholder answer for {template_id}",
                 "rationale": f"{MOCK_WATERMARK} placeholder rationale for {template_id}",
             }
@@ -177,6 +193,7 @@ def main() -> None:
 
     system_prompt_path = Path(args.system_prompt)
     system_prompt = extract_system_prompt(system_prompt_path)
+    b7_template = load_template_question("B7", system_prompt_path)
 
     keyframes = load_cvs_keyframes(metadata_csv, args.video_id)
     if not keyframes:
@@ -196,7 +213,7 @@ def main() -> None:
     with output_path.open("w", encoding="utf-8") as handle:
         for keyframe in keyframes:
             for template_id in templates:
-                user_prompt = build_user_prompt(template_id, args.video_id, keyframe)
+                user_prompt = build_user_prompt(template_id, args.video_id, keyframe, b7_template)
                 if args.backend == "mock":
                     raw_output = mock_raw_output(template_id, args.video_id, keyframe)
                 elif args.inference_engine == "ollama":
@@ -218,7 +235,7 @@ def main() -> None:
                 except Exception as exc:  # noqa: BLE001
                     error = repr(exc)
 
-                expected = expected_question(args.video_id, keyframe)
+                expected = expected_question(args.video_id, keyframe, b7_template)
                 if error is None and qa_objects[0]["question"] != expected:
                     error = "question_mismatch: B7 question must match template wording exactly"
 

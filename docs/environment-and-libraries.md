@@ -8,7 +8,7 @@ Last verified: 2026-07-20.
 
 | Repo | Role |
 | --- | --- |
-| `~/surgcoach` | **The single team repo** (github.com/MaaaryLee/surgcoach): templates A-D prompts (`Prompts_And_Pipeline/system-prompt-A-D.md`, `Prompts_And_Pipeline/template-d-question-templates.md`), the current annotation-only runner (`scripts/run_annotation_qa_jigsaws.py`), rubrics, pipeline notes, docs, and the legacy frame-based runners under `first_run/scripts/`. |
+| `~/surgcoach` | **The single team repo** (github.com/MaaaryLee/surgcoach): templates A-D prompts (`Prompts_And_Pipeline/system-prompt-A-D.md`, `Prompts_And_Pipeline/template-questions-A-D.md`), the current annotation-only runner (`scripts/run_annotation_qa_jigsaws.py`), rubrics, pipeline notes, docs, and the legacy frame-based runners under `first_run/scripts/`. |
 | `~/surgical-error-detection` | Local-only archive: A-J prompt research library, schemas, mindmaps, and the legacy cluster-run record. Not needed for generation. |
 
 Copies on the compute clusters are synced manually (see section 3), and results are copied back into `outputs/` locally.
@@ -56,7 +56,7 @@ export PYTHONFAULTHANDLER=1
 ```
 
 - Environment bootstrap: `first_run/scripts/setup_oprime_qwen25vl.sh` (tries a venv; falls back to `pip install --target` into the shared site-packages dir, which is the mode the sbatch scripts assume). It also pre-downloads the model snapshot via `huggingface_hub.snapshot_download`.
-- Annotation-only job template: `scripts/run_annotation_qa_jigsaws_oprime.sbatch` — set `WORK_DIR`, `DATASET_ROOT`, and the log/output paths for your cluster before submitting. It expects `system-prompt-A-D.md` + `template-d-question-templates.md` copied into `WORK_DIR` and the runner under `WORK_DIR/scripts/`.
+- Annotation-only job template: `scripts/run_annotation_qa_jigsaws_oprime.sbatch` — set `WORK_DIR`, `DATASET_ROOT`, and the log/output paths for your cluster before submitting. It expects `system-prompt-A-D.md` + `template-questions-A-D.md` copied into `WORK_DIR` and the runner under `WORK_DIR/scripts/`.
 
 ### 3.2 Module + venv pattern (secondary cluster)
 
@@ -156,7 +156,7 @@ Cluster (shared-mount pattern shown; adjust paths for your cluster):
 ```bash
 # one-time per WORK_DIR: copy prompts + script
 mkdir -p $WORK_DIR/scripts
-cp Prompts_And_Pipeline/system-prompt-A-D.md Prompts_And_Pipeline/template-d-question-templates.md $WORK_DIR/
+cp Prompts_And_Pipeline/system-prompt-A-D.md Prompts_And_Pipeline/template-questions-A-D.md $WORK_DIR/
 cp scripts/run_annotation_qa_jigsaws.py $WORK_DIR/scripts/
 
 sbatch scripts/run_annotation_qa_jigsaws_oprime.sbatch          # defaults: Suturing_B001, all supported templates
