@@ -186,6 +186,7 @@ def extract_system_prompt(path: Path) -> str:
 
 
 UNSPECIFIED_TEMPLATE = "not yet specified"
+REQUIRES_VISION_MARKER = "status: requires-vision"
 
 
 def load_question_templates(path: Path) -> dict[str, str]:
@@ -211,14 +212,19 @@ def load_question_templates(path: Path) -> dict[str, str]:
     for tid, body in templates.items():
         if body.lower().startswith(UNSPECIFIED_TEMPLATE):
             continue
-        # Drop "> annotation-only status: ..." commentary; it documents the
-        # template for humans and is not part of the question.
+        # "> status: requires-vision" marks canonical wording that asks the
+        # model to describe what it sees. That wording is recorded for
+        # reference but cannot be used annotation-only, so it is excluded by
+        # declaration rather than by accident of formatting.
+        if REQUIRES_VISION_MARKER in body.lower():
+            continue
+        # Drop "> ..." commentary; it documents the template for humans and is
+        # not part of the question.
         lines = [ln for ln in body.splitlines() if not ln.lstrip().startswith(">")]
         questions = [ln.strip() for ln in lines if ln.strip()]
-        # Type A templates list several alternative questions rather than one
-        # fixed wording. Returning them joined would send the model three
-        # questions as if they were one, so skip them here -- a runner that
-        # asks for one will fail loudly instead of generating nonsense.
+        # A template listing several alternative questions cannot be sent as
+        # one; skip it so a runner asking for it fails loudly rather than
+        # joining them together.
         if len(questions) != 1:
             continue
         usable[tid] = questions[0]

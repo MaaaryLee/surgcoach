@@ -41,6 +41,8 @@ deck speaker notes and has not been transcribed here yet.
 
 ## Template A1: Anatomy Identification
 
+> status: requires-vision
+
 At timestamp [t], which anatomical structure or region is most relevant to the current action?
 
 What is the instrument being used?
@@ -53,6 +55,8 @@ What is the trainee's action? Explain with visual cues.
 
 ## Template A2: Procedural/Order Identification
 
+> status: requires-vision
+
 What phase of the procedure is shown at [t]?
 
 What is the most appropriate next step after this clip?
@@ -63,6 +67,8 @@ What is the most appropriate next step after this clip?
 
 ## Template A3: Comparison
 
+> status: requires-vision
+
 Compare the trainee's performance before vs. after feedback. What improved?
 
 Compare clip A and clip B by expert vs. trainee. Which one shows better technique?
@@ -72,6 +78,8 @@ Compare clip A and clip B by expert vs. trainee. Which one shows better techniqu
 > question also needs a feedback event that no dataset records.
 
 ## Template A4: Timestamp
+
+> status: requires-vision
 
 At what timestamp does the trainee first lose safe visualization?
 
@@ -115,38 +123,81 @@ At which timestamp should a supervisor pause the trainee for coaching, and why?
 
 Based on the frame at [t], is it medically safe to proceed with clipping or cutting the cystic duct or artery?
 
-## Type C: Skill Assessment
+## Type C: Skill Assessment QA
 
-## Template C1: tissue_handling_score
+**Dataset: JIGSAWS.**
 
-not yet specified -- generated today from the per-template instructions in the
-system prompt rather than fixed wording.
+> **These are written for a model that can see the video.** Every C template
+> asks for visible evidence, and C1/C2 ask for a numeric score in the output.
+> Both conflict with how this pipeline currently runs -- see "Annotation-only
+> conflict" below the templates. The wording is recorded here verbatim as the
+> canonical version; it is **not** what the annotation-only runner sends today.
 
-## Template C2: instrument_handling_score
+## Template C1: Tissue Handling Score
 
-not yet specified -- as C1.
+> status: requires-vision
 
-## Template C3: economy_of_motion
+Rate the trainee's tissue handling in [clip] from 1-5. Provide: score, visible evidence, potential tissue injury risk, and one concrete improvement.
 
-not yet specified -- as C1.
+## Template C2: Instrument Handling Score
 
-## Template C4: bimanual_dexterity
+> status: requires-vision
 
-not yet specified -- requires a dedicated bimanual/coordination label no
-current dataset provides.
+Rate instrument handling from 1-5. Consider instrument steadiness, tip visibility, precision, angle of approach, wrist control, avoidance of off-screen movement, and prevention of unintended contact with adjacent tissue. Provide: score, key evidence, unsafe movement if present, and corrective suggestion.
 
-## Template C5: depth_perception_targeting
+## Template C3: Economy Of Motion
 
-not yet specified -- requires a dedicated targeting/accuracy label no current
-dataset provides.
+> status: requires-vision
 
-## Template C6: flow_of_operation
+Does the trainee use efficient motion in this clip? Identify unnecessary movements and suggest a more efficient alternative.
 
-not yet specified -- as C1.
+## Template C4: Bimanual Dexterity
 
-## Template C7: autonomy_level
+> status: requires-vision
 
-not yet specified -- as C1.
+How well does the trainee coordinate both hands? Identify whether one hand is passive, obstructive, or not optimizing exposure.
+
+## Template C5: Depth Perception / Targeting
+
+> status: requires-vision
+
+Does the trainee accurately direct the instrument tip to the intended plane or target? Identify evidence of overshooting, undershooting, repeated correction, unstable targeting, poor depth judgment, or contact with unintended tissue.
+
+## Template C6: Flow Of Operation
+
+> status: requires-vision
+
+Does the trainee demonstrate smooth procedural flow and anticipation of the next operative step?
+
+## Template C7: Autonomy Level
+
+> status: requires-vision
+
+Based on the clip, what level of supervision would the trainee likely require? Classify as: Independent / minimal verbal cueing / repeated verbal cueing / hands-on guidance / supervisor takeover. Justify using visible evidence, including technical control, anatomical awareness, safety risk, ability to correct errors, and whether the trainee can proceed without compromising patient safety.
+
+### Annotation-only conflict for Type C
+
+The canonical wording above assumes the model watches the clip. The
+annotation-only pipeline gives it six GRS subscores and a skill level, so:
+
+- **Every template asks for visible evidence.** C1 "visible evidence", C2 "tip
+  visibility" and "off-screen movement", C3 "identify unnecessary movements",
+  C4 "whether one hand is passive", C5 "evidence of overshooting", C7 "justify
+  using visible evidence". Answering any of these from labels alone means
+  inventing observations, which hard rule 1 forbids.
+- **C1 and C2 ask for the score in the output.** Hard rule 11 keeps bare
+  numeric scores out of the `answer` and allows them only in the `rationale`.
+- **C4 and C5 have no supporting label at all.** JIGSAWS has no bimanual or
+  targeting subscore, so they are refused as unsupported regardless of wording.
+- **C7 asks about patient safety.** JIGSAWS is a bench-top exercise; hard rule
+  4 bars asserting patient outcomes.
+
+What actually runs today: C1, C2, C3, C6 and C7 are generated from the
+per-template instructions in the system prompt, which are an annotation-only
+adaptation of the above, not this wording. That is why C questions vary
+between records instead of being fixed like D. Reconciling the two -- either
+by agreeing annotation-only C wording, or by reserving these for a
+vision-capable run -- is an open decision.
 
 ## Type D: Coaching Feedback
 
