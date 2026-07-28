@@ -54,11 +54,12 @@ LABEL_PHRASES = {
 # question asks two things ("which is most urgent, and what to do"); without
 # one of these the first half is unanswered.
 URGENCY_DECLARATION = re.compile(
-    r"\b(most urgent|most pressing|first priority|top priority|immediate priority|"
+    r"\b(most urgent|most pressing|the priority|a priority|first priority|top priority|"
+    r"immediate priority|first correction|addressed? (this )?first|tackle (this )?first|"
     r"demands? (your )?immediate|requires? (your )?immediate|needs? (your )?immediate|"
-    r"immediate attention|address (this )?first|focus first|start (by|with)|begin (by|with)|"
-    r"before (anything else|you (worry|tackle|move|address)|addressing|refining|tackling)|"
-    r"right now|takes precedence|prioritiz)\b",
+    r"must be addressed|immediate attention|focus (your |on )?first|start (by|with)|"
+    r"begin (by|with)|before (anything else|you (worry|tackle|move|address)|addressing|"
+    r"refining|tackling)|right now|takes precedence|prioritiz)\b",
     re.IGNORECASE,
 )
 
@@ -92,7 +93,7 @@ REAL_PATIENT_ONLY = re.compile(
 # level. Absence of a qualifier is the failure.
 LEVEL_QUALIFIER = re.compile(
     r"(relative|not yet|isn't yet|is not yet|still developing|still at a|"
-    r"foundational level|baseline (level|competence)|early(-| )stage|"
+    r"foundational level|baseline (level|competence)|early[- ]?\w*\s?stage|"
     r"rather than (advanced|representing advanced)|no (single )?area|none of "
     r"(these|your)|closest to|most developed|room (for|to) (improve|grow)|"
     r"approaching competen|developing proficien)",
