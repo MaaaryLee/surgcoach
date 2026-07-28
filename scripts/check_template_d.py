@@ -73,6 +73,18 @@ META_REF = re.compile(
 BANNED_PHRASE = re.compile(r"\b(the trainee should|prioritize improving)\b", re.IGNORECASE)
 FIELD_NAMES = list(GRS_PLAIN_LABELS) + ["grs_total", "grs_subscores"]
 
+# Hard rule 4: general clinical principle is allowed ("rough handling damages
+# tissue"), but asserting that THIS trial involved real anatomy or produced a
+# patient outcome is not. JIGSAWS is a bench-top exercise with no anatomy
+# labels at all. Only terms that are false on a synthetic training pad belong
+# here -- deliberately NOT "healing", "bleeding" or "tissue", which are fine in
+# general "why this matters" framing and would otherwise drown the signal.
+REAL_PATIENT_ONLY = re.compile(
+    r"\b(fascia|wound margin|wound edge|incision|postoperative|post-operative|"
+    r"the patient|dermis|epidermis|subcutaneous|peritoneum|artery|vein|organ)\b",
+    re.IGNORECASE,
+)
+
 # D5: when the top subscore is only 3/5 or below, nothing has actually reached
 # "strength" territory. Rather than trying to detect every way an answer might
 # oversell (a losing game -- "stands out", "clearest strength", "greatest
@@ -127,6 +139,11 @@ def check_record(r):
         issues.append(f"banned phrase: {BANNED_PHRASE.search(answer).group(0)!r}")
     if "these three feedback points" in question or "the three feedback points" in question:
         issues.append("question not self-contained")
+    anatomy = REAL_PATIENT_ONLY.search(answer)
+    if anatomy:
+        issues.append(
+            f"real-patient anatomy/outcome asserted for a bench-top trial: {anatomy.group(0)!r}"
+        )
 
     subs = sa.get("grs_subscores")
 
