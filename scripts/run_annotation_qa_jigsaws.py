@@ -600,6 +600,12 @@ def run_generation_ollama(
             {"role": "user", "content": user_prompt},
         ],
         "stream": False,
+        # Reasoning is ~89% of what this model generates and every record so far has
+        # carried a thinking block -- but only because Qwen3.6 returns one by
+        # default. Requesting it explicitly makes that a stated choice rather than a
+        # default that an Ollama or model update could silently drop, which would
+        # show up as shallower answers with nothing failing.
+        "think": True,
         # num_ctx must cover prompt + thinking + answer, or Ollama's default
         # (sized off free VRAM, often as low as 4096) truncates mid-thinking.
         "options": {"temperature": temperature, "num_predict": max_new_tokens, "num_ctx": num_ctx},
