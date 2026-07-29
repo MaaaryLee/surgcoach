@@ -36,6 +36,12 @@ LABEL_PHRASES = {
         "needle control", "instrument control", "needle driver control",
         "grip on the needle", "grasp on the needle", "hold on the needle",
         "needle driver", "instrument grip",
+        # "Control of the instrument and needle is where your immediate focus must
+        # go" named this area plainly and was reported as naming none of the three,
+        # so the reversed and split forms belong here too.
+        "control of the instrument", "control of your instrument",
+        "instrument and needle", "needle and instrument",
+        "handling of the instrument", "handling the instrument",
     ],
     "economy of motion": [
         "economy of motion", "motion efficiency", "movement efficiency",
@@ -85,7 +91,13 @@ NUM_LEAK = re.compile(
     r"|\bscore[sd]?\s+(?:of\s+)?[0-5]\b"
 )
 META_REF = re.compile(
-    r"\b(rubric|rating|ratings|assessment|metric|grading|evaluation|scale|your score|the score)\b",
+    # "score" needs to match on its own, not only after your/the. C7 wrote "A
+    # perfect score across all technical domains", which references the scoring
+    # system just as plainly as "your score" and passed because of the possessive
+    # requirement. Rule 11 bars any reference in the answer, so any determiner or
+    # adjective in front of it is irrelevant.
+    r"\b(rubrics?|ratings?|assessments?|metrics?|grading|evaluations?|scales?|"
+    r"scores?|scored|scoring|subscore\w*)\b",
     re.IGNORECASE,
 )
 BANNED_PHRASE = re.compile(r"\b(the trainee should|prioritize improving)\b", re.IGNORECASE)
@@ -286,7 +298,12 @@ PRESUPPOSED_HABIT = re.compile(
 GOAL_OR_NEGATED = re.compile(
     r"\b(without|free (?:of|from)|prevent\w*|avoid\w*|minimi[sz]\w+|"
     r"eliminat\w+ the need|instead of|rather than|no longer|so that you do not|"
-    r"keeps?|maintain\w*|preserv\w*)\b",
+    r"keeps?|maintain\w*|preserv\w*|"
+    # Explicit goal framing. "Aim to eliminate awkward pauses" and "aiming for
+    # direct trajectories" name a target, which rule 1 permits at any score --
+    # both were flagged as coaching against a 4/5.
+    r"aim(?:s|ing|ed)? (?:to|for|at)|work(?:ing)? (?:toward|towards)|"
+    r"strive\w*|goal is|target is|push(?:ing)? (?:toward|for))\b",
     re.IGNORECASE,
 )
 # The vocabulary as a deliberate instruction, not a criticism. "To correct this
@@ -299,14 +316,39 @@ IMPERATIVE_VERB = re.compile(r"^(?:pause|stop|halt|slow)\b", re.IGNORECASE)
 # mechanic the subject of a general rule rather than an attributed fault.
 GENERAL_CONSEQUENCE = re.compile(
     r"\s*(?:during|in|at|on|when|while)?\s*[\w\s]{0,30}?\b"
-    r"(creates?|caus\w+|leads?|caus\w+|disrupts?|compromis\w+|increas\w+|reduc\w+|"
-    r"makes?|produc\w+|results?|risks?|forces?|prevents?|degrad\w+)\b",
+    r"(creates?|caus\w+|leads?|disrupts?|compromis\w+|increas\w+|reduc\w+|"
+    r"makes?|produc\w+|results?|risks?|forces?|prevents?|degrad\w+|"
+    # Positive consequences too. "Removing unnecessary moves keeps both tools
+    # available" is as general a rule as "...disrupts your rhythm", and was
+    # flagged as coaching against a time_and_motion of 4/5.
+    r"keeps?|maintain\w*|supports?|allows?|helps?|frees?|preserv\w*|"
+    r"establish\w*|builds?|sets?)\b",
+    re.IGNORECASE,
+)
+
+
+# A pause the trainee is being told to take, not one being complained about:
+# "while deliberately pausing between each phase" is a drill technique. The adverb
+# is the tell -- nobody describes an unwanted pause as a deliberate one.
+PRESCRIBED = re.compile(
+    r"\b(deliberate(?:ly)?|conscious(?:ly)?|intentional(?:ly)?|purposeful(?:ly)?|"
+    r"briefly|momentarily)\s*$",
+    re.IGNORECASE,
+)
+
+
+# Goal verbs only, for looking ahead. Deliberately narrower than GOAL_OR_NEGATED.
+GOAL_AHEAD = re.compile(
+    r"\b(aim(?:s|ing|ed)? (?:to|for|at)|work(?:ing)? (?:toward|towards)|"
+    r"strive\w*|so that|in order to|until (?:the|it|they|you))\b",
     re.IGNORECASE,
 )
 
 
 def _in_imperative_position(clause: str, matched: str) -> bool:
     lead = clause.strip()
+    if PRESCRIBED.search(lead):
+        return True
     return (not lead or lead.endswith(",")) and bool(IMPERATIVE_VERB.match(matched))
 
 
@@ -315,9 +357,14 @@ def _in_imperative_position(clause: str, matched: str) -> bool:
 # ("no awkwardness", "maximum efficiency"), so acknowledging a *minor residual* is
 # correct interpolation, not contradiction. Only unhedged criticism is wrong at 4.
 # At 5 the anchor denies the trait outright, so any degree of it contradicts.
+# Diminishing qualifiers, including ones that make the phrase outright positive:
+# "very little inadvertent damage" and "minimal damage" are the score-5 anchor's
+# own words, so reading them as a damage claim inverts their meaning.
 HEDGED = re.compile(
     r"\b(minor|occasional|occasionally|slight|slightly|residual|some|a few|"
-    r"mild|small|remaining|still|nearly|almost|largely|mostly|generally)\b",
+    r"mild|small|remaining|still|nearly|almost|largely|mostly|generally|"
+    r"little|minimal|minimally|rare|rarely|infrequent\w*|seldom|negligible|"
+    r"without|free of|no )\b",
     re.IGNORECASE,
 )
 
@@ -341,6 +388,13 @@ def find_score_contradiction(
             continue
         ahead = " ".join(answer[match.end():].split()[:6])
         if GENERAL_AHEAD.search(ahead):
+            continue
+        # The goal can also follow what it qualifies: "eliminate any unnecessary
+        # lateral movements by aiming for direct trajectories" is a drill
+        # instruction. Only the goal verbs are checked ahead, not the whole
+        # negation set -- "prevent" and "avoid" happily follow a real assertion
+        # ("there are pauses that prevent you from...").
+        if GOAL_AHEAD.search(ahead):
             continue
         if hedge_ok and HEDGED.search(clause + " " + ahead):
             continue
