@@ -1,0 +1,38 @@
+{
+  "backend": "real",
+  "inference_engine": "ollama",
+  "model_id": "qwen3.6-35b-a3b-iq4xs",
+  "granularity": "video",
+  "templates": [
+    "D1",
+    "D2",
+    "D3",
+    "D4",
+    "D5"
+  ],
+  "tasks": {
+    "Knot Tying": 25,
+    "Needle Passing": 25,
+    "Suturing": 25
+  },
+  "trials_per_task": 5,
+  "temperature": 0.7,
+  "max_new_tokens": 9000,
+  "ollama_num_ctx": 12288,
+  "max_retries": 3,
+  "units": 75,
+  "valid": 74,
+  "rejected": 1,
+  "records_needing_retry": 17,
+  "attempt_distribution": {
+    "1": 58,
+    "2": 12,
+    "3": 3,
+    "4": 2
+  },
+  "checker_issues": 2,
+  "checker_issues_detail": [
+    "D2 Suturing_B003: rejected, output truncated before valid JSON on all 4 attempts",
+    "D2 Knot_Tying_B004: banned phrase 'Prioritize improving' (hard rule 13)"
+  ]
+}
