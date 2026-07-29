@@ -59,16 +59,46 @@ D_TEMPLATES="${D_TEMPLATES:-D1,D2,D3,D4,D5}"
 # the runner refuses them. Asking anyway returns "visual evidence needed".
 C_TEMPLATES="${C_TEMPLATES:-C1,C2,C3,C6,C7}"
 
+# $ENDPOINT is not reliably exported -- it was empty in an interactive shell on
+# megatron, which silently turns every path below into an unwritable root path
+# ("/pydev/...", "/.cache/huggingface"). Default it to the parent of the repo,
+# which is what it means in practice: /mnt/meg/$USER for /mnt/meg/$USER/surgcoach.
+ENDPOINT="${ENDPOINT:-$(dirname "$(cd "$WORK_DIR" && pwd)")}"
+echo "ENDPOINT=$ENDPOINT"
+
 QWEN36_PACKAGE_DIR="${QWEN36_PACKAGE_DIR:-/mnt/sun/shared/datasets/surgical_skill/.python/qwen36/site-packages}"
+if [ ! -d "$QWEN36_PACKAGE_DIR" ]; then
+  echo "ERROR: no torch/transformers at $QWEN36_PACKAGE_DIR." >&2
+  echo "       Install per requirements-annotation.txt into your own \$ENDPOINT." >&2
+  exit 1
+fi
 export PYTHONPATH="$QWEN36_PACKAGE_DIR${PYTHONPATH:+:$PYTHONPATH}"
+
+# Triton (used by the fla package inside Qwen3.6's MoE code) JIT-compiles a small
+# C helper and needs Python.h, which this cluster has no system-wide. Extract it
+# without root:
+#   cd $ENDPOINT && mkdir pydev && cd pydev && apt download libpython3.10-dev
+#   dpkg -x libpython3.10-dev*.deb .
+# Checked here rather than left to fail mid-generation, hours in.
 PYDEV_ROOT="${PYDEV_ROOT:-$ENDPOINT/pydev/usr/include}"
+if [ ! -d "$PYDEV_ROOT/python3.10" ]; then
+  echo "ERROR: no Python.h headers at $PYDEV_ROOT/python3.10." >&2
+  echo "       cd $ENDPOINT && mkdir -p pydev && cd pydev \\" >&2
+  echo "         && apt download libpython3.10-dev && dpkg -x libpython3.10-dev*.deb ." >&2
+  exit 1
+fi
 export CPATH="$PYDEV_ROOT/python3.10:$PYDEV_ROOT/x86_64-linux-gnu/python3.10:$PYDEV_ROOT${CPATH:+:$CPATH}"
+
 export HF_HOME="${HF_HOME:-$ENDPOINT/.cache/huggingface}"
 export TMPDIR="${TMPDIR:-$ENDPOINT/.tmp/annotation_qa}"
 export PYTORCH_CUDA_ALLOC_CONF="${PYTORCH_CUDA_ALLOC_CONF:-expandable_segments:True}"
 export PYTHONFAULTHANDLER=1
 
-mkdir -p "$OUT_ROOT" "$TMPDIR" "$HF_HOME"
+if ! mkdir -p "$OUT_ROOT" "$TMPDIR" "$HF_HOME" 2>/dev/null; then
+  echo "ERROR: cannot create one of OUT_ROOT=$OUT_ROOT TMPDIR=$TMPDIR HF_HOME=$HF_HOME" >&2
+  echo "       Usually means \$ENDPOINT is wrong; it resolved to $ENDPOINT." >&2
+  exit 1
+fi
 cd "$WORK_DIR"
 
 # The dataset layout is not uniform: Suturing may sit at JIGSAWS/Suturing while
