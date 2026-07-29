@@ -18,7 +18,7 @@ regenerate them with `python3 scripts/extract_qa_pairs.py <dir>/qa_records.jsonl
 
 Check a batch with `python3 scripts/check_template_d.py <dir>`.
 
-## `outputs after GRS anchor vocabulary and perfusion rule - 7-28-2026`
+## `outputs after vision wording stripped from prompt - 7-29-2026`
 
 Template D, all five templates, across all three JIGSAWS tasks: 75 records from
 5 trials each of Suturing, Knot Tying and Needle Passing, one question per whole
@@ -27,12 +27,30 @@ video.
 | | |
 | --- | --- |
 | Model | `qwen3.6-35b-a3b-iq4xs` (4-bit GGUF) via local Ollama |
+| Thinking | enabled -- every record carries a reasoning block, ~89% of generated text |
 | Sampling | temperature 0.7, `max_new_tokens` 9000, `num_ctx` 12288, up to 3 retries |
-| Validation | 75 records, **74 valid, 1 rejected**, 17 records needed a retry |
+| Validation | 75 records, **75 valid, 0 rejected**, 5 records needed a retry |
 | Checker | **2 issues, both listed below and both accepted** |
 
-Replaces `outputs after skill-level gloss and anatomy rule - 7-26-2026`, which
-the current checker scores at 3 issues. See the correction below.
+### What changed since the previous batch
+
+The system prompt was pasting the whole of `template-questions-A-D.md` into
+itself, blockquotes included -- and those blockquotes hold the canonical *vision*
+wording, which asks for "visible evidence" and a numeric score. So the model was
+being told to supply visible evidence in the same prompt that forbids inventing
+observations, and ~4,700 characters of the context window were carrying
+instructions written for a different pipeline. `load_question_templates` had
+always stripped blockquotes when reading question text; the include did not.
+
+Stripping them there too took the assembled prompt from 33,326 to 29,991
+characters. That fixed the truncation as a side effect: the model's reasoning is
+about 89% of what it generates, so it needs roughly 4,000 tokens of headroom
+before it writes any JSON, and the extra room took rejections from 1 to 0 and
+retries from 17 to 5.
+
+`scripts/run_annotation_qa_jigsaws.py` now also refuses to start if the assembled
+prompt exceeds a stated budget. Prompt growth is silent otherwise -- it truncates
+records rather than failing -- and one 19% overrun cost 11 of 75 records.
 
 ### The two known issues in this batch
 
@@ -40,22 +58,20 @@ Both are left in place rather than regenerated. Re-sampling a record because the
 checker dislikes its content selects for output that passes the checker, which
 would make the reported quality better than the pipeline's actual quality.
 
-1. **`D2 Suturing_B003` -- rejected.** The model's reasoning ran past the context
-   window before it emitted valid JSON, on all four attempts: one truncated
-   mid-string, two returned nothing after the reasoning block, and the fourth
-   truncated again. The record is kept with `validation_status: rejected` so the
-   batch is not silently 74.
-2. **`D2 Knot_Tying_B004` -- banned phrase.** It writes "Prioritize improving
-   tissue handling right away", which hard rule 13 explicitly forbids. This is an
-   instruction-following miss, not a gap in the prompt.
+1. **`D4 Suturing_B002` -- banned phrase.** Writes "the trainee should return to
+   basic peg transfer", which hard rule 13 forbids. The same answer also asserts
+   "hesitant wrist rotations", and wrist mechanics appear in no GRS anchor, so
+   this record has a second problem the checker does not yet detect.
+2. **`D3 Knot_Tying_C001` -- meta-reference.** Writes "A midpoint assessment
+   shows your current technique works", and hard rule 11 bars referring to the
+   existence of an assessment at all; a reader who cannot see the scores has no
+   way to judge such a claim.
 
-**Rerunning does not fix this.** A previous run of the identical configuration
-produced 2 issues as well -- a different truncation and a different content
-violation. At temperature 0.7 the residual is roughly 2 per 75, it lands in
-different records each time, and both violations above were already explicitly
-banned in the prompt. The remaining truncation is a hardware limit rather than a
-prompt one: an 18 GB model on 12 GB of VRAM caps `num_ctx` at 12288, and raising
-it requires the cluster.
+**Rerunning does not clear this.** Three runs of the identical configuration each
+produced about two content issues, landing in different records every time, and
+every violation was already explicitly banned in the prompt. At temperature 0.7
+that residual is sampling variance, not a gap in the rules, so the honest number
+is roughly 2 per 75 rather than 0.
 
 ### What changed: coaching vocabulary is tied to the rubric
 
@@ -148,8 +164,13 @@ mode fired*, never as *the output is correct*.**
   "Instrument handling". The other three are verbatim.
 - **Generated on a 4-bit quantisation, not full precision.** The model is 18 GB
   against 12 GB of VRAM, so ~43% of layers run on CPU and `num_ctx` is capped at
-  12288 -- which is what causes the remaining truncation. Whether 4-bit costs
-  anything in coaching quality is untested and can only be tested on the cluster.
+  12288. This batch lost no records to truncation, but the margin is thin rather
+  than comfortable: reasoning is ~89% of generated text, and the headroom that
+  fixed it came from shortening the prompt, not from having room to spare. Whether
+  4-bit costs anything in coaching quality is untested and needs the cluster.
+- **The prompt budget is a ceiling, not a guideline.** Adding rules now competes
+  directly with the model's reasoning for the same context window. The runner
+  refuses to start above 34,000 assembled characters; the current prompt is 29,991.
 - **Nothing verifies that the coaching is clinically sound.** The checker
   confirms records are grounded in the labels and free of the violations it knows
   about; it cannot judge medicine. Expert review is required.

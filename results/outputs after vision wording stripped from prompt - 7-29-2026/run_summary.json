@@ -2,6 +2,7 @@
   "backend": "real",
   "inference_engine": "ollama",
   "model_id": "qwen3.6-35b-a3b-iq4xs",
+  "thinking": "enabled (model default; every record carries a reasoning block)",
   "granularity": "video",
   "templates": [
     "D1",
@@ -20,19 +21,18 @@
   "max_new_tokens": 9000,
   "ollama_num_ctx": 12288,
   "max_retries": 3,
+  "assembled_prompt_chars": 29991,
   "units": 75,
-  "valid": 74,
-  "rejected": 1,
-  "records_needing_retry": 17,
+  "valid": 75,
+  "rejected": 0,
+  "records_needing_retry": 5,
   "attempt_distribution": {
-    "1": 58,
-    "2": 12,
-    "3": 3,
-    "4": 2
+    "1": 70,
+    "2": 5
   },
   "checker_issues": 2,
   "checker_issues_detail": [
-    "D2 Suturing_B003: rejected, output truncated before valid JSON on all 4 attempts",
-    "D2 Knot_Tying_B004: banned phrase 'Prioritize improving' (hard rule 13)"
+    "D3 Knot_Tying_C001: meta-reference: 'assessment'",
+    "D4 Suturing_B002: banned phrase: 'the trainee should'"
   ]
 }
