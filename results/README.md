@@ -18,7 +18,7 @@ regenerate them with `python3 scripts/extract_qa_pairs.py <dir>/qa_records.jsonl
 
 Check a batch with `python3 scripts/check_template_d.py <dir>`.
 
-## `outputs after vision wording stripped from prompt - 7-29-2026`
+## `outputs after stratified trial selection - 7-29-2026`
 
 Template D, all five templates, across all three JIGSAWS tasks: 75 records from
 5 trials each of Suturing, Knot Tying and Needle Passing, one question per whole
@@ -27,54 +27,58 @@ video.
 | | |
 | --- | --- |
 | Model | `qwen3.6-35b-a3b-iq4xs` (4-bit GGUF) via local Ollama |
-| Thinking | enabled -- every record carries a reasoning block, ~89% of generated text |
+| Thinking | requested explicitly; every record carries a reasoning block, ~89% of generated text |
 | Sampling | temperature 0.7, `max_new_tokens` 9000, `num_ctx` 12288, up to 3 retries |
-| Validation | 75 records, **75 valid, 0 rejected**, 5 records needed a retry |
-| Checker | **2 issues, both listed below and both accepted** |
+| Trials | stratified across each task's GRS range -- see `scripts/stratified_trials.ps1` |
+| Coverage | GRS 6-30; 25 expert, 25 intermediate, 25 novice records |
+| Validation | 75 records, **75 valid, 0 rejected**, 6 records needed a retry |
+| Checker | **1 issue, listed below and accepted** |
 
-### What changed since the previous batch
+### What changed: the trials are a sample now, not the front of the alphabet
 
-The system prompt was pasting the whole of `template-questions-A-D.md` into
-itself, blockquotes included -- and those blockquotes hold the canonical *vision*
-wording, which asks for "visible evidence" and a numeric score. So the model was
-being told to supply visible evidence in the same prompt that forbids inventing
-observations, and ~4,700 characters of the context window were carrying
-instructions written for a different pipeline. `load_question_templates` had
-always stripped blockquotes when reading question text; the include did not.
+Every earlier batch used B001-B004 plus C001 for each task, which is simply the
+first entries in the file listing. That selection left 13 of 15 trials at 17 or
+below out of 30, made all five Suturing trials novice, and included none of the
+29 expert trials in the dataset. Two templates cannot function on a sample like
+that, and both looked broken as a result:
 
-Stripping them there too took the assembled prompt from 33,326 to 29,991
-characters. That fixed the truncation as a side effect: the model's reasoning is
-about 89% of what it generates, so it needs roughly 4,000 tokens of headroom
-before it writes any JSON, and the extra room took rejections from 1 to 0 and
-retries from 17 to 5.
+- **C7** asks which of five supervision levels a trainee needs. Every trial
+  needed heavy supervision, so it answered "repeated verbal cueing" for all 15
+  records. On the extremes of the real range it discriminates correctly -- GRS 30
+  returns "Independent", and an expert scoring 8 returns "Hands-on guidance".
+- **D5** asks for the strongest technical skill. No trial had a strength, so it
+  kept answering that nothing had reached one.
 
-`scripts/run_annotation_qa_jigsaws.py` now also refuses to start if the assembled
-prompt exceeds a stated budget. Prompt growth is silent otherwise -- it truncates
-records rather than failing -- and one 19% overrun cost 11 of 75 records.
+The replacement spans GRS 6 to 30 and lands on 25 records per skill level. It
+also decouples `skill_level` from `grs_total`, which the old set could not:
+`Suturing_D004` is an expert scoring 8 and `Knot_Tying_H004` a novice scoring 22.
+Those cases test whether the model reasons from the scores or repeats the
+self-reported label -- and C7 gets them right, choosing from the score.
 
-### The two known issues in this batch
+Two prompt changes came with it. C7's instruction previously offered one worked
+example, at the bottom of the range, which likely anchored it there; it now states
+the scale's span and requires one of the five level names verbatim. And thinking
+is now requested explicitly rather than relied on as a model default that an
+update could silently drop.
 
-Both are left in place rather than regenerated. Re-sampling a record because the
-checker dislikes its content selects for output that passes the checker, which
-would make the reported quality better than the pipeline's actual quality.
+### The known issue in this batch
 
-1. **`D4 Suturing_B002` -- banned phrase.** Writes "the trainee should return to
-   basic peg transfer", which hard rule 13 forbids. That is the whole of it: the
-   same answer opens "Stiff instrument movements and hesitant wrist rotations
-   break the rhythm required for reliable suturing", which reads like a
-   fabrication but is not one -- the mechanic sits in subject position with no
-   possessive, stating a general rule about suturing rather than a claim about
-   this trainee, which rule 1 permits.
-2. **`D3 Knot_Tying_C001` -- meta-reference.** Writes "A midpoint assessment
-   shows your current technique works", and hard rule 11 bars referring to the
-   existence of an assessment at all; a reader who cannot see the scores has no
-   way to judge such a claim.
+Left in place rather than regenerated. Re-sampling a record because the checker
+dislikes its content selects for output that passes the checker, which would make
+the reported quality better than the pipeline's actual quality.
 
-**Rerunning does not clear this.** Three runs of the identical configuration each
-produced about two content issues, landing in different records every time, and
+**`D5 Suturing_H001` -- meta-reference.** Writes "A score of three indicates that
+while you maintain reasonable progression between steps...", and hard rule 11
+bars naming a score in the answer at all; a reader who cannot see the scores has
+no way to judge it. Worth noting the checker only caught this because the pattern
+was broadened an hour earlier -- it previously required "your score" or "the
+score", so "A score of three" passed.
+
+**Rerunning does not clear this class.** Four runs of this configuration produced
+one to two content issues each, landing in different records every time, and
 every violation was already explicitly banned in the prompt. At temperature 0.7
-that residual is sampling variance, not a gap in the rules, so the honest number
-is roughly 2 per 75 rather than 0.
+that residual is sampling variance rather than a missing rule, so the honest
+figure is roughly 1-2 per 75, not 0.
 
 ### What changed: coaching vocabulary is tied to the rubric
 
@@ -173,7 +177,7 @@ mode fired*, never as *the output is correct*.**
   4-bit costs anything in coaching quality is untested and needs the cluster.
 - **The prompt budget is a ceiling, not a guideline.** Adding rules now competes
   directly with the model's reasoning for the same context window. The runner
-  refuses to start above 34,000 assembled characters; the current prompt is 29,991.
+  refuses to start above 34,000 assembled characters; the current prompt is 30,599.
 - **Nothing verifies that the coaching is clinically sound.** The checker
   confirms records are grounded in the labels and free of the violations it knows
   about; it cannot judge medicine. Expert review is required.

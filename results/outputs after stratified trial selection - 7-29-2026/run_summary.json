@@ -2,7 +2,7 @@
   "backend": "real",
   "inference_engine": "ollama",
   "model_id": "qwen3.6-35b-a3b-iq4xs",
-  "thinking": "enabled (model default; every record carries a reasoning block)",
+  "thinking": "enabled explicitly via the Ollama think option",
   "granularity": "video",
   "templates": [
     "D1",
@@ -17,22 +17,32 @@
     "Suturing": 25
   },
   "trials_per_task": 5,
+  "trial_selection": "stratified across each task's GRS range; see scripts/stratified_trials.ps1",
+  "grs_total_range": [
+    6,
+    30
+  ],
+  "skill_levels": {
+    "E": 25,
+    "I": 25,
+    "N": 25
+  },
   "temperature": 0.7,
   "max_new_tokens": 9000,
   "ollama_num_ctx": 12288,
   "max_retries": 3,
-  "assembled_prompt_chars": 29991,
+  "assembled_prompt_chars": 30599,
   "units": 75,
   "valid": 75,
   "rejected": 0,
-  "records_needing_retry": 5,
+  "records_needing_retry": 6,
   "attempt_distribution": {
-    "1": 70,
-    "2": 5
+    "1": 69,
+    "2": 5,
+    "3": 1
   },
-  "checker_issues": 2,
+  "checker_issues": 1,
   "checker_issues_detail": [
-    "D3 Knot_Tying_C001: meta-reference: 'assessment'",
-    "D4 Suturing_B002: banned phrase: 'the trainee should'"
+    "D5 Suturing_H001: meta-reference: 'score'"
   ]
 }
