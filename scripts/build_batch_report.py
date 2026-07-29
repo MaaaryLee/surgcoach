@@ -395,18 +395,147 @@ def build(records, source_label):
     return body, {"total": total, "valid": valid, "rejected": rejected, "flagged": len(issues)}
 
 
+def build_text(records, source_label):
+    """Plain-text rendering, for pasting into a document.
+
+    Paragraphs are left unwrapped so the destination reflows them to its own
+    column width; hard-wrapping here produces ragged text once pasted.
+    """
+    issues = {}
+    for r in records:
+        found = check_record(r)
+        if found:
+            issues[(r["template_id"], r["trial_id"])] = found
+
+    total = len(records)
+    valid = sum(1 for r in records if r["validation_status"] == "valid")
+    retried = sum(1 for r in records if (r["model"].get("attempts") or 1) > 1)
+    templates = sorted({r["template_id"] for r in records})
+    tasks = {}
+    for r in records:
+        tasks.setdefault(r["procedure_or_task"], []).append(r)
+
+    kinds = "Type " + " and ".join(sorted({t[0] for t in templates}))
+    L = []
+    title = f"{kinds} coaching records - {len(tasks)} JIGSAWS tasks"
+    L += [title.upper(), "=" * len(title), ""]
+    L += [
+        f"{valid}/{total} valid | {total - valid} rejected | {retried} needed a retry "
+        f"| {len(issues)} flagged by the checker",
+        f"Templates: {', '.join(templates)}",
+        f"Model: {records[0]['model'].get('model_id', '?')}, temperature 0.7, "
+        f"annotation-only (no frame, clip or video is ever passed to the model)",
+        f"Source: {source_label}",
+        "",
+        "Every answer was written from annotation text alone - Global Rating Scale",
+        "subscores and a self-reported experience level per trial. Nothing here is an",
+        "observation; it is coaching reasoned from scores, the way a teaching assistant",
+        "writes feedback from a gradebook without having watched the exam.",
+        "",
+    ]
+
+    if issues:
+        head = f"FLAGGED RECORDS ({len(issues)})"
+        L += [head, "-" * len(head), ""]
+        for (t, tr), v in sorted(issues.items()):
+            L.append(f"  {t} {tr}: {'; '.join(v)}")
+        L += [
+            "",
+            "These are left in place rather than regenerated. Re-sampling a record because",
+            "the checker dislikes its content selects for output that passes the checker,",
+            "which would make the reported quality better than the pipeline's actual quality.",
+            "",
+        ]
+    else:
+        L += [
+            "No record is flagged by the checker. That means no KNOWN failure mode fired -",
+            "the checker is pattern matching over problems seen so far, and it cannot judge",
+            "whether the coaching is clinically sound.",
+            "",
+        ]
+
+    for task in sorted(tasks, key=lambda t: (TASK_ORDER.index(t) if t in TASK_ORDER else 99, t)):
+        L += ["", task.upper(), "=" * len(task), ""]
+        trials = {}
+        for r in tasks[task]:
+            trials.setdefault(r["trial_id"], []).append(r)
+        for trial_id, group in trials.items():
+            group.sort(key=lambda r: r["template_id"])
+            sa = group[0]["source_annotation"]
+            subs = sa["grs_subscores"]
+            L.append(
+                f"{trial_id} - {SKILL.get(sa['skill_level'], sa['skill_level'])}, "
+                f"GRS {sa['grs_total']}/30, {sa.get('video_timestamp_span', '')}, "
+                f"{sa.get('gesture_count', '?')} gestures"
+            )
+            L.append("  Scores: " + " | ".join(f"{lbl} {subs[k]}" for k, lbl in DOMAINS if k in subs))
+            L.append("")
+            for r in group:
+                tid = r["template_id"]
+                name = TEMPLATE_NAMES.get(tid, "")
+                if r["validation_status"] != "valid" or not r.get("qa"):
+                    L += [
+                        f"  {tid} - {name}",
+                        "  [NO RECORD PRODUCED] The model never emitted valid JSON for this",
+                        "  template, on any attempt. Kept as rejected rather than dropped.",
+                        "",
+                    ]
+                    continue
+                qa = r["qa"][0] if isinstance(r["qa"], list) else r["qa"]
+                L += [f"  {tid} - {name}", f"  Q: {qa.get('question', '')}", ""]
+                L += [f"  A: {qa.get('answer', '')}", ""]
+                flagged = issues.get((tid, trial_id))
+                if flagged:
+                    L += [f"  [CHECKER] {'; '.join(flagged)}", ""]
+                L += [f"  Rationale: {qa.get('rationale', '')}", ""]
+
+    L += [
+        "",
+        "NOTES AND LIMITS",
+        "----------------",
+        "",
+        "Read the flagged count as 'no known failure mode fired', never as 'the output is",
+        "correct'. An earlier version of this report gave a batch as 75/75 with nothing",
+        "further said, and that batch is now known to contain three violations the checker",
+        "could not yet detect.",
+        "",
+        "Coaching vocabulary is tied to the OSATS anchors that JIGSAWS' modified Global",
+        "Rating Scale derives from: an element's own anchor wording is grounded when that",
+        "element scores low and ruled out when it scores high. A mechanic no anchor",
+        "mentions - wrist angle, tip control, tremor - is barred outright.",
+        "",
+        "Generated on a 4-bit quantisation locally rather than at full precision, which is",
+        "also what caps the context window and causes any truncation above. Nothing",
+        "automated verifies that the coaching is clinically sound - only that it is",
+        "grounded in the labels and free of the violations the checker knows about.",
+        "Expert review is required.",
+    ]
+    return "\n".join(L) + "\n", {
+        "total": total, "valid": valid, "rejected": total - valid, "flagged": len(issues)
+    }
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("batch", help="batch directory or qa_records.jsonl")
-    ap.add_argument("-o", "--output", default=None, help="output HTML path")
+    ap.add_argument("-o", "--output", default=None, help="output path")
+    ap.add_argument(
+        "-f", "--format", choices=["html", "text"], default="html",
+        help="html page, or plain text for pasting into a document",
+    )
     args = ap.parse_args()
 
     target = Path(args.batch)
     records = load_records(target)
-    doc, stats = build(records, target.name)
-    out = Path(args.output) if args.output else target.with_suffix("") / "report.html"
+    if args.format == "text":
+        doc, stats = build_text(records, target.name)
+        default_name = "report.txt"
+    else:
+        doc, stats = build(records, target.name)
+        default_name = "report.html"
+    out = Path(args.output) if args.output else target.with_suffix("") / default_name
     if out.is_dir():
-        out = out / "report.html"
+        out = out / default_name
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(doc, encoding="utf-8")
     print(
