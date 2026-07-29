@@ -27,6 +27,8 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import time
+import urllib.error
 from pathlib import Path
 from typing import Any
 
@@ -109,6 +111,11 @@ SKILL_LEVELS = {
 # JIGSAWS videos are captured at 30 fps (Gao et al., 2014). Used only to
 # convert annotated frame spans into timestamps for --granularity video;
 # never used to infer anything visual.
+# Transient Ollama transport failures, retried inside the request helper rather
+# than by the caller's content-retry loop. 4 attempts with a 5s, 10s, 15s backoff.
+TRANSPORT_RETRIES = 4
+TRANSPORT_BACKOFF_SECONDS = 5
+
 JIGSAWS_FPS = 30
 
 
@@ -180,7 +187,17 @@ def extract_system_prompt(path: Path) -> str:
 
     def include_file(include_match: re.Match[str]) -> str:
         include_path = (path.parent / include_match.group(1).strip()).resolve()
-        return include_path.read_text(encoding="utf-8").strip()
+        text = include_path.read_text(encoding="utf-8")
+        # Drop blockquoted lines. In template-questions-A-D.md these hold the
+        # canonical vision wording, kept for human reference -- "Rate the trainee's
+        # tissue handling from 1-5. Provide: score, visible evidence, ...". Pasting
+        # them in told the model to supply visible evidence in the same breath as
+        # rule 1 forbids it, and left ~4,700 characters of the context window
+        # carrying instructions meant for a different pipeline. load_question_templates
+        # already skips blockquotes when reading the question text; this makes the
+        # system prompt agree with it.
+        kept = [l for l in text.splitlines() if not l.lstrip().startswith(">")]
+        return "\n".join(kept).strip()
 
     return re.sub(r"\{\{include:\s*([^}]+?)\s*\}\}", include_file, prompt).strip()
 
@@ -474,6 +491,45 @@ def normalize_qa_objects(payload: Any) -> list[dict[str, Any]] | None:
     return normalized or None
 
 
+# The prompt competes with the model's own reasoning for the context window, and
+# losing that competition is silent: generation truncates mid-thinking, the JSON
+# never arrives, and the batch simply reports rejections. It looks like the model
+# got worse rather than like the prompt got longer.
+#
+# It has happened once. Rules 1 and 13 were appended to repeatedly over a day,
+# growing the prompt from 30,331 to 34,558 characters (+19%), and the next 75-record
+# batch lost 11 records to truncation and dropped per-template requirements in
+# several more. Consolidating the rules back under the old size fixed it without
+# removing a single constraint.
+#
+# So this refuses to start when the assembled prompt exceeds the budget, naming the
+# size that is known to work. Adding constraints is fine -- the ceiling forces the
+# same trade a person would otherwise discover two hours in.
+# Measured on the assembled prompt -- the text after {{include:}} is resolved,
+# which is what actually reaches the model. Measuring the fence alone, or with the
+# include's blockquotes stripped, understates it by about 3,000 characters.
+PROMPT_BUDGET_CHARS = 34_000
+PROMPT_KNOWN_GOOD_CHARS = 33_145  # assembled size at 02e3605, which ran clean
+
+
+def verify_prompt_budget(system_prompt: str) -> None:
+    total = len(system_prompt)
+    if total <= PROMPT_BUDGET_CHARS:
+        return
+    over = total - PROMPT_KNOWN_GOOD_CHARS
+    raise SystemExit(
+        f"prompt too long: {total} chars assembled, budget {PROMPT_BUDGET_CHARS}.\n"
+        f"That is {over:+d} against the {PROMPT_KNOWN_GOOD_CHARS} that generates "
+        f"cleanly at num_ctx 12288.\n"
+        "The prompt shares the context window with the model's reasoning, so going "
+        "over truncates records instead of failing loudly -- a 19% overrun once cost "
+        "11 of 75 records.\n"
+        "Either shorten the prompt (rules 1 and 13 have absorbed the most additions, "
+        "and consolidating them recovered the whole overrun once already) or raise "
+        "--ollama-num-ctx, which needs VRAM this machine may not have."
+    )
+
+
 def verify_ollama_model(host: str, model_name: str) -> None:
     """Fail fast (before generating anything) if the local Ollama server or
     model isn't reachable, instead of surfacing an opaque error mid-run."""
@@ -553,8 +609,29 @@ def run_generation_ollama(
         data=json.dumps(payload).encode("utf-8"),
         headers={"Content-Type": "application/json"},
     )
-    with urllib.request.urlopen(request, timeout=600) as response:
-        result = json.loads(response.read())
+    # Ollama occasionally returns 500 mid-batch and recovers on its own. The
+    # caller's retry loop only catches malformed JSON, so a single hiccup used to
+    # abort the whole run -- one killed a 75-record batch 39 records in, after
+    # Suturing had already finished. Transient transport failures are retried here
+    # with a short backoff, separately from the caller's content-retry budget: a
+    # server error says nothing about the answer, so it should not consume the
+    # allowance for the model producing bad output.
+    last_error: Exception | None = None
+    for attempt in range(TRANSPORT_RETRIES):
+        try:
+            with urllib.request.urlopen(request, timeout=600) as response:
+                result = json.loads(response.read())
+            break
+        except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError, ConnectionError) as exc:
+            last_error = exc
+            if attempt == TRANSPORT_RETRIES - 1:
+                raise
+            wait = TRANSPORT_BACKOFF_SECONDS * (attempt + 1)
+            log(f"  ollama transport error ({exc}); retrying in {wait}s "
+                f"[{attempt + 1}/{TRANSPORT_RETRIES - 1}]")
+            time.sleep(wait)
+    else:  # pragma: no cover - loop always breaks or raises
+        raise last_error  # type: ignore[misc]
     message = result["message"]
     thinking = message.get("thinking") or ""
     content = message.get("content") or ""
@@ -765,6 +842,7 @@ def main() -> None:
         else system_prompt_path.parent / "template-questions-A-D.md"
     )
     d_templates = load_d_templates(d_templates_path)
+    verify_prompt_budget(system_prompt)
 
     trial_ids = (
         [item.strip() for item in args.trial_ids.split(",") if item.strip()]

@@ -127,17 +127,19 @@ Based on the frame at [t], is it medically safe to proceed with clipping or cutt
 
 **Dataset: JIGSAWS.**
 
-Each template below carries the wording the annotation-only pipeline uses,
-followed by the canonical slide-deck wording quoted for reference. The two
-differ because the canonical version is written for a model that watches the
-clip: it asks for visible evidence, and C1/C2 ask for the numeric score in the
-output. Neither is possible here -- the model receives six GRS subscores and a
-skill level, hard rule 1 forbids inventing observations, and hard rule 11
-keeps bare scores out of the answer. The annotation-only wording assesses the
-same skill from the labels instead.
+Each template below carries the wording the annotation-only pipeline uses. The
+model receives six GRS subscores and a skill level, so it assesses the same skill
+from the labels rather than from the clip.
 
-Reference wording is in blockquotes, which the loader ignores, so only the
-usable text is ever sent to the model.
+> **Blockquotes in this file are for human reference only and never reach a
+> model.** They hold the canonical slide-deck wording, which is written for a
+> model that watches the video: it asks for visible evidence, and C1/C2 ask for a
+> numeric score in the output. Neither is possible in annotation-only mode -- rule
+> 1 forbids inventing observations and rule 11 keeps bare scores out of the answer
+> -- so sending that wording to a model produces "visual evidence needed", which
+> is the correct answer to an impossible question. Both the question loader and
+> the system-prompt include strip blockquoted lines. If you are writing your own
+> runner, strip them too, and take question text only from the live lines below.
 
 ## Template C1: Tissue Handling
 
