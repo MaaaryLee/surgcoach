@@ -496,6 +496,35 @@ def verify_ollama_model(host: str, model_name: str) -> None:
     log(f"verified ollama model {model_name!r} at {host}")
 
 
+# Repair for UTF-8 bytes that were decoded as cp1252, which turns an em-dash
+# (E2 80 94) into "â€”" and a right single quote (E2 80 99) into "â€™".
+#
+# Nothing in this script produces that: it writes every file with
+# encoding="utf-8". The damage came from a batch driver concatenating the
+# per-task outputs with PowerShell's Get-Content, which defaults to the system
+# ANSI codepage in 5.1 -- the per-task files were clean and only the combined
+# file was corrupt. The drivers now pass -Encoding UTF8, so this is kept only for
+# repairing batches produced before that fix; see
+# scripts/repair_mojibake_in_records.py. It is deliberately not applied to
+# generation output, which was never affected.
+#
+# The transform is exactly invertible: re-encode as cp1252 to recover the
+# original bytes, then decode them as utf-8. Applied only when the signature is
+# present and only when the round trip is lossless, so clean text and genuinely
+# accented text are left untouched.
+MOJIBAKE_SIGNATURE = "â€"
+
+
+def repair_mojibake(text: str) -> str:
+    if not text or MOJIBAKE_SIGNATURE not in text:
+        return text
+    try:
+        fixed = text.encode("cp1252").decode("utf-8")
+    except (UnicodeEncodeError, UnicodeDecodeError):
+        return text
+    return fixed if MOJIBAKE_SIGNATURE not in fixed else text
+
+
 def run_generation_ollama(
     host: str,
     model_name: str,
@@ -820,7 +849,6 @@ def main() -> None:
                             raw_output = run_generation(
                                 processor, model, system_prompt, user_prompt, args.max_new_tokens, args.temperature
                             )
-
                         qa_objects = None
                         error = None
                         try:

@@ -301,11 +301,27 @@ def _in_imperative_position(clause: str, matched: str) -> bool:
     return (not lead or lead.endswith(",")) and bool(IMPERATIVE_VERB.match(matched))
 
 
-def find_score_contradiction(answer: str, pattern: re.Pattern) -> str | None:
+# At 4 the trainee sits between the score-3 anchor ("competent but occasionally
+# stiff or awkward", "efficient but some unnecessary moves") and the score-5 one
+# ("no awkwardness", "maximum efficiency"), so acknowledging a *minor residual* is
+# correct interpolation, not contradiction. Only unhedged criticism is wrong at 4.
+# At 5 the anchor denies the trait outright, so any degree of it contradicts.
+HEDGED = re.compile(
+    r"\b(minor|occasional|occasionally|slight|slightly|residual|some|a few|"
+    r"mild|small|remaining|still|nearly|almost|largely|mostly|generally)\b",
+    re.IGNORECASE,
+)
+
+
+def find_score_contradiction(
+    answer: str, pattern: re.Pattern, hedge_ok: bool = False
+) -> str | None:
     """Anchor vocabulary asserted against a high score, or None.
 
     Skips matches sitting in a goal, negation, or recommendation frame -- those
     name the target state or prescribe an action rather than reporting a fault.
+    With hedge_ok (score 4), also skips hedged mentions, which interpolate
+    correctly between the score-3 and score-5 anchors.
     """
     for match in pattern.finditer(answer):
         lead = answer[max(0, match.start() - 80) : match.start()]
@@ -316,6 +332,8 @@ def find_score_contradiction(answer: str, pattern: re.Pattern) -> str | None:
             continue
         ahead = " ".join(answer[match.end():].split()[:6])
         if GENERAL_AHEAD.search(ahead):
+            continue
+        if hedge_ok and HEDGED.search(clause + " " + ahead):
             continue
         return match.group(0)
     return None
@@ -480,7 +498,7 @@ def check_record(r):
         score = scores.get(field)
         if score is None or score < 4:
             continue
-        hit = find_score_contradiction(answer, pattern)
+        hit = find_score_contradiction(answer, pattern, hedge_ok=(score == 4))
         if hit:
             issues.append(
                 f"coaches on {GRS_PLAIN_LABELS.get(field, field)} but {field} is "

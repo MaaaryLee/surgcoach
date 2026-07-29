@@ -73,10 +73,15 @@ foreach ($run in $runs) {
 }
 
 # Concatenate into one batch file, task order matching the run order above.
-# Written via UTF8Encoding($false) because PowerShell 5.1's -Encoding utf8 emits a
-# BOM, and json.loads rejects a leading BOM ("Unexpected UTF-8 BOM") -- that
-# crashed the checker on the previous combined file.
+#
+# Both halves of this need an explicit encoding, and each was wrong once:
+#   read  -- Get-Content without -Encoding uses the system ANSI codepage in
+#            PowerShell 5.1, so it decoded the runner's UTF-8 as cp1252 and
+#            turned every em-dash into "â€”" in the combined file while the
+#            per-task files stayed clean.
+#   write -- -Encoding utf8 emits a BOM, which json.loads rejects outright
+#            ("Unexpected UTF-8 BOM"), so UTF8Encoding($false) is required.
 $combined = "$outRoot\qa_records.jsonl"
-$lines = foreach ($run in $runs) { Get-Content "$outRoot\$($run.Task)\qa_records.jsonl" }
+$lines = foreach ($run in $runs) { Get-Content "$outRoot\$($run.Task)\qa_records.jsonl" -Encoding UTF8 }
 [System.IO.File]::WriteAllLines($combined, $lines, (New-Object System.Text.UTF8Encoding($false)))
 Write-Output "=== combined: $((Get-Content $combined | Measure-Object -Line).Lines) records ==="
