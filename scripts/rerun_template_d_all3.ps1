@@ -1,31 +1,20 @@
-# Regenerate the full Template D batch (75 records) under the post-fix prompt.
+# Template D across all three JIGSAWS tasks: D1-D5 over the 15 trials in
+# stratified_trials.ps1, one question per whole video.
 #
-# Replaces "outputs after skill-level gloss and anatomy rule - 7-26-2026", which
-# has two records that assert behaviour the annotations cannot support
-# (D2/D3 Knot_Tying_B001). Hard rule 1 now covers consequences and severity, so
-# the whole batch is regenerated rather than patched -- a partial rerun would
-# leave the batch split across two prompt versions.
+# The trial list is shared with the Template C driver so every video ends up
+# with both a C and a D record set. It spans each task's GRS range rather than
+# taking the first files alphabetically, which earlier runs did: that gave 13 of
+# 15 trials scoring 17 or below out of 30 and no expert trial at all, and two
+# templates could not function on it -- C7 used one of its five supervision
+# levels for all 15 records, and D5 was asked to name a strongest skill in
+# trials that had no strength to name.
 #
-# Same trials, templates and sampling settings as that batch, so the only
-# variable is the prompt. Tasks run separately: one invocation takes a single
-# --task, and the opener-threading mechanism threads within a run.
-
 $ErrorActionPreference = "Stop"
 $repo = "c:\Users\Eric\Project\surgcoach"
-# _v3. v1 ran under a prompt that had grown 19% from repeated appends, leaving too
-# little context for the model's reasoning and truncating 11 of 75 records. v2 was
-# stopped early: the prompt was consolidated back under budget, but its subscore
-# glosses were paraphrases, and reading the real OSATS anchors showed one of them
-# ("time and motion measures fluency") was simply wrong. v3 carries the verbatim
-# 1/3/5 anchor text instead. Neither earlier output is committed -- see the repo
-# results policy on failed runs.
-$outRoot = "$repo\outputs\template_d_rerun_v5_7-29-2026"
+$outRoot = "$repo\outputs\template_d_stratified_7-29-2026"
 
-$runs = @(
-    @{ Task = "Suturing";       Trials = "Suturing_B001,Suturing_B002,Suturing_B003,Suturing_B004,Suturing_B005" },
-    @{ Task = "Knot_Tying";     Trials = "Knot_Tying_B001,Knot_Tying_B002,Knot_Tying_B003,Knot_Tying_B004,Knot_Tying_C001" },
-    @{ Task = "Needle_Passing"; Trials = "Needle_Passing_B001,Needle_Passing_B002,Needle_Passing_B003,Needle_Passing_B004,Needle_Passing_C001" }
-)
+. "$repo\scripts\stratified_trials.ps1"
+$runs = $StratifiedTrials
 
 New-Item -ItemType Directory -Force -Path $outRoot | Out-Null
 
@@ -98,11 +87,14 @@ foreach ($run in $runs) {
 # Both halves of this need an explicit encoding, and each was wrong once:
 #   read  -- Get-Content without -Encoding uses the system ANSI codepage in
 #            PowerShell 5.1, so it decoded the runner's UTF-8 as cp1252 and
-#            turned every em-dash into "â€”" in the combined file while the
-#            per-task files stayed clean.
+#            mangled every em-dash in the combined file while the per-task
+#            files stayed clean. Editing this file with Get-Content -Raw and
+#            no -Encoding re-corrupted this very comment once: the bug
+#            demonstrating itself.
 #   write -- -Encoding utf8 emits a BOM, which json.loads rejects outright
 #            ("Unexpected UTF-8 BOM"), so UTF8Encoding($false) is required.
 $combined = "$outRoot\qa_records.jsonl"
 $lines = foreach ($run in $runs) { Get-Content "$outRoot\$($run.Task)\qa_records.jsonl" -Encoding UTF8 }
 [System.IO.File]::WriteAllLines($combined, $lines, (New-Object System.Text.UTF8Encoding($false)))
 Write-Output "=== combined: $((Get-Content $combined | Measure-Object -Line).Lines) records ==="
+
