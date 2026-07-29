@@ -8,7 +8,7 @@
 #SBATCH --output=%x-%j.out
 #SBATCH --error=%x-%j.err
 
-# Submit from $ENDPOINT/surgcoach (e.g. /mnt/mir/$USER/surgcoach), not your home
+# Submit from $ENDPOINT/surgcoach (on megatron: /mnt/meg/$USER/surgcoach), not your home
 # directory -- SLURM writes the --output/--error files above into whatever
 # directory you run `sbatch` from, and job logs in $HOME hit permission errors
 # on this cluster. Requires $ENDPOINT to already be set in ~/.bashrc.
