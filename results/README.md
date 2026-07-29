@@ -59,9 +59,12 @@ checker dislikes its content selects for output that passes the checker, which
 would make the reported quality better than the pipeline's actual quality.
 
 1. **`D4 Suturing_B002` -- banned phrase.** Writes "the trainee should return to
-   basic peg transfer", which hard rule 13 forbids. The same answer also asserts
-   "hesitant wrist rotations", and wrist mechanics appear in no GRS anchor, so
-   this record has a second problem the checker does not yet detect.
+   basic peg transfer", which hard rule 13 forbids. That is the whole of it: the
+   same answer opens "Stiff instrument movements and hesitant wrist rotations
+   break the rhythm required for reliable suturing", which reads like a
+   fabrication but is not one -- the mechanic sits in subject position with no
+   possessive, stating a general rule about suturing rather than a claim about
+   this trainee, which rule 1 permits.
 2. **`D3 Knot_Tying_C001` -- meta-reference.** Writes "A midpoint assessment
    shows your current technique works", and hard rule 11 bars referring to the
    existence of an assessment at all; a reader who cannot see the scores has no
