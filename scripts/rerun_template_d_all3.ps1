@@ -19,7 +19,7 @@ $repo = "c:\Users\Eric\Project\surgcoach"
 # ("time and motion measures fluency") was simply wrong. v3 carries the verbatim
 # 1/3/5 anchor text instead. Neither earlier output is committed -- see the repo
 # results policy on failed runs.
-$outRoot = "$repo\outputs\template_d_rerun_v4_7-28-2026"
+$outRoot = "$repo\outputs\template_d_rerun_v5_7-29-2026"
 
 $runs = @(
     @{ Task = "Suturing";       Trials = "Suturing_B001,Suturing_B002,Suturing_B003,Suturing_B004,Suturing_B005" },
@@ -51,8 +51,29 @@ $roots.GetEnumerator() | ForEach-Object { Write-Output "dataset root: $($_.Key) 
 # content, so raising this cannot select for answers that please the checker.
 # (Keep comments out of the backtick-continued argument list below -- a comment
 # breaks the line continuation and the script fails to parse.)
+#
+# Tasks that already hold a complete record set are skipped, so a crash in the
+# third task does not discard the first two. An Ollama HTTP 500 killed one run
+# 39 records in after Suturing had finished, and without this the whole two hours
+# would have been repeated. A task counts as complete only at the full expected
+# record count; a partial file is regenerated rather than topped up, since the
+# runner opens its output with "w".
+function Get-RecordCount([string]$path) {
+    if (-not (Test-Path $path)) { return 0 }
+    return (Get-Content $path -Encoding UTF8 | Where-Object { $_.Trim() } | Measure-Object).Count
+}
+
 foreach ($run in $runs) {
     $task = $run.Task
+    $expected = ($run.Trials -split ',').Count * 5
+    $existing = Get-RecordCount "$outRoot\$task\qa_records.jsonl"
+    if ($existing -eq $expected) {
+        Write-Output "=== $task === already complete ($existing/$expected records), skipping"
+        continue
+    }
+    if ($existing -gt 0) {
+        Write-Output "=== $task === partial ($existing/$expected records), regenerating"
+    }
     Write-Output "=== $task ==="
     python "$repo\scripts\run_annotation_qa_jigsaws.py" `
         --dataset-root $roots[$task] `
