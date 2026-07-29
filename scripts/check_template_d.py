@@ -295,6 +295,15 @@ GOAL_OR_NEGATED = re.compile(
 # nothing or by a comma.
 IMPERATIVE_VERB = re.compile(r"^(?:pause|stop|halt|slow)\b", re.IGNORECASE)
 
+# A present-tense consequence verb immediately after the mechanic, which makes the
+# mechanic the subject of a general rule rather than an attributed fault.
+GENERAL_CONSEQUENCE = re.compile(
+    r"\s*(?:during|in|at|on|when|while)?\s*[\w\s]{0,30}?\b"
+    r"(creates?|caus\w+|leads?|caus\w+|disrupts?|compromis\w+|increas\w+|reduc\w+|"
+    r"makes?|produc\w+|results?|risks?|forces?|prevents?|degrad\w+)\b",
+    re.IGNORECASE,
+)
+
 
 def _in_imperative_position(clause: str, matched: str) -> bool:
     lead = clause.strip()
@@ -335,6 +344,12 @@ def find_score_contradiction(
             continue
         if hedge_ok and HEDGED.search(clause + " " + ahead):
             continue
+        # A general principle states the mechanic as the subject of a consequence
+        # with no possessive attaching it to this trainee: "stiffness or excessive
+        # grip tension creates mechanical resistance" describes the mechanic in
+        # general, whereas "your excessive grip tension creates..." asserts it.
+        if not re.search(r"\b(your|you)\b", clause[-40:], re.IGNORECASE) and GENERAL_CONSEQUENCE.match(ahead):
+            continue
         return match.group(0)
     return None
 
@@ -368,9 +383,17 @@ LEVEL_QUALIFIER = re.compile(
     r"|no single (area|technique|skill|domain)"
     r"|has(n't| not) yet reached|yet to reach|short of a (true )?strength"
     r"|least weak|strongest of (the |these )?(weak|low)"
-    # Generic negated-strength construction, whatever verb carries it:
-    # "hasn't settled into a clear strength yet", "have not developed a strength".
+    # Negated-strength constructions. Enumerating exact phrasings kept missing
+    # real ones -- "introductory level", "Nothing has reached a clear strength
+    # yet", "rather than demonstrating actual strength" were all qualifiers the
+    # checker called missing. These match on the structure instead: a negator
+    # anywhere before "strength" in the same clause, or a level word before
+    # "level/stage", whatever adjective or verb sits between.
     r"|(has|have|had)(n't| not)[^.;!?]{0,50}\b(yet|strength)\b"
+    r"|\b(nothing|neither|none|not one|no single|no one)\b[^.;!?]{0,70}\b(strength|strong)"
+    r"|\b(rather|other) than\b[^.;!?]{0,50}\bstrength"
+    r"|\b(introductory|entry|beginner|novice|early|emerging|nascent)[- ]?\w*\s+"
+    r"(level|stage|tier|point)"
     r"|no (clear|true|real|established) strength|furthest along|most reliab\w+"
     r")",
     re.IGNORECASE,
