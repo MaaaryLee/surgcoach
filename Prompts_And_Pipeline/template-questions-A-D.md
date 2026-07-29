@@ -141,7 +141,7 @@ usable text is ever sent to the model.
 
 ## Template C1: Tissue Handling
 
-Based on this trainee's performance during [a certain video span], how would you characterize their tissue handling, and what is one specific thing they should change to improve it?
+Based on this trainee's performance during [a certain video span], how strong is their tissue handling, and what should they work on to improve it?
 
 > Canonical (vision) wording: "Rate the trainee's tissue handling in [clip]
 > from 1-5. Provide: score, visible evidence, potential tissue injury risk, and
@@ -149,7 +149,7 @@ Based on this trainee's performance during [a certain video span], how would you
 
 ## Template C2: Instrument and Needle Handling
 
-Based on this trainee's performance during [a certain video span], how would you characterize their instrument and needle handling, and what is one specific thing they should change to improve it?
+Based on this trainee's performance during [a certain video span], how strong is their instrument and needle handling, and what should they work on to improve it?
 
 > Canonical (vision) wording: "Rate instrument handling from 1-5. Consider
 > instrument steadiness, tip visibility, precision, angle of approach, wrist
@@ -159,7 +159,7 @@ Based on this trainee's performance during [a certain video span], how would you
 
 ## Template C3: Economy of Motion
 
-Based on this trainee's performance during [a certain video span], how would you characterize their economy of motion, and what is one specific thing they should change to improve it?
+Based on this trainee's performance during [a certain video span], how efficient is their motion, and what should they work on to improve it?
 
 > Canonical (vision) wording: "Does the trainee use efficient motion in this
 > clip? Identify unnecessary movements and suggest a more efficient
@@ -187,7 +187,7 @@ unsupported.
 
 ## Template C6: Flow of Operation
 
-Based on this trainee's performance during [a certain video span], how would you characterize their flow of operation, and what is one specific thing they should change to improve it?
+Based on this trainee's performance during [a certain video span], how smooth is their flow of operation, and what should they work on to improve it?
 
 > Canonical (vision) wording: "Does the trainee demonstrate smooth procedural
 > flow and anticipation of the next operative step?"
