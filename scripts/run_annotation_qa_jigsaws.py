@@ -25,9 +25,10 @@ validation_status "valid_mock" so they can never be confused with real data.
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 import re
+import time
+import urllib.error
 from pathlib import Path
 from typing import Any
 
@@ -110,6 +111,11 @@ SKILL_LEVELS = {
 # JIGSAWS videos are captured at 30 fps (Gao et al., 2014). Used only to
 # convert annotated frame spans into timestamps for --granularity video;
 # never used to infer anything visual.
+# Transient Ollama transport failures, retried inside the request helper rather
+# than by the caller's content-retry loop. 4 attempts with a 5s, 10s, 15s backoff.
+TRANSPORT_RETRIES = 4
+TRANSPORT_BACKOFF_SECONDS = 5
+
 JIGSAWS_FPS = 30
 
 
@@ -141,18 +147,9 @@ GESTURE_DEFINITIONS = {
 # can actually support without visual input. Everything else is refused with a
 # reason instead of being generated from thin air.
 SUPPORTED_TEMPLATES = {
-    "A3": "gesture labels define the annotated action",
     "C1": "respect_for_tissue GRS subscore",
     "C2": "suture_needle_handling GRS subscore",
     "C3": "time_and_motion GRS subscore",
-    "C4": (
-        "annotation-first proxy from suture_needle_handling, time_and_motion, "
-        "flow_of_operation, and overall_performance; visual verification required"
-    ),
-    "C5": (
-        "annotation-first proxy from suture_needle_handling, time_and_motion, "
-        "respect_for_tissue, and overall_performance; visual verification required"
-    ),
     "C6": "flow_of_operation GRS subscore",
     "C7": "skill_level and grs_total",
     "D1": "GRS subscores and gesture span",
@@ -162,14 +159,18 @@ SUPPORTED_TEMPLATES = {
     "D5": "strongest GRS subscore supports reinforcement",
 }
 UNSUPPORTED_TEMPLATES = {
-    "A1": "JIGSAWS has no anatomy labels",
-    "A2": "JIGSAWS has no instrument labels",
-    "A4": "JIGSAWS has no visual-field-quality labels",
+    # Type A targets Endoscapes2023 (secondary PitVQA), not JIGSAWS.
+    "A1": "Type A is not a JIGSAWS type; JIGSAWS also has no anatomy or instrument labels",
+    "A2": "Type A is not a JIGSAWS type; phase/step identification needs MultiBypass140-style labels",
+    "A3": "Type A is not a JIGSAWS type; A3 is a two-clip comparison this one-clip-per-item pipeline cannot build",
+    "A4": "Type A is not a JIGSAWS type; JIGSAWS has no visual-field-quality labels",
     "B1": "JIGSAWS has no safety/error labels",
     "B2": "JIGSAWS has no safety/error labels",
     "B3": "JIGSAWS has no safety/error labels",
     "B4": "JIGSAWS has no near-miss labels",
     "B5": "JIGSAWS has no safety/error labels",
+    "C4": "JIGSAWS has no bimanual-coordination label",
+    "C5": "JIGSAWS has no targeting/accuracy label",
 }
 
 MOCK_WATERMARK = "[MOCK OUTPUT - NOT MODEL-GENERATED - SMOKE TEST ONLY]"
@@ -186,29 +187,73 @@ def extract_system_prompt(path: Path) -> str:
 
     def include_file(include_match: re.Match[str]) -> str:
         include_path = (path.parent / include_match.group(1).strip()).resolve()
-        return include_path.read_text(encoding="utf-8").strip()
+        text = include_path.read_text(encoding="utf-8")
+        # Drop blockquoted lines. In template-questions-A-D.md these hold the
+        # canonical vision wording, kept for human reference -- "Rate the trainee's
+        # tissue handling from 1-5. Provide: score, visible evidence, ...". Pasting
+        # them in told the model to supply visible evidence in the same breath as
+        # rule 1 forbids it, and left ~4,700 characters of the context window
+        # carrying instructions meant for a different pipeline. load_question_templates
+        # already skips blockquotes when reading the question text; this makes the
+        # system prompt agree with it.
+        kept = [l for l in text.splitlines() if not l.lstrip().startswith(">")]
+        return "\n".join(kept).strip()
 
     return re.sub(r"\{\{include:\s*([^}]+?)\s*\}\}", include_file, prompt).strip()
 
 
-def load_d_templates(path: Path) -> dict[str, str]:
-    """Parse canonical C1-C7 and D1-D5 question wording from Markdown."""
+UNSPECIFIED_TEMPLATE = "not yet specified"
+REQUIRES_VISION_MARKER = "status: requires-vision"
+
+
+def load_question_templates(path: Path) -> dict[str, str]:
+    """Parse canonical A-D question wording from the template markdown.
+
+    Templates whose body begins "not yet specified" have no agreed wording and
+    are omitted, so asking for one fails loudly rather than silently sending
+    the placeholder prose to the model as a question.
+    """
     text = path.read_text(encoding="utf-8")
     templates: dict[str, str] = {}
     for match in re.finditer(
-        r"## Template ([CD]\d)[^\n]*\n+```text\n(.*?)\n```", text, flags=re.DOTALL
+        r"## Template ([A-D]\d)[^\n]*\n+```text\n(.*?)\n```", text, flags=re.DOTALL
     ):
         templates[match.group(1)] = match.group(2).strip()
     if not templates:
         # Fall back to fence-less section bodies.
         for match in re.finditer(
-            r"## Template ([CD]\d)[^\n]*\n+(.*?)(?=\n## |\Z)", text, flags=re.DOTALL
+            r"## Template ([A-D]\d)[^\n]*\n+(.*?)(?=\n## |\Z)", text, flags=re.DOTALL
         ):
             templates[match.group(1)] = match.group(2).strip()
-    required = {f"C{i}" for i in range(1, 8)} | {f"D{i}" for i in range(1, 6)}
-    missing = required - set(templates)
+    usable: dict[str, str] = {}
+    for tid, body in templates.items():
+        if body.lower().startswith(UNSPECIFIED_TEMPLATE):
+            continue
+        # "> status: requires-vision" marks canonical wording that asks the
+        # model to describe what it sees. That wording is recorded for
+        # reference but cannot be used annotation-only, so it is excluded by
+        # declaration rather than by accident of formatting.
+        if REQUIRES_VISION_MARKER in body.lower():
+            continue
+        # Drop "> ..." commentary; it documents the template for humans and is
+        # not part of the question.
+        lines = [ln for ln in body.splitlines() if not ln.lstrip().startswith(">")]
+        questions = [ln.strip() for ln in lines if ln.strip()]
+        # A template listing several alternative questions cannot be sent as
+        # one; skip it so a runner asking for it fails loudly rather than
+        # joining them together.
+        if len(questions) != 1:
+            continue
+        usable[tid] = questions[0]
+    return usable
+
+
+def load_d_templates(path: Path) -> dict[str, str]:
+    """A-D templates, with D1-D5 required (this runner cannot work without them)."""
+    templates = load_question_templates(path)
+    missing = {"D1", "D2", "D3", "D4", "D5"} - set(templates)
     if missing:
-        raise ValueError(f"Missing C/D templates in {path}: {sorted(missing)}")
+        raise ValueError(f"Missing D templates in {path}: {sorted(missing)}")
     return templates
 
 
@@ -256,7 +301,7 @@ def feedback_points_label(
 ) -> str | None:
     """The formatted "[three feedback points]" substitution for D2/D3/D4, or
     None for templates whose wording doesn't reference it (D1, D5)."""
-    if not template_id.startswith("D"):
+    if template_id not in d_templates:
         return None
     if "[three feedback points]" not in d_templates[template_id]:
         return None
@@ -270,19 +315,6 @@ def render_d_question(
     if feedback_points is not None:
         question = question.replace("[three feedback points]", feedback_points)
     return question
-
-
-def render_question(
-    template_id: str,
-    templates: dict[str, str],
-    span_label: str,
-    feedback_points: str | None,
-) -> str | None:
-    if template_id.startswith("D"):
-        return render_d_question(template_id, templates, span_label, feedback_points)
-    if template_id.startswith("C"):
-        return templates[template_id].replace("[clip]", span_label)
-    return None
 
 
 def recent_openers_block(recent_openers: list[str] | None) -> list[str]:
@@ -308,11 +340,7 @@ def build_user_prompt(
 ) -> str:
     frame_label = f"{span['start_frame']}-{span['end_frame']}"
     gesture_definition = GESTURE_DEFINITIONS.get(span["gesture_id"], "unknown gesture")
-    feedback_points = (
-        feedback_points_label(template_id, d_templates, meta["grs_subscores"])
-        if template_id.startswith("D")
-        else None
-    )
+    feedback_points = feedback_points_label(template_id, d_templates, meta["grs_subscores"])
     lines = [
         "Dataset-specific input (ANNOTATION-ONLY: no frames or images are attached):",
         "- dataset_name: JIGSAWS",
@@ -337,73 +365,10 @@ def build_user_prompt(
         "Ground the QA pair only in these annotations. Do not describe any visual",
         "content; no visual content was provided.",
     ]
-    if template_id.startswith(("C", "D")):
+    if template_id in d_templates:
         lines += recent_openers_block(recent_openers)
-        question = render_question(
-            template_id, d_templates, f"frames {frame_label}", feedback_points
-        )
+        question = render_d_question(template_id, d_templates, f"frames {frame_label}", feedback_points)
         lines += ["", "Use this exact question text:", question]
-        lines += ["", 'Do not use the phrase "the trainee should" anywhere in the answer.']
-        if template_id.startswith("C"):
-            lines += [
-                "",
-                "ANNOTATION-FIRST / LATER VLM VERIFICATION: the exact question asks "
-                "about visible evidence or visible movements, but no video frames were "
-                "provided. Use the relevant GRS score(s) only as a provisional "
-                "label-based assessment. Do not invent a movement, contact, instrument "
-                "path, hand action, pause, correction, injury, or other observed event.",
-                "Include the exact marker [VISUAL EVIDENCE NEEDED] in either the answer "
-                "or rationale (preferably both). State which requested visible claim "
-                "must be checked later by a VLM.",
-                "Use explicitly provisional wording such as 'the annotation suggests' "
-                "or 'this score is consistent with.' Never write that the trainee "
-                "'demonstrates,' 'exhibits,' 'maintains,' or 'uses' a visible behavior "
-                "as a fact. A verification marker after an invented factual observation "
-                "does not make that observation acceptable.",
-            ]
-            if template_id in {"C4", "C5"}:
-                lines += [
-                    "JIGSAWS has no dedicated label for this template. Treat the related "
-                    "GRS subscores only as an indirect proxy, say that the requested "
-                    "behavior cannot be confirmed from annotations, and do not give a "
-                    "definitive visual finding.",
-                ]
-        if template_id.startswith("D"):
-            lines += [
-                "",
-                "CRITICAL GROUNDING REMINDER: no technique behavior was observed. The "
-                "answer may name the relative skill area and give general forward-looking "
-                "guidance, but it must not assert concrete behavior such as pauses, "
-                "hesitation, jitter, sweeping, repeated adjustment, force, pressure, "
-                "instrument position, tip path, or tissue contact. Do not convert the "
-                "score into a fictional account of what happened.",
-                "Do not mention scores, ratings, rubrics, annotations, assessments, "
-                "or performance metrics in the answer.",
-            ]
-        if template_id == "D3":
-            lines += [
-                "",
-                'In the answer, explicitly state "The most urgent area is [named area]" '
-                "before giving the immediate action.",
-            ]
-        elif template_id == "D4":
-            lines += [
-                "",
-                'Do not use the phrase "the trainee should" anywhere in the answer.',
-            ]
-        elif template_id == "D5":
-            top_score = max(meta["grs_subscores"].values())
-            lines += [
-                "",
-                "Apply the D5 strength threshold explicitly: if the highest subscore "
-                "is 3 or below, say that no clear strength has developed yet. Do not "
-                "mention scores, ratings, rubrics, annotations, or assessments.",
-            ]
-            if top_score <= 3:
-                lines += [
-                    'Begin the answer exactly: "No technical area has developed into '
-                    'a clear strength yet."',
-                ]
     lines += ["", "Return valid JSON only, following the system prompt schema."]
     return "\n".join(lines)
 
@@ -411,13 +376,11 @@ def build_user_prompt(
 def expected_d_question(
     template_id: str, span: dict[str, Any], d_templates: dict[str, str], meta: dict[str, Any]
 ) -> str | None:
-    if not template_id.startswith(("C", "D")):
+    if template_id not in d_templates:
         return None
     frame_label = f"{span['start_frame']}-{span['end_frame']}"
     feedback_points = feedback_points_label(template_id, d_templates, meta["grs_subscores"])
-    return render_question(
-        template_id, d_templates, f"frames {frame_label}", feedback_points
-    )
+    return render_d_question(template_id, d_templates, f"frames {frame_label}", feedback_points)
 
 
 def video_frame_extent(spans: list[dict[str, Any]]) -> tuple[int, int]:
@@ -438,11 +401,7 @@ def build_user_prompt_video(
     recent_openers: list[str] | None = None,
 ) -> str:
     timestamp_label = video_timestamp_label(spans)
-    feedback_points = (
-        feedback_points_label(template_id, d_templates, meta["grs_subscores"])
-        if template_id.startswith("D")
-        else None
-    )
+    feedback_points = feedback_points_label(template_id, d_templates, meta["grs_subscores"])
     lines = [
         "Dataset-specific input (ANNOTATION-ONLY: no frames or images are attached):",
         "- dataset_name: JIGSAWS",
@@ -465,73 +424,10 @@ def build_user_prompt_video(
         "Ground the QA pair only in these annotations. Do not describe any visual",
         "content; no visual content was provided.",
     ]
-    if template_id.startswith(("C", "D")):
+    if template_id in d_templates:
         lines += recent_openers_block(recent_openers)
-        question = render_question(
-            template_id, d_templates, timestamp_label, feedback_points
-        )
+        question = render_d_question(template_id, d_templates, timestamp_label, feedback_points)
         lines += ["", "Use this exact question text:", question]
-        lines += ["", 'Do not use the phrase "the trainee should" anywhere in the answer.']
-        if template_id.startswith("C"):
-            lines += [
-                "",
-                "ANNOTATION-FIRST / LATER VLM VERIFICATION: the exact question asks "
-                "about visible evidence or visible movements, but no video frames were "
-                "provided. Use the relevant GRS score(s) only as a provisional "
-                "label-based assessment. Do not invent a movement, contact, instrument "
-                "path, hand action, pause, correction, injury, or other observed event.",
-                "Include the exact marker [VISUAL EVIDENCE NEEDED] in either the answer "
-                "or rationale (preferably both). State which requested visible claim "
-                "must be checked later by a VLM.",
-                "Use explicitly provisional wording such as 'the annotation suggests' "
-                "or 'this score is consistent with.' Never write that the trainee "
-                "'demonstrates,' 'exhibits,' 'maintains,' or 'uses' a visible behavior "
-                "as a fact. A verification marker after an invented factual observation "
-                "does not make that observation acceptable.",
-            ]
-            if template_id in {"C4", "C5"}:
-                lines += [
-                    "JIGSAWS has no dedicated label for this template. Treat the related "
-                    "GRS subscores only as an indirect proxy, say that the requested "
-                    "behavior cannot be confirmed from annotations, and do not give a "
-                    "definitive visual finding.",
-                ]
-        if template_id.startswith("D"):
-            lines += [
-                "",
-                "CRITICAL GROUNDING REMINDER: no technique behavior was observed. The "
-                "answer may name the relative skill area and give general forward-looking "
-                "guidance, but it must not assert concrete behavior such as pauses, "
-                "hesitation, jitter, sweeping, repeated adjustment, force, pressure, "
-                "instrument position, tip path, or tissue contact. Do not convert the "
-                "score into a fictional account of what happened.",
-                "Do not mention scores, ratings, rubrics, annotations, assessments, "
-                "or performance metrics in the answer.",
-            ]
-        if template_id == "D3":
-            lines += [
-                "",
-                'In the answer, explicitly state "The most urgent area is [named area]" '
-                "before giving the immediate action.",
-            ]
-        elif template_id == "D4":
-            lines += [
-                "",
-                'Do not use the phrase "the trainee should" anywhere in the answer.',
-            ]
-        elif template_id == "D5":
-            top_score = max(meta["grs_subscores"].values())
-            lines += [
-                "",
-                "Apply the D5 strength threshold explicitly: if the highest subscore "
-                "is 3 or below, say that no clear strength has developed yet. Do not "
-                "mention scores, ratings, rubrics, annotations, or assessments.",
-            ]
-            if top_score <= 3:
-                lines += [
-                    'Begin the answer exactly: "No technical area has developed into '
-                    'a clear strength yet."',
-                ]
     lines += ["", "Return valid JSON only, following the system prompt schema."]
     return "\n".join(lines)
 
@@ -539,11 +435,11 @@ def build_user_prompt_video(
 def expected_d_question_video(
     template_id: str, spans: list[dict[str, Any]], d_templates: dict[str, str], meta: dict[str, Any]
 ) -> str | None:
-    if not template_id.startswith(("C", "D")):
+    if template_id not in d_templates:
         return None
     timestamp_label = video_timestamp_label(spans)
     feedback_points = feedback_points_label(template_id, d_templates, meta["grs_subscores"])
-    return render_question(template_id, d_templates, timestamp_label, feedback_points)
+    return render_d_question(template_id, d_templates, timestamp_label, feedback_points)
 
 
 def parse_json_payload(text: str) -> Any:
@@ -583,17 +479,6 @@ def parse_json_payload(text: str) -> Any:
     return json.loads(stripped[start:])
 
 
-def thinking_trace_returned(text: str) -> bool:
-    """Return True only when the backend returned a non-empty thinking trace.
-
-    All real backends are invoked with thinking enabled. This check prevents a
-    silently ignored backend flag from producing records that are mislabeled as
-    thinking-enabled.
-    """
-    match = re.search(r"<think>(.*?)</think>", text, flags=re.DOTALL | re.IGNORECASE)
-    return bool(match and match.group(1).strip())
-
-
 def normalize_qa_objects(payload: Any) -> list[dict[str, Any]] | None:
     items = payload if isinstance(payload, list) else [payload]
     normalized: list[dict[str, Any]] = []
@@ -604,6 +489,45 @@ def normalize_qa_objects(payload: Any) -> list[dict[str, Any]] | None:
             return None
         normalized.append(item)
     return normalized or None
+
+
+# The prompt competes with the model's own reasoning for the context window, and
+# losing that competition is silent: generation truncates mid-thinking, the JSON
+# never arrives, and the batch simply reports rejections. It looks like the model
+# got worse rather than like the prompt got longer.
+#
+# It has happened once. Rules 1 and 13 were appended to repeatedly over a day,
+# growing the prompt from 30,331 to 34,558 characters (+19%), and the next 75-record
+# batch lost 11 records to truncation and dropped per-template requirements in
+# several more. Consolidating the rules back under the old size fixed it without
+# removing a single constraint.
+#
+# So this refuses to start when the assembled prompt exceeds the budget, naming the
+# size that is known to work. Adding constraints is fine -- the ceiling forces the
+# same trade a person would otherwise discover two hours in.
+# Measured on the assembled prompt -- the text after {{include:}} is resolved,
+# which is what actually reaches the model. Measuring the fence alone, or with the
+# include's blockquotes stripped, understates it by about 3,000 characters.
+PROMPT_BUDGET_CHARS = 34_000
+PROMPT_KNOWN_GOOD_CHARS = 33_145  # assembled size at 02e3605, which ran clean
+
+
+def verify_prompt_budget(system_prompt: str) -> None:
+    total = len(system_prompt)
+    if total <= PROMPT_BUDGET_CHARS:
+        return
+    over = total - PROMPT_KNOWN_GOOD_CHARS
+    raise SystemExit(
+        f"prompt too long: {total} chars assembled, budget {PROMPT_BUDGET_CHARS}.\n"
+        f"That is {over:+d} against the {PROMPT_KNOWN_GOOD_CHARS} that generates "
+        f"cleanly at num_ctx 12288.\n"
+        "The prompt shares the context window with the model's reasoning, so going "
+        "over truncates records instead of failing loudly -- a 19% overrun once cost "
+        "11 of 75 records.\n"
+        "Either shorten the prompt (rules 1 and 13 have absorbed the most additions, "
+        "and consolidating them recovered the whole overrun once already) or raise "
+        "--ollama-num-ctx, which needs VRAM this machine may not have."
+    )
 
 
 def verify_ollama_model(host: str, model_name: str) -> None:
@@ -628,6 +552,35 @@ def verify_ollama_model(host: str, model_name: str) -> None:
     log(f"verified ollama model {model_name!r} at {host}")
 
 
+# Repair for UTF-8 bytes that were decoded as cp1252, which turns an em-dash
+# (E2 80 94) into "â€”" and a right single quote (E2 80 99) into "â€™".
+#
+# Nothing in this script produces that: it writes every file with
+# encoding="utf-8". The damage came from a batch driver concatenating the
+# per-task outputs with PowerShell's Get-Content, which defaults to the system
+# ANSI codepage in 5.1 -- the per-task files were clean and only the combined
+# file was corrupt. The drivers now pass -Encoding UTF8, so this is kept only for
+# repairing batches produced before that fix; see
+# scripts/repair_mojibake_in_records.py. It is deliberately not applied to
+# generation output, which was never affected.
+#
+# The transform is exactly invertible: re-encode as cp1252 to recover the
+# original bytes, then decode them as utf-8. Applied only when the signature is
+# present and only when the round trip is lossless, so clean text and genuinely
+# accented text are left untouched.
+MOJIBAKE_SIGNATURE = "â€"
+
+
+def repair_mojibake(text: str) -> str:
+    if not text or MOJIBAKE_SIGNATURE not in text:
+        return text
+    try:
+        fixed = text.encode("cp1252").decode("utf-8")
+    except (UnicodeEncodeError, UnicodeDecodeError):
+        return text
+    return fixed if MOJIBAKE_SIGNATURE not in fixed else text
+
+
 def run_generation_ollama(
     host: str,
     model_name: str,
@@ -647,7 +600,11 @@ def run_generation_ollama(
             {"role": "user", "content": user_prompt},
         ],
         "stream": False,
-        # Thinking is mandatory for every real inference backend.
+        # Reasoning is ~89% of what this model generates and every record so far has
+        # carried a thinking block -- but only because Qwen3.6 returns one by
+        # default. Requesting it explicitly makes that a stated choice rather than a
+        # default that an Ollama or model update could silently drop, which would
+        # show up as shallower answers with nothing failing.
         "think": True,
         # num_ctx must cover prompt + thinking + answer, or Ollama's default
         # (sized off free VRAM, often as low as 4096) truncates mid-thinking.
@@ -658,63 +615,34 @@ def run_generation_ollama(
         data=json.dumps(payload).encode("utf-8"),
         headers={"Content-Type": "application/json"},
     )
-    with urllib.request.urlopen(request, timeout=600) as response:
-        result = json.loads(response.read())
+    # Ollama occasionally returns 500 mid-batch and recovers on its own. The
+    # caller's retry loop only catches malformed JSON, so a single hiccup used to
+    # abort the whole run -- one killed a 75-record batch 39 records in, after
+    # Suturing had already finished. Transient transport failures are retried here
+    # with a short backoff, separately from the caller's content-retry budget: a
+    # server error says nothing about the answer, so it should not consume the
+    # allowance for the model producing bad output.
+    last_error: Exception | None = None
+    for attempt in range(TRANSPORT_RETRIES):
+        try:
+            with urllib.request.urlopen(request, timeout=600) as response:
+                result = json.loads(response.read())
+            break
+        except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError, ConnectionError) as exc:
+            last_error = exc
+            if attempt == TRANSPORT_RETRIES - 1:
+                raise
+            wait = TRANSPORT_BACKOFF_SECONDS * (attempt + 1)
+            log(f"  ollama transport error ({exc}); retrying in {wait}s "
+                f"[{attempt + 1}/{TRANSPORT_RETRIES - 1}]")
+            time.sleep(wait)
+    else:  # pragma: no cover - loop always breaks or raises
+        raise last_error  # type: ignore[misc]
     message = result["message"]
     thinking = message.get("thinking") or ""
     content = message.get("content") or ""
     # Ollama splits reasoning into its own "thinking" field instead of inline
     # <think> tags; reassemble so the existing <think>-stripping parser works.
-    return f"<think>{thinking}</think>{content}" if thinking else content
-
-
-def verify_llama_server(host: str) -> None:
-    """Fail fast if the llama.cpp OpenAI-compatible server is not ready."""
-    import urllib.request
-
-    url = f"{host.rstrip('/')}/health"
-    try:
-        with urllib.request.urlopen(url, timeout=30) as response:
-            payload = json.loads(response.read())
-    except Exception as exc:  # noqa: BLE001
-        raise SystemExit(f"Could not reach llama.cpp server at {host}: {exc}") from exc
-    if payload.get("status") != "ok":
-        raise SystemExit(f"llama.cpp server at {host} is not ready: {payload}")
-    log(f"verified llama.cpp server at {host}")
-
-
-def run_generation_llama(
-    host: str,
-    system_prompt: str,
-    user_prompt: str,
-    max_new_tokens: int,
-    temperature: float = 0.0,
-) -> str:
-    """Generate through llama.cpp's OpenAI-compatible chat endpoint."""
-    import urllib.request
-
-    url = f"{host.rstrip('/')}/v1/chat/completions"
-    payload = {
-        "messages": [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt},
-        ],
-        "temperature": temperature,
-        "max_tokens": max_new_tokens,
-        "stream": False,
-        # Thinking is mandatory for every real inference backend.
-        "chat_template_kwargs": {"enable_thinking": True},
-    }
-    request = urllib.request.Request(
-        url,
-        data=json.dumps(payload).encode("utf-8"),
-        headers={"Content-Type": "application/json"},
-    )
-    with urllib.request.urlopen(request, timeout=900) as response:
-        result = json.loads(response.read())
-    message = result["choices"][0]["message"]
-    thinking = message.get("reasoning_content") or ""
-    content = message.get("content") or ""
     return f"<think>{thinking}</think>{content}" if thinking else content
 
 
@@ -850,31 +778,13 @@ def main() -> None:
     parser.add_argument("--dataset-root", default=None,
                         help="Default: /mnt/sun/shared/datasets/surgical_skill/JIGSAWS/<task>")
     parser.add_argument("--system-prompt", required=True, help="Path to annotation-only system-prompt-A-D.md")
-    parser.add_argument(
-        "--jigsaws-system-prompt",
-        default=None,
-        help=(
-            "Path to the JIGSAWS-specific system prompt. Default: "
-            "system-prompt-jigsaws-v1.2.md alongside --system-prompt. Both prompts "
-            "are active for every JIGSAWS generation."
-        ),
-    )
-    parser.add_argument("--d-templates", default=None, help="Path to template questions.md (default: alongside system prompt)")
+    parser.add_argument("--d-templates", default=None, help="Path to template-questions-A-D.md (default: alongside system prompt)")
     parser.add_argument("--model-id", default="Qwen/Qwen3.6-35B-A3B")
     parser.add_argument("--task", choices=sorted(TASK_LABELS), default="Suturing",
                         help="Which JIGSAWS task --dataset-root points at (selects the meta_file name and procedure_or_task label)")
     parser.add_argument("--trial-id", default="Suturing_B001")
     parser.add_argument("--trial-ids", default=None,
                         help="Comma-separated trial IDs to run in one invocation; overrides --trial-id if given")
-    parser.add_argument(
-        "--trial-template-pairs",
-        default=None,
-        help=(
-            "Comma-separated TRIAL_ID:TEMPLATE_ID pairs. Runs exactly one template for "
-            "each listed trial and overrides --trial-id, --trial-ids, and --templates. "
-            "Useful for small one-video-per-question batches."
-        ),
-    )
     parser.add_argument("--gesture-id", default=None, help="Restrict to one gesture ID (default: all spans in the trial; ignored with --granularity video)")
     parser.add_argument("--max-spans", type=int, default=0,
                         help="Cap the number of gesture spans processed (0 = all). "
@@ -885,15 +795,7 @@ def main() -> None:
                              "range -- use this across many trials, since every gesture in a trial shares the "
                              "same GRS scores and per-gesture questions are near-duplicates of each other.")
     parser.add_argument("--templates", default="A3,C1,C2,C3,C6,C7,D1,D2,D3,D4,D5")
-    parser.add_argument(
-        "--max-new-tokens",
-        type=int,
-        default=6000,
-        help=(
-            "Generation budget for mandatory thinking plus final JSON "
-            "(default: 6000)."
-        ),
-    )
+    parser.add_argument("--max-new-tokens", type=int, default=2048)
     parser.add_argument("--max-retries", type=int, default=2,
                         help="Re-request a record when the model returns malformed JSON, a "
                              "misspelled key, or the wrong question wording. These are transient "
@@ -907,38 +809,18 @@ def main() -> None:
     parser.add_argument("--device-map", default="auto")
     parser.add_argument("--backend", choices=["real", "mock"], default="real",
                         help="mock builds watermarked placeholder records for pipeline smoke tests only")
-    parser.add_argument("--inference-engine", choices=["transformers", "ollama", "llama"], default="transformers",
+    parser.add_argument("--inference-engine", choices=["transformers", "ollama"], default="transformers",
                         help="transformers: load --model-id directly (cluster). "
-                             "ollama: call a local `ollama serve` for a quantized GGUF. "
-                             "llama: call a local llama.cpp OpenAI-compatible server.")
+                             "ollama: call a local `ollama serve` for a quantized GGUF (consumer GPU).")
     parser.add_argument("--ollama-model", default="qwen3.6-35b-a3b",
                         help="Model name/tag as known to the local Ollama server (only used with --inference-engine ollama)")
     parser.add_argument("--ollama-host", default="http://localhost:11434")
-    parser.add_argument("--llama-host", default="http://localhost:8080")
     parser.add_argument("--ollama-num-ctx", type=int, default=8192,
                         help="Context window passed to Ollama; must fit prompt + thinking + answer or generation truncates")
     parser.add_argument("--output-dir", required=True)
     args = parser.parse_args()
 
-    trial_template_pairs: list[tuple[str, str]] = []
-    if args.trial_template_pairs:
-        for item in args.trial_template_pairs.split(","):
-            if ":" not in item:
-                parser.error(
-                    f"Invalid --trial-template-pairs item {item!r}; expected TRIAL_ID:TEMPLATE_ID"
-                )
-            trial_id, template_id = (part.strip() for part in item.rsplit(":", 1))
-            if not trial_id or not template_id:
-                parser.error(
-                    f"Invalid --trial-template-pairs item {item!r}; expected TRIAL_ID:TEMPLATE_ID"
-                )
-            trial_template_pairs.append((trial_id, template_id))
-
-    requested = (
-        [template_id for _, template_id in trial_template_pairs]
-        if trial_template_pairs
-        else [item.strip() for item in args.templates.split(",") if item.strip()]
-    )
+    requested = [item.strip() for item in args.templates.split(",") if item.strip()]
     unsupported = [item for item in requested if item in UNSUPPORTED_TEMPLATES]
     unknown = [item for item in requested if item not in SUPPORTED_TEMPLATES and item not in UNSUPPORTED_TEMPLATES]
     if unknown:
@@ -959,44 +841,19 @@ def main() -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
 
     system_prompt_path = Path(args.system_prompt)
-    general_system_prompt = extract_system_prompt(system_prompt_path)
-    jigsaws_system_prompt_path = (
-        Path(args.jigsaws_system_prompt)
-        if args.jigsaws_system_prompt
-        else system_prompt_path.parent / "system-prompt-jigsaws-v1.2.md"
-    )
-    if not jigsaws_system_prompt_path.is_file():
-        parser.error(
-            "JIGSAWS-specific system prompt not found: "
-            f"{jigsaws_system_prompt_path}"
-        )
-    jigsaws_system_prompt = extract_system_prompt(jigsaws_system_prompt_path)
-    general_system_prompt_sha256 = hashlib.sha256(
-        general_system_prompt.encode("utf-8")
-    ).hexdigest()
-    jigsaws_system_prompt_sha256 = hashlib.sha256(
-        jigsaws_system_prompt.encode("utf-8")
-    ).hexdigest()
-    system_prompt = (
-        general_system_prompt
-        + "\n\n--- JIGSAWS DATASET-SPECIFIC SYSTEM RULES ---\n\n"
-        + jigsaws_system_prompt
-    )
+    system_prompt = extract_system_prompt(system_prompt_path)
     d_templates_path = (
         Path(args.d_templates)
         if args.d_templates
-        else system_prompt_path.parent / "template questions.md"
+        else system_prompt_path.parent / "template-questions-A-D.md"
     )
     d_templates = load_d_templates(d_templates_path)
+    verify_prompt_budget(system_prompt)
 
     trial_ids = (
-        [trial_id for trial_id, _ in trial_template_pairs]
-        if trial_template_pairs
-        else (
-            [item.strip() for item in args.trial_ids.split(",") if item.strip()]
-            if args.trial_ids
-            else [args.trial_id]
-        )
+        [item.strip() for item in args.trial_ids.split(",") if item.strip()]
+        if args.trial_ids
+        else [args.trial_id]
     )
     procedure_or_task = TASK_LABELS[args.task]
     task_slug = args.task.lower()
@@ -1005,15 +862,12 @@ def main() -> None:
     if args.backend == "real":
         if args.inference_engine == "ollama":
             verify_ollama_model(args.ollama_host, args.ollama_model)
-        elif args.inference_engine == "llama":
-            verify_llama_server(args.llama_host)
         else:
             processor, model = load_text_model(args.model_id, args.device_map)
 
     output_name = "qa_records.jsonl" if args.backend == "real" else "qa_records.mock.jsonl"
     output_path = output_dir / output_name
     valid = rejected = 0
-    thinking_verified = 0
     total_units = 0
     # Each record is one independent model call with no memory of what it
     # wrote for other records -- threading recent openers per template_id
@@ -1039,13 +893,7 @@ def main() -> None:
             ]
 
             for unit_kind, unit_spans in units:
-                templates_for_trial = (
-                    [template_id for paired_trial, template_id in trial_template_pairs
-                     if paired_trial == trial_id]
-                    if trial_template_pairs
-                    else templates
-                )
-                for template_id in templates_for_trial:
+                for template_id in templates:
                     total_units += 1
                     recent_openers = recent_openers_by_template.get(template_id, [])[-RECENT_OPENERS_TO_SHOW:]
                     if unit_kind == "video":
@@ -1068,7 +916,6 @@ def main() -> None:
                     # a retry reproduces the same output byte for byte.
                     attempts = 0
                     earlier_errors: list[str] = []
-                    returned_thinking = False
                     while True:
                         attempts += 1
                         if args.backend == "mock":
@@ -1082,19 +929,10 @@ def main() -> None:
                                 args.ollama_host, args.ollama_model, system_prompt, user_prompt,
                                 args.max_new_tokens, args.ollama_num_ctx, args.temperature,
                             )
-                        elif args.inference_engine == "llama":
-                            raw_output = run_generation_llama(
-                                args.llama_host, system_prompt, user_prompt,
-                                args.max_new_tokens, args.temperature,
-                            )
                         else:
                             raw_output = run_generation(
                                 processor, model, system_prompt, user_prompt, args.max_new_tokens, args.temperature
                             )
-
-                        returned_thinking = (
-                            args.backend == "real" and thinking_trace_returned(raw_output)
-                        )
                         qa_objects = None
                         error = None
                         try:
@@ -1106,22 +944,7 @@ def main() -> None:
 
                         if error is None and expected_question is not None:
                             if qa_objects[0]["question"] != expected_question:
-                                error = "question_mismatch: template question must match wording exactly"
-                        if error is None and args.backend == "real" and not returned_thinking:
-                            error = (
-                                "missing_thinking_trace: thinking was required, but the "
-                                "inference backend returned no reasoning content"
-                            )
-                        if error is None and template_id.startswith("C"):
-                            qa_text = " ".join(
-                                str(qa_objects[0].get(key, ""))
-                                for key in ("answer", "rationale")
-                            )
-                            if "[VISUAL EVIDENCE NEEDED]" not in qa_text:
-                                error = (
-                                    "missing_visual_evidence_marker: Template C "
-                                    "annotation-first output requires later VLM verification"
-                                )
+                                error = "question_mismatch: D question must match template wording exactly"
 
                         retryable = (
                             error is not None
@@ -1137,9 +960,7 @@ def main() -> None:
                     if error is None:
                         status = "valid" if args.backend == "real" else "valid_mock"
                         valid += 1
-                        if returned_thinking:
-                            thinking_verified += 1
-                        if args.backend == "real" and template_id.startswith("D"):
+                        if args.backend == "real" and template_id in d_templates:
                             recent_openers_by_template.setdefault(template_id, []).append(
                                 first_sentence(qa_objects[0]["answer"])
                             )
@@ -1197,40 +1018,11 @@ def main() -> None:
                             "real_model_inference": args.backend == "real",
                             "inference_engine": args.inference_engine if args.backend == "real" else None,
                             "model_id": (
-                                (
-                                    args.ollama_model
-                                    if args.inference_engine == "ollama"
-                                    else (
-                                        "ggml-org/Qwen3.6-35B-A3B-GGUF:Q4_K_M"
-                                        if args.inference_engine == "llama"
-                                        else args.model_id
-                                    )
-                                )
+                                (args.ollama_model if args.inference_engine == "ollama" else args.model_id)
                                 if args.backend == "real"
                                 else None
                             ),
                             "system_prompt_path": str(system_prompt_path),
-                            "system_prompt_sha256": general_system_prompt_sha256,
-                            "jigsaws_system_prompt_path": str(jigsaws_system_prompt_path),
-                            "jigsaws_system_prompt_sha256": jigsaws_system_prompt_sha256,
-                            "thinking": {
-                                "enabled": args.backend == "real",
-                                "required": args.backend == "real",
-                                "request_parameter": (
-                                    (
-                                        {"chat_template_kwargs": {"enable_thinking": True}}
-                                        if args.inference_engine == "llama"
-                                        else (
-                                            {"think": True}
-                                            if args.inference_engine == "ollama"
-                                            else {"enable_thinking": True}
-                                        )
-                                    )
-                                    if args.backend == "real"
-                                    else None
-                                ),
-                                "trace_returned": returned_thinking,
-                            },
                             "attempts": attempts,
                             "retried_after_errors": earlier_errors or None,
                             "prompt": user_prompt,
@@ -1248,17 +1040,10 @@ def main() -> None:
         "task": args.task,
         "granularity": args.granularity,
         "trial_ids": trial_ids,
-        "trial_template_pairs": trial_template_pairs or None,
         "templates": templates,
         "units": total_units,
         "valid": valid,
         "rejected": rejected,
-        "thinking_required": args.backend == "real",
-        "thinking_verified": thinking_verified,
-        "system_prompt_path": str(system_prompt_path),
-        "system_prompt_sha256": general_system_prompt_sha256,
-        "jigsaws_system_prompt_path": str(jigsaws_system_prompt_path),
-        "jigsaws_system_prompt_sha256": jigsaws_system_prompt_sha256,
         "output": str(output_path),
     }
     (output_dir / "run_summary.json").write_text(

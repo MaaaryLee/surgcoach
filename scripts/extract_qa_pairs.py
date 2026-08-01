@@ -5,7 +5,7 @@ Reads a batch's qa_records.jsonl (one full record per line, as written by
 run_annotation_qa_jigsaws.py), keeps only valid records, and writes next to it:
 
 - qa_pairs.jsonl : one minimal object per line
-                   {qa_id, template_id, trial_id, timestamp, gesture, question, answer, rationale}
+                   {qa_id, template_id, trial_id, frames, gesture, question, answer, rationale}
 - qa_pairs.md    : human-readable Markdown grouped by template
 
 Provenance stays in qa_records.jsonl; these files are views, not the source of truth.
@@ -19,13 +19,6 @@ from pathlib import Path
 
 TEMPLATE_NAMES = {
     "A3": "Action Recognition",
-    "B1": "Dangerous Frame Critique",
-    "B2": "Is It Safe To Proceed?",
-    "B3": "Risk Ranking",
-    "B4": "Near-Miss Detection",
-    "B5": "Stop Point",
-    "B6": "Cause Of Error",
-    "B7": "CVS Safety Check",
     "C1": "Tissue Handling Score",
     "C2": "Instrument Handling Score",
     "C3": "Economy of Motion",
@@ -52,26 +45,18 @@ def main() -> None:
         pairs = []
         for r in valid:
             qa = r["qa"][0]
-            item_id = r.get("trial_id") or r.get("video_id") or r.get("selection_id")
             pairs.append(
                 {
                     "qa_id": r["qa_id"],
                     "template_id": r["template_id"],
-                    "trial_id": item_id,
-                    "dataset": r.get("dataset"),
-                    "timestamp": r["timestamp_or_frame"],
+                    "trial_id": r["trial_id"],
+                    "frames": r["timestamp_or_frame"],
                     # Video-granularity records cover a whole trial and have no
                     # single gesture; they carry a timestamp span and a gesture
                     # count instead. Keep the key so both granularities produce
                     # the same shape, and report the span rather than crashing.
-                    "gesture": (
-                        r["source_annotation"].get("gesture_id")
-                        or (
-                            f"whole video ({r['source_annotation']['gesture_count']} gestures)"
-                            if "gesture_count" in r["source_annotation"]
-                            else None
-                        )
-                    ),
+                    "gesture": r["source_annotation"].get("gesture_id")
+                    or f"whole video ({r['source_annotation'].get('gesture_count', '?')} gestures)",
                     "question": qa["question"],
                     "answer": qa["answer"],
                     "rationale": qa["rationale"],
@@ -86,12 +71,8 @@ def main() -> None:
         md_lines = [
             f"# QA Pairs: {path.parent.name}",
             "",
-            (
-                f"{len(pairs)} valid pairs extracted from `qa_records.jsonl` "
-                f"across {len({p['trial_id'] for p in pairs})} source item(s)."
-                if pairs
-                else "No valid pairs."
-            ),
+            f"{len(pairs)} valid pairs extracted from `qa_records.jsonl` "
+            f"(trial {pairs[0]['trial_id']})." if pairs else "No valid pairs.",
             "",
         ]
         for template_id in sorted({p["template_id"] for p in pairs}):
@@ -99,10 +80,7 @@ def main() -> None:
             md_lines += [f"## {template_id}: {title}", ""]
             for p in [x for x in pairs if x["template_id"] == template_id]:
                 md_lines += [
-                    (
-                        f"### {p['dataset']} — {p['trial_id']} — "
-                        f"timestamp {p['timestamp']}"
-                    ),
+                    f"### Frames {p['frames']} (gesture {p['gesture']})",
                     "",
                     f"**Q:** {p['question']}",
                     "",
