@@ -18,8 +18,13 @@ set -euo pipefail
 WORK_DIR="${WORK_DIR:-$PWD}"
 DATASET_ROOT="${DATASET_ROOT:-/mnt/sun/shared/datasets/surgical_skill/JIGSAWS/Suturing}"
 SYSTEM_PROMPT="${SYSTEM_PROMPT:-$WORK_DIR/Prompts_And_Pipeline/system-prompt-A-D.md}"
+JIGSAWS_SYSTEM_PROMPT="${JIGSAWS_SYSTEM_PROMPT:-$WORK_DIR/Prompts_And_Pipeline/system-prompt-jigsaws-v1.2.md}"
 MODEL_ID="${MODEL_ID:-Qwen/Qwen3.6-35B-A3B}"
 TRIAL_ID="${TRIAL_ID:-Suturing_B001}"
+TRIAL_IDS="${TRIAL_IDS:-}"
+TRIAL_TEMPLATE_PAIRS="${TRIAL_TEMPLATE_PAIRS:-}"
+TASK="${TASK:-Suturing}"
+GRANULARITY="${GRANULARITY:-video}"
 TEMPLATES="${TEMPLATES:-D1}"
 MAX_NEW_TOKENS="${MAX_NEW_TOKENS:-6000}"
 # Sampling instead of greedy decoding: records from the same trial share the
@@ -75,14 +80,27 @@ if [ "$NUM_FREE" -lt "${MIN_FREE_GPUS:-3}" ]; then
 fi
 export CUDA_VISIBLE_DEVICES="$FREE_GPUS"
 
-python3 scripts/run_annotation_qa_jigsaws.py \
+RUN_ARGS=(
+  --task "$TASK"
   --dataset-root "$DATASET_ROOT" \
   --system-prompt "$SYSTEM_PROMPT" \
+  --jigsaws-system-prompt "$JIGSAWS_SYSTEM_PROMPT" \
   --model-id "$MODEL_ID" \
   --trial-id "$TRIAL_ID" \
   --templates "$TEMPLATES" \
+  --granularity "$GRANULARITY" \
   --max-new-tokens "$MAX_NEW_TOKENS" \
   --temperature "$TEMPERATURE" \
   --device-map auto \
   --backend real \
   --output-dir "$OUTPUT_DIR"
+)
+
+if [ -n "$TRIAL_IDS" ]; then
+  RUN_ARGS+=(--trial-ids "$TRIAL_IDS")
+fi
+if [ -n "$TRIAL_TEMPLATE_PAIRS" ]; then
+  RUN_ARGS+=(--trial-template-pairs "$TRIAL_TEMPLATE_PAIRS")
+fi
+
+python3 scripts/run_annotation_qa_jigsaws.py "${RUN_ARGS[@]}"
