@@ -1,0 +1,172 @@
+[
+  {
+    "selection_id": "b2_cholect50_01",
+    "dataset": "CholecT50",
+    "template_id": "B2",
+    "video_id": "VID01",
+    "frame": 1010,
+    "required_triplet": "bipolar,coagulate,cystic_artery",
+    "action": "coagulating the cystic artery with bipolar forceps"
+  },
+  {
+    "selection_id": "b2_cholect50_02",
+    "dataset": "CholecT50",
+    "template_id": "B2",
+    "video_id": "VID02",
+    "frame": 1274,
+    "required_triplet": "clipper,clip,cystic_duct",
+    "action": "clipping the cystic duct"
+  },
+  {
+    "selection_id": "b2_cholect50_03",
+    "dataset": "CholecT50",
+    "template_id": "B2",
+    "video_id": "VID04",
+    "frame": 956,
+    "required_triplet": "scissors,cut,cystic_duct",
+    "action": "cutting the cystic duct"
+  },
+  {
+    "selection_id": "b2_cholect50_04",
+    "dataset": "CholecT50",
+    "template_id": "B2",
+    "video_id": "VID05",
+    "frame": 927,
+    "required_triplet": "hook,dissect,cystic_plate",
+    "action": "dissecting the cystic plate with a hook"
+  },
+  {
+    "selection_id": "b2_cholect50_05",
+    "dataset": "CholecT50",
+    "template_id": "B2",
+    "video_id": "VID06",
+    "frame": 2057,
+    "required_triplet": "irrigator,aspirate,fluid",
+    "action": "aspirating fluid with the irrigator"
+  },
+  {
+    "selection_id": "b2_endoscapes_01",
+    "dataset": "Endoscapes2023",
+    "template_id": "B2",
+    "video_id": "12",
+    "frame": 26200,
+    "coco_split": "train",
+    "action": "continuing dissection toward clipping or cutting the cystic duct or artery"
+  },
+  {
+    "selection_id": "b2_endoscapes_02",
+    "dataset": "Endoscapes2023",
+    "template_id": "B2",
+    "video_id": "4",
+    "frame": 37450,
+    "coco_split": "train",
+    "action": "continuing dissection toward clipping or cutting the cystic duct or artery"
+  },
+  {
+    "selection_id": "b2_endoscapes_03",
+    "dataset": "Endoscapes2023",
+    "template_id": "B2",
+    "video_id": "15",
+    "frame": 28650,
+    "coco_split": "train",
+    "action": "continuing dissection toward clipping or cutting the cystic duct or artery"
+  },
+  {
+    "selection_id": "b2_endoscapes_04",
+    "dataset": "Endoscapes2023",
+    "template_id": "B2",
+    "video_id": "57",
+    "frame": 27650,
+    "coco_split": "train",
+    "action": "continuing dissection toward clipping or cutting the cystic duct or artery"
+  },
+  {
+    "selection_id": "b2_endoscapes_05",
+    "dataset": "Endoscapes2023",
+    "template_id": "B2",
+    "video_id": "74",
+    "frame": 12050,
+    "coco_split": "train",
+    "action": "continuing dissection toward clipping or cutting the cystic duct or artery"
+  },
+  {
+    "selection_id": "b6_multibypass_01",
+    "dataset": "MultiBypass140",
+    "template_id": "B6",
+    "center": "bern",
+    "split": "test",
+    "video_id": "BBP20",
+    "event_id": "6902252_00002"
+  },
+  {
+    "selection_id": "b6_multibypass_02",
+    "dataset": "MultiBypass140",
+    "template_id": "B6",
+    "center": "bern",
+    "split": "test",
+    "video_id": "BBP39",
+    "event_id": "7350446_00001"
+  },
+  {
+    "selection_id": "b6_multibypass_03",
+    "dataset": "MultiBypass140",
+    "template_id": "B6",
+    "center": "bern",
+    "split": "test",
+    "video_id": "BBP01",
+    "event_id": "5550090_00001"
+  },
+  {
+    "selection_id": "b6_multibypass_04",
+    "dataset": "MultiBypass140",
+    "template_id": "B6",
+    "center": "bern",
+    "split": "train",
+    "video_id": "BBP58",
+    "event_id": "7668334_00001"
+  },
+  {
+    "selection_id": "b6_multibypass_05",
+    "dataset": "MultiBypass140",
+    "template_id": "B6",
+    "center": "bern",
+    "split": "train",
+    "video_id": "BBP54",
+    "event_id": "7556163_00003"
+  },
+  {
+    "selection_id": "b7_endoscapes_01",
+    "dataset": "Endoscapes2023",
+    "template_id": "B7",
+    "video_id": "1",
+    "frame": 29850
+  },
+  {
+    "selection_id": "b7_endoscapes_02",
+    "dataset": "Endoscapes2023",
+    "template_id": "B7",
+    "video_id": "22",
+    "frame": 43175
+  },
+  {
+    "selection_id": "b7_endoscapes_03",
+    "dataset": "Endoscapes2023",
+    "template_id": "B7",
+    "video_id": "3",
+    "frame": 15900
+  },
+  {
+    "selection_id": "b7_endoscapes_04",
+    "dataset": "Endoscapes2023",
+    "template_id": "B7",
+    "video_id": "2",
+    "frame": 31050
+  },
+  {
+    "selection_id": "b7_endoscapes_05",
+    "dataset": "Endoscapes2023",
+    "template_id": "B7",
+    "video_id": "6",
+    "frame": 15800
+  }
+]

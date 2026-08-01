@@ -14,11 +14,12 @@ WORK_DIR="${WORK_DIR:-/home/mairuili/annotation_qa}"
 TASK="${TASK:-Suturing}"
 DATASET_ROOT="${DATASET_ROOT:-/mnt/sun/shared/datasets/surgical_skill/JIGSAWS/$TASK}"
 SYSTEM_PROMPT="${SYSTEM_PROMPT:-$WORK_DIR/system-prompt-A-D.md}"
+JIGSAWS_SYSTEM_PROMPT="${JIGSAWS_SYSTEM_PROMPT:-$WORK_DIR/system-prompt-jigsaws-v1.2.md}"
 MODEL_ID="${MODEL_ID:-Qwen/Qwen3.6-35B-A3B}"
 TRIAL_ID="${TRIAL_ID:-Suturing_B001}"
 TEMPLATES="${TEMPLATES:-A3,C1,C2,C3,C6,C7,D1,D2,D3,D4,D5}"
 MAX_SPANS="${MAX_SPANS:-0}"
-MAX_NEW_TOKENS="${MAX_NEW_TOKENS:-2048}"
+MAX_NEW_TOKENS="${MAX_NEW_TOKENS:-6000}"
 OUTPUT_DIR="${OUTPUT_DIR:-$WORK_DIR/results/${SLURM_JOB_ID:-manual}_anno_${TRIAL_ID}}"
 
 QWEN36_PACKAGE_DIR="${QWEN36_PACKAGE_DIR:-/mnt/sun/shared/datasets/surgical_skill/.python/qwen36/site-packages}"
@@ -66,6 +67,7 @@ python3 scripts/run_annotation_qa_jigsaws.py \
   --task "$TASK" \
   --dataset-root "$DATASET_ROOT" \
   --system-prompt "$SYSTEM_PROMPT" \
+  --jigsaws-system-prompt "$JIGSAWS_SYSTEM_PROMPT" \
   --model-id "$MODEL_ID" \
   --trial-id "$TRIAL_ID" \
   --templates "$TEMPLATES" \
