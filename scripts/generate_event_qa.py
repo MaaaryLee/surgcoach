@@ -327,10 +327,17 @@ def main() -> int:
                                          args.max_new_tokens, args.temperature)
                 try:
                     parsed = parse_json_payload(raw)
+                    # The prompt asks for a single-element array, and the model
+                    # sometimes returns the bare object instead. Rejecting that
+                    # discarded 2 of 19 records whose content was complete and
+                    # correct, after four attempts each. The wrapper is not the
+                    # data, so accept either shape.
+                    if isinstance(parsed, dict):
+                        parsed = [parsed]
                     if isinstance(parsed, list) and parsed and isinstance(parsed[0], dict):
                         qa = parsed[0]
                         break
-                    errors.append("schema_mismatch")
+                    errors.append(f"schema_mismatch: got {type(parsed).__name__}")
                 except Exception as exc:  # noqa: BLE001 - record and retry
                     errors.append(f"{type(exc).__name__}: {exc}")
                 if attempts > args.max_retries:

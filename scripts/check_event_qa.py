@@ -69,8 +69,15 @@ PATIENT = re.compile(
 NEGATIVE = re.compile(r"\b(delay\w*|slow\w*|excess\w*|unnecessary|inefficien\w*|"
                       r"fragment\w*|below|struggl\w*|hesitat\w*|wasted|too (?:long|many|much))\b",
                       re.IGNORECASE)
-POSITIVE = re.compile(r"\b(efficient\w*|direct|strong\w*|well[- ]established|"
-                      r"outperform\w*|faster|above|solid|reliable|good)\b",
+# Words that mark approval of what happened. Deliberately excludes "direct" and
+# "commit", even though both read as positive: the events system prompt prescribes
+# exactly those words for corrections ("commit to a single direct path instead of
+# adjusting course mid-reach"), so an answer following instructions on a fault
+# question used them and was flagged as praising the fault. Two of nineteen
+# records, both plainly critical. A checker must not penalise the vocabulary the
+# prompt it is checking hands out.
+POSITIVE = re.compile(r"\b(efficient\w*|well[- ]established|outperform\w*|faster|"
+                      r"solid|reliable|excellent|commendable)\b",
                       re.IGNORECASE)
 
 
