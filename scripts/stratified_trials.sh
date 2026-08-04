@@ -6,13 +6,18 @@
 
 STRATIFIED_LIST="${STRATIFIED_LIST:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/stratified_trials.txt}"
 
+# trials_for_task <task> [subset]
+#   subset "core" restricts to the 7 trials marked core in column 5, 31 records.
+#   Anything else, or omitted, returns all trials for the task.
 trials_for_task() {
-  local task="$1"
+  local task="$1" subset="${2:-all}"
   if [ ! -f "$STRATIFIED_LIST" ]; then
     echo "ERROR: no trial list at $STRATIFIED_LIST" >&2
     return 1
   fi
   # Field 1 must match exactly: Needle_Passing must not be matched by a grep for
   # Suturing, and a substring match would quietly widen any task list.
-  awk -v t="$task" '$1 == t {print $2}' "$STRATIFIED_LIST" | paste -sd, -
+  awk -v t="$task" -v s="$subset" \
+    '$1 == t && (s != "core" || $5 == "core") {print $2}' \
+    "$STRATIFIED_LIST" | paste -sd, -
 }

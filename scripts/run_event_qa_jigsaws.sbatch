@@ -58,15 +58,17 @@ MAX_RETRIES="${MAX_RETRIES:-3}"
 OUT_ROOT="${OUT_ROOT:-$WORK_DIR/outputs/event_qa_${SLURM_JOB_ID:-manual}}"
 TASKS_TO_RUN="${TASKS_TO_RUN:-Suturing Knot_Tying Needle_Passing}"
 
-# stratified (default): the 15 trials in scripts/stratified_trials.txt, 60 records.
-#   The C and D batches use the same 15, so each of those videos gets all three
-#   record sets and a generic answer can be put beside a localized one for the
-#   same trial -- which is the comparison the review feedback actually calls for.
+# core (default): the 7 trials marked core in scripts/stratified_trials.txt, 31
+#   records. Keeps all three tasks, GRS 6-30, all three skill labels and both
+#   skill/GRS decoupling cases -- see that file for why those 7.
+# stratified: all 15 trials, 60 records. The C and D batches use the same 15, so
+#   each of those videos gets all three record sets and a generic answer can be
+#   put beside a localized one for the same trial.
 # all: every trial with both a meta row and a transcription, 392 records.
-SUBSET="${SUBSET:-stratified}"
+SUBSET="${SUBSET:-core}"
 echo "OUT_ROOT            $OUT_ROOT"
 echo "SUBSET              $SUBSET"
-if [ "$SUBSET" = "stratified" ]; then
+if [ "$SUBSET" != "all" ]; then
   . "$HERE/stratified_trials.sh"
 fi
 
@@ -146,10 +148,10 @@ for task in $TASKS_TO_RUN; do
   echo "=== $task ==="
   # --trials names them explicitly; --task takes every trial with a transcription.
   # The generator infers the task from each trial id, so --task is not also needed.
-  if [ "$SUBSET" = "stratified" ]; then
-    selected=$(trials_for_task "$task")
+  if [ "$SUBSET" != "all" ]; then
+    selected=$(trials_for_task "$task" "$SUBSET")
     if [ -z "$selected" ]; then
-      echo "  no stratified trials listed for $task, skipping"
+      echo "  no $SUBSET trials listed for $task, skipping"
       continue
     fi
     echo "  trials: $selected"

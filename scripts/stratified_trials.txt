@@ -20,24 +20,42 @@
 # scoring 22/30. Those cases test whether the model reasons from the scores or
 # just parrots the self-reported experience label.
 #
-# Columns: task  trial_id  skill_level  grs_total
+# Columns: task  trial_id  skill_level  grs_total  subset
 # skill_level and grs_total are here for reading and for coverage checks; the
 # runners take them from meta_file at generation time, never from this file.
+#
+# subset "core" marks the 7 trials used when a smaller batch is wanted. All 15
+# give 60 event records; the core 7 give 31, at roughly 2.8 minutes each locally.
+#
+# Which 7 is not arbitrary, and not the first 7 either. Truncating the list would
+# have dropped Needle_Passing entirely and taken the GRS range down to 8-19, which
+# is close to the flaw that forced this list to be rewritten in the first place.
+# The core keeps:
+#   all three tasks                       Suturing 3, Knot_Tying 2, Needle_Passing 2
+#   the full score range                  GRS 6, 7, 8, 13, 22, 23, 30
+#   all three skill labels                E x2, N x3, I x2
+#   both skill/GRS decoupling cases       Suturing_D004 is an expert at 8/30 and
+#                                         Knot_Tying_H004 a novice at 22/30, the
+#                                         two trials that test whether the model
+#                                         reasons from the scores or parrots the
+#                                         self-reported label
+# Dropped trials are the redundant middles: Suturing_E004 and Knot_Tying_E002 both
+# sit at 19 beside Needle_Passing_B004, and Needle_Passing_B004 yields 1 event.
 
-Suturing         Suturing_D004          E   8
-Suturing         Suturing_H001          N   14
-Suturing         Suturing_E004          E   19
-Suturing         Suturing_I004          N   23
-Suturing         Suturing_C004          I   30
+Suturing         Suturing_D004          E   8    core
+Suturing         Suturing_H001          N   14   -
+Suturing         Suturing_E004          E   19   -
+Suturing         Suturing_I004          N   23   core
+Suturing         Suturing_C004          I   30   core
 
-Knot_Tying       Knot_Tying_G004        N   6
-Knot_Tying       Knot_Tying_F004        I   10
-Knot_Tying       Knot_Tying_F005        I   15
-Knot_Tying       Knot_Tying_E002        E   19
-Knot_Tying       Knot_Tying_H004        N   22
+Knot_Tying       Knot_Tying_G004        N   6    core
+Knot_Tying       Knot_Tying_F004        I   10   -
+Knot_Tying       Knot_Tying_F005        I   15   -
+Knot_Tying       Knot_Tying_E002        E   19   -
+Knot_Tying       Knot_Tying_H004        N   22   core
 
-Needle_Passing   Needle_Passing_C003    I   7
-Needle_Passing   Needle_Passing_D002    E   11
-Needle_Passing   Needle_Passing_E003    E   13
-Needle_Passing   Needle_Passing_B004    N   19
-Needle_Passing   Needle_Passing_F004    I   24
+Needle_Passing   Needle_Passing_C003    I   7    core
+Needle_Passing   Needle_Passing_D002    E   11   -
+Needle_Passing   Needle_Passing_E003    E   13   core
+Needle_Passing   Needle_Passing_B004    N   19   -
+Needle_Passing   Needle_Passing_F004    I   24   -
