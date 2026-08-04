@@ -18,7 +18,7 @@ Copies on the compute clusters are synced manually (see section 3), and results 
 - macOS 15.7 (Darwin 24.6), Apple Silicon, no CUDA.
 - System Python 3.9.6 — sufficient for everything that runs locally.
 
-What runs locally (no ML dependencies needed at all):
+What runs locally (no ML dependencies needed, though the event localizer needs `numpy` — it reads the kinematics as arrays, with or without a model):
 
 - `scripts/run_annotation_qa_jigsaws.py --backend mock` — full pipeline smoke test (annotation parsing, template gating, exact D-wording validation, record schema). `torch`/`transformers` are imported only inside the real backend, so mock mode runs on stock Python.
 - `python3 -m compileall` syntax checks, prompt/template editing, JSONL validation.
@@ -73,12 +73,15 @@ python3 -m venv .venv-qwen36 && source .venv-qwen36/bin/activate
 
 ## 4. Datasets And Annotations
 
-The annotation-only pipeline reads exactly two annotation sources per JIGSAWS task, both plain text:
+The annotation-only pipeline reads three annotation sources per JIGSAWS task, all plain text. The first two serve templates A-D; the third is read only by the event-grounded pipeline:
 
 | File | Content | Used for |
 | --- | --- | --- |
 | `<root>/meta_file_Suturing.txt` | One line per trial: `trial_id skill_level grs_total` + 6 GRS subscores (`respect_for_tissue`, `suture_needle_handling`, `time_and_motion`, `flow_of_operation`, `overall_performance`, `quality_of_final_product`), each 1-5 | C1-C3, C6, C7 scores; D coaching focus |
-| `<root>/transcriptions/<trial_id>.txt` | One line per gesture: `start_frame end_frame gesture_id` (G1-G15) | A3 action recognition; per-span QA items |
+| `<root>/transcriptions/<trial_id>.txt` | One line per gesture: `start_frame end_frame gesture_id` (G1-G15) | A3 action recognition; per-span QA items; event span boundaries |
+| `<root>/kinematics/<sub>/<trial_id>.txt` | 76 variables per frame, on the transcription's frame numbering. Slave columns are the patient-side instruments | `localize_events.py` path length, idle fraction, jerk proxy, regrasp counts |
+
+A root can have the first two and not the third, which is easy to miss: `kinematics/` was never exercised by the A-D jobs, and when it is absent the event detectors return zero events with no error at all. Both event sbatch scripts therefore count the files and refuse to start rather than producing an empty batch that looks like a clean run. `scripts/preflight_event_qa.sbatch` reports the count per task.
 
 `<root>/video/*.avi` exists but is **not read** in the current phase.
 
