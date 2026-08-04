@@ -290,11 +290,21 @@ def main() -> int:
     out_path = Path(args.output_dir) / "qa_records.jsonl"
     done: set[str] = set()
     if args.resume and out_path.exists():
-        for line in out_path.read_text(encoding="utf-8").splitlines():
-            if line.strip():
-                rec = json.loads(line)
-                if rec.get("validation_status") == "valid":
-                    done.add(rec["qa_id"])
+        existing = [json.loads(l) for l in
+                    out_path.read_text(encoding="utf-8").splitlines() if l.strip()]
+        keep = [r for r in existing if r.get("validation_status") == "valid"]
+        done = {r["qa_id"] for r in keep}
+        # Rejected records are retried, so their old lines have to go or the file
+        # ends up with two entries under one qa_id -- one rejected, one valid --
+        # and every downstream count is then wrong in a way nothing reports.
+        # Rewrite via a temp file so an interruption cannot truncate finished work.
+        if len(keep) != len(existing):
+            tmp = out_path.with_name(out_path.name + ".tmp")
+            tmp.write_text("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in keep),
+                           encoding="utf-8")
+            tmp.replace(out_path)
+            print(f"resuming: dropped {len(existing) - len(keep)} rejected record(s) "
+                  f"to be retried")
         print(f"resuming: {len(done)} valid records already in {out_path}")
     if not args.questions_only:
         out_path.parent.mkdir(parents=True, exist_ok=True)
