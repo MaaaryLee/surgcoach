@@ -117,8 +117,14 @@ if [ "$NUM_FREE" -lt "${MIN_FREE_GPUS:-3}" ]; then
   echo "ERROR: still only $NUM_FREE free GPUs after waiting; giving up" >&2
   exit 1
 fi
-# Cap how many this job claims, so two jobs can split one node.
-FREE_GPUS=$(echo "$FREE_GPUS" | tr ',' '\n' | head -n "${MAX_GPUS:-8}" | paste -sd, -)
+# Cap how many this job claims. Defaults to what Slurm actually allocated rather
+# than a fixed number, because the two silently diverged: with a hardcoded 8, a
+# job requesting --gres=gpu:4 that found 8 free GPUs pinned all 8. That runs, but
+# Slurm still believes 4 are available and hands them to someone else, who then
+# hits the very "another user's process took my GPU" failure this poll loop
+# exists to avoid. 70 GB of weights across 4 A6000s is already comfortable, so
+# the extra GPUs bought nothing.
+FREE_GPUS=$(echo "$FREE_GPUS" | tr ',' '\n' | head -n "${MAX_GPUS:-${SLURM_GPUS_ON_NODE:-4}}" | paste -sd, -)
 echo "using GPUs: [$FREE_GPUS]"
 export CUDA_VISIBLE_DEVICES="$FREE_GPUS"
 
