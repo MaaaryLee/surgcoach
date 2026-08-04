@@ -68,6 +68,18 @@ check "localize_events.py present" $? "the detectors; new on this cluster"
 [ -n "${SYSTEM_PROMPT:-}" ] && [ -f "$SYSTEM_PROMPT" ]
 check "events system prompt present" $? "${SYSTEM_PROMPT:-<not found>}"
 
+# The work dir is a clone, and the copied-in generator imports four symbols from
+# the runner already there. An older clone can be missing them, which fails at
+# import time -- after the copy looked fine.
+echo "clone HEAD: $(cd "$WORK_DIR" && git log --oneline -1 2>/dev/null || echo '<not a git clone>')"
+missing=""
+for sym in TRANSPORT_RETRIES TRANSPORT_BACKOFF_SECONDS load_text_model \
+           run_generation extract_system_prompt parse_json_payload; do
+  grep -q "$sym" "$WORK_DIR/scripts/run_annotation_qa_jigsaws.py" 2>/dev/null || missing="$missing $sym"
+done
+[ -z "$missing" ]
+check "runner exposes what the generator imports" $? "${missing:-all six present}"
+
 # The failure that killed the last attempt: the work dir exists on the login node
 # but is not mounted on compute nodes, or is read-only there.
 touch "$WORK_DIR/.preflight_write_test" 2>/dev/null
