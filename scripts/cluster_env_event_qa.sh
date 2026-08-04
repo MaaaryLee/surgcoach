@@ -61,18 +61,37 @@ if [ -n "$HEADER_ROOT" ]; then
 fi
 note "PYTHON HEADERS      ${HEADER_ROOT:-<not found>}"
 
+# A name for this user, for per-user cache and scratch paths. $USER is unset in a
+# batch step and `whoami` fails outright on these compute nodes -- they cannot
+# resolve the UID against any name service, so it returns empty. An empty name
+# silently built ".../huggingface/" with nothing on the end, so fall back to the
+# numeric UID, which always resolves.
+WHO="${USER:-$(id -un 2>/dev/null || true)}"
+WHO="${WHO:-uid$(id -u)}"
+note "USER                $WHO"
+
 # Per-user, because the HF cache is on a shared mount and two users writing the
 # same snapshot directory is how a half-downloaded model gets read as complete.
 # Falls back beside the work dir if the shared cache is not writable.
+#
+# Watch this line. The 35B snapshot is ~69 GB, so an HF_HOME that does not
+# already hold it means downloading it before generation starts.
 if [ -z "${HF_HOME:-}" ]; then
-  cand="$SHARED/.cache/huggingface/${USER:-$(whoami)}"
+  cand="$SHARED/.cache/huggingface/$WHO"
   if mkdir -p "$cand" 2>/dev/null; then HF_HOME="$cand"
   else HF_HOME="$(dirname "$WORK_DIR")/.cache/huggingface"; fi
 fi
 export HF_HOME
-export TMPDIR="${TMPDIR:-$SHARED/.tmp/event_qa_${USER:-$(whoami)}}"
+# SLURM presets TMPDIR to node-local /tmp, which is correct for scratch and
+# faster than the shared mount, so it is left alone when already set.
+export TMPDIR="${TMPDIR:-$SHARED/.tmp/event_qa_$WHO}"
 note "HF_HOME             $HF_HOME"
 note "TMPDIR              $TMPDIR"
+if [ -d "$HF_HOME/hub" ] || [ -d "$HF_HOME/models--Qwen--Qwen3.6-35B-A3B" ]; then
+  note "HF_HOME state       has a hub/ cache"
+else
+  note "HF_HOME state       EMPTY -- expect a ~69 GB download before generation"
+fi
 
 export PYTORCH_CUDA_ALLOC_CONF="${PYTORCH_CUDA_ALLOC_CONF:-expandable_segments:True}"
 export PYTHONFAULTHANDLER=1
