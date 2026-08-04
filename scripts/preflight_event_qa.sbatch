@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 #SBATCH --job-name=preflight-event-qa
+# Same partition as the GPU job, because that name is known to be accepted here,
+# but no --gres: this check loads no model and needs no GPU.
+#SBATCH --partition=a6000
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=16G
 #SBATCH --time=00:20:00
