@@ -96,7 +96,10 @@ META_REF = re.compile(
     # system just as plainly as "your score" and passed because of the possessive
     # requirement. Rule 11 bars any reference in the answer, so any determiner or
     # adjective in front of it is irrelevant.
-    r"\b(rubrics?|ratings?|assessments?|metrics?|grading|evaluations?|scales?|"
+    # "scale" needs the negative lookahead: "when the procedure scales up" is the
+    # verb, not a rating scale, and was reported as a meta-reference.
+    r"\b(rubrics?|ratings?|assessments?|metrics?|grading|evaluations?|"
+    r"scales?(?!\s+(?:up|down|back|with))|"
     r"scores?|scored|scoring|subscore\w*)\b",
     re.IGNORECASE,
 )
@@ -303,7 +306,12 @@ GOAL_OR_NEGATED = re.compile(
     # direct trajectories" name a target, which rule 1 permits at any score --
     # both were flagged as coaching against a 4/5.
     r"aim(?:s|ing|ed)? (?:to|for|at)|work(?:ing)? (?:toward|towards)|"
-    r"strive\w*|goal is|target is|push(?:ing)? (?:toward|for))\b",
+    r"strive\w*|goal is|target is|push(?:ing)? (?:toward|for)|"
+    # Outright negation, which inverts the meaning: "you are not wasting energy on
+    # redundant paths or awkward transitions" is praise at a 5/5 and was read as
+    # a fault. Restricted to negated verbs so a bare "not" elsewhere in the clause
+    # does not excuse everything.
+    r"n[o']t\s+\w+ing|removing the need|without the need|no longer need)\b",
     re.IGNORECASE,
 )
 # The vocabulary as a deliberate instruction, not a criticism. "To correct this
@@ -570,12 +578,26 @@ def check_record(r):
         )
     # Anchor vocabulary used against a score that does not support it. At 4-5 the
     # anchor records the opposite of what the answer is coaching.
+    # Only a 5 is checked, not 4-5.
+    #
+    # At 5 the anchor denies the trait outright -- "no awkwardness", "maximum
+    # efficiency", "effortless flow" -- so naming it contradicts the label. At 4
+    # the trainee sits between "occasionally stiff or awkward" and "no
+    # awkwardness", which leaves real room, and every 4-score flag across three
+    # batches turned out legitimate on inspection.
+    #
+    # Most were a deeper problem than framing: the elements are not independent.
+    # A pause can come from poor instrument handling rather than poor flow, so
+    # "you tend to pause when rotating the needle" is grounded by a needle score
+    # of 2 even though flow is 4. Attributing each word to exactly one element
+    # cannot see that, and at 4 the misattribution is more likely than a real
+    # contradiction. At 5 it still fires, which is where the anchor is unambiguous.
     scores = sa.get("grs_subscores") or {}
     for field, pattern in LICENSED_BY_LOW_SCORE:
         score = scores.get(field)
-        if score is None or score < 4:
+        if score is None or score < 5:
             continue
-        hit = find_score_contradiction(answer, pattern, hedge_ok=(score == 4))
+        hit = find_score_contradiction(answer, pattern, hedge_ok=False)
         if hit:
             issues.append(
                 f"coaches on {GRS_PLAIN_LABELS.get(field, field)} but {field} is "

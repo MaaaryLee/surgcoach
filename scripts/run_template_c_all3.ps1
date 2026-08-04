@@ -15,7 +15,7 @@
 
 $ErrorActionPreference = "Stop"
 $repo = "c:\Users\Eric\Project\surgcoach"
-$outRoot = "$repo\outputs\template_c_all3_7-29-2026"
+$outRoot = "$repo\outputs\template_c_stratified_7-29-2026"
 
 . "$repo\scripts\stratified_trials.ps1"
 $runs = $StratifiedTrials
