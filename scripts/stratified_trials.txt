@@ -1,0 +1,43 @@
+# The 15 trials every batch uses, so the C, D and event families all cover the
+# same videos and can be compared record against record for one trial.
+#
+# One list in one file because there are now three readers -- stratified_trials.ps1
+# for the Windows C/D runners, stratified_trials.sh for the cluster sbatch scripts,
+# and anything checking coverage. Two copies of a list like this drift, and the
+# drift is silent: a batch simply covers different videos than the batch it is
+# being compared with.
+#
+# Chosen to span each task's GRS range rather than taken alphabetically. The
+# earlier selection was B001-B004 plus C001 per task, which is just the front of
+# the file listing: 13 of those 15 scored 17 or below out of 30, all five Suturing
+# trials were novice, and no expert trial appeared anywhere. Two templates cannot
+# do their job on a sample like that -- C7 has five supervision levels and used one
+# for all 15 records, and D5 is asked to name a strongest skill where none of the
+# trials has a strength to name.
+#
+# The spread also decouples skill_level from grs_total, which the old selection
+# could not: Suturing_D004 is an expert scoring 8/30 and Knot_Tying_H004 a novice
+# scoring 22/30. Those cases test whether the model reasons from the scores or
+# just parrots the self-reported experience label.
+#
+# Columns: task  trial_id  skill_level  grs_total
+# skill_level and grs_total are here for reading and for coverage checks; the
+# runners take them from meta_file at generation time, never from this file.
+
+Suturing         Suturing_D004          E   8
+Suturing         Suturing_H001          N   14
+Suturing         Suturing_E004          E   19
+Suturing         Suturing_I004          N   23
+Suturing         Suturing_C004          I   30
+
+Knot_Tying       Knot_Tying_G004        N   6
+Knot_Tying       Knot_Tying_F004        I   10
+Knot_Tying       Knot_Tying_F005        I   15
+Knot_Tying       Knot_Tying_E002        E   19
+Knot_Tying       Knot_Tying_H004        N   22
+
+Needle_Passing   Needle_Passing_C003    I   7
+Needle_Passing   Needle_Passing_D002    E   11
+Needle_Passing   Needle_Passing_E003    E   13
+Needle_Passing   Needle_Passing_B004    N   19
+Needle_Passing   Needle_Passing_F004    I   24

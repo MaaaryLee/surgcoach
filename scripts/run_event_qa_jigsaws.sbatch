@@ -57,7 +57,18 @@ TEMPERATURE="${TEMPERATURE:-0.7}"
 MAX_RETRIES="${MAX_RETRIES:-3}"
 OUT_ROOT="${OUT_ROOT:-$WORK_DIR/outputs/event_qa_${SLURM_JOB_ID:-manual}}"
 TASKS_TO_RUN="${TASKS_TO_RUN:-Suturing Knot_Tying Needle_Passing}"
+
+# stratified (default): the 15 trials in scripts/stratified_trials.txt, 60 records.
+#   The C and D batches use the same 15, so each of those videos gets all three
+#   record sets and a generic answer can be put beside a localized one for the
+#   same trial -- which is the comparison the review feedback actually calls for.
+# all: every trial with both a meta row and a transcription, 392 records.
+SUBSET="${SUBSET:-stratified}"
 echo "OUT_ROOT            $OUT_ROOT"
+echo "SUBSET              $SUBSET"
+if [ "$SUBSET" = "stratified" ]; then
+  . "$HERE/stratified_trials.sh"
+fi
 
 if [ ! -d "$QWEN36_PACKAGE_DIR" ]; then
   echo "ERROR: no torch/transformers at $QWEN36_PACKAGE_DIR." >&2
@@ -133,10 +144,23 @@ export CUDA_VISIBLE_DEVICES="$FREE_GPUS"
 # others' output intact.
 for task in $TASKS_TO_RUN; do
   echo "=== $task ==="
+  # --trials names them explicitly; --task takes every trial with a transcription.
+  # The generator infers the task from each trial id, so --task is not also needed.
+  if [ "$SUBSET" = "stratified" ]; then
+    selected=$(trials_for_task "$task")
+    if [ -z "$selected" ]; then
+      echo "  no stratified trials listed for $task, skipping"
+      continue
+    fi
+    echo "  trials: $selected"
+    SELECT_ARGS=(--trials "$selected")
+  else
+    SELECT_ARGS=(--task "$task")
+  fi
   python3 scripts/generate_event_qa.py \
     --jigsaws-root "$JIGSAWS_ROOT" \
     --system-prompt "$SYSTEM_PROMPT" \
-    --task "$task" \
+    "${SELECT_ARGS[@]}" \
     --backend transformers \
     --model-id "$MODEL_ID" \
     --device-map auto \
