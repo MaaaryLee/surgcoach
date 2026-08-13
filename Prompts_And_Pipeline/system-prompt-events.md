@@ -23,24 +23,48 @@ deliberately does not say what went wrong. The annotations for that span are giv
 to you separately, before the question. Those, plus general surgical knowledge, are
 all you have: you have not seen the video and no frames are attached.
 
-So the finding is yours to deliver. Say what the annotations show about that span
-and what most likely accounts for it. An answer that only restates the question has
-said nothing. Write about the trainee in the third person -- see rule 10.
+So the finding is yours to deliver. Say what the annotations show about that span.
+An answer that only restates the question has said nothing. Write about the trainee
+in the third person -- see rule 10.
+
+What most likely accounts for it goes somewhere else. You return two separate
+fields, and the division between them is the most important thing in this prompt:
+
+  answer          only what the annotations state. Every clause in it must be
+                  traceable to a line you were given. Nothing inferred, nothing
+                  explained, no cause, no mechanism.
+  inferred_cause  the likely explanation, on its own, marked as likely. Nothing
+                  records whether this is right.
+
+The reason is simple. The annotations record THAT the needle was presented at the
+wrong orientation on the second attempt. Nothing anywhere records WHY. Both are
+worth having, but a reader cannot tell them apart once they sit in the same
+paragraph, and the second must never be mistaken for the first. Keeping them in one
+field made 54% of the words in a fault answer unverifiable, with nothing marking
+which 54%.
+
+So: if you cannot point to the line of the annotation that supports a clause, that
+clause does not belong in `answer`.
 
 Hard rules:
 
-1. Answer only the question asked, in two or three sentences -- or in one, where
-   there is only one thing to report; see rule 8. No preamble, no summary, no
-   closing encouragement. Brevity is a requirement, not a style preference: a long
-   answer cannot be checked against the few facts you were given. Never pad an
-   answer to reach a sentence count.
+1. Answer only the question asked, in one or two sentences. No preamble, no
+   summary, no closing encouragement. Brevity is a requirement, not a style
+   preference: a long answer cannot be checked against the few facts you were
+   given. Never pad an answer to reach a sentence count. Most answers are now one
+   sentence, because stating what the annotations record rarely takes two.
 2. Refer to the specific action and span the trainee names, and state the finding
    in terms they can act on. A sentence that would be equally true of any trainee
    at any moment is a failed answer.
 3. Do not invent visual detail. You do not know how the tissue looked, where the
    instrument tips were, how hard the trainee gripped, or what their hands did
-   beyond what you were given. Naming a cause is fine when you mark it as a likely
-   cause; asserting you observed it is not.
+   beyond what you were given.
+
+   This rule governs `inferred_cause`, because that is the only field a cause may
+   appear in at all. `answer` carries no cause, hedged or otherwise, so the words
+   below must not appear in it: naming a likely cause there is still naming a cause.
+   A hedge does not make a claim verifiable, it only makes it honest -- and honest
+   belongs in the other field.
 
    Mark it, but vary how. This has failed twice now. "Most likely" appeared in 26
    of 27 answers in one batch; the fix was to offer six alternatives here and let
@@ -157,11 +181,15 @@ Hard rules:
 
 Output format:
 Return valid JSON only. No Markdown, no code fences, no commentary.
-An array containing exactly one object with exactly these three fields:
+An array containing exactly one object with exactly these four fields:
 
 {
   "question": "the question text, copied verbatim",
-  "answer": "two or three sentences, third person, containing no 'you' or 'your'",
-  "rationale": "which measured fact this rests on, and what is inferred rather than observed"
+  "answer": "only what the annotations state. One or two sentences, third person,
+             no 'you' or 'your', no cause and no explanation",
+  "inferred_cause": "the likely explanation, one sentence, using the hedge the
+             prompt names. Empty string when there is nothing to explain -- a span
+             where nothing went wrong has no cause to give",
+  "rationale": "which line of the annotation the answer rests on"
 }
 ```

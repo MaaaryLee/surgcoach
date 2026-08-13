@@ -88,6 +88,16 @@ MAX_WORDS = 90
 #          used 1 sentence frame for 8 questions and the ordinal form 4 for 5.
 MAX_QUESTION_WORDS = 35     # scoped questions run 20-26; the loaded ones ran 55-70
 MAX_ANSWER_OVERLAP = 0.35   # share of answer content words already in the question
+# Higher under the split schema, because the split makes the answer shorter and the
+# measure is a ratio. Once the inferred cause moves to its own field, what remains is
+# a terse statement of the annotation that must name the action -- and the question
+# names the action too, so the shared words concentrate. Measured: job 29576 ran a
+# median 40% overlap with the cause still inside the answer, and the split batch runs
+# 36%, yet only the split batch flagged, because removing 13 words of cause removed
+# 13 words of denominator. Penalising that is penalising the brevity the split exists
+# to create -- the same error as flagging the one-sentence negatives, exempted above.
+# 55% still catches an answer that is purely its own question rearranged.
+MAX_ANSWER_OVERLAP_SPLIT = 0.55
 
 TIMESTAMP = re.compile(r"\d+:\d+(?:\.\d+)?")
 # "the third time the trainee was ...", or "at the point where ..." for a gesture that
@@ -226,11 +236,13 @@ def check_question(rec: dict, question: str, answer: str) -> list[str]:
                    and not (rec.get("grounding") or {}).get("faults"))
     a_words = content_words(answer)
     if a_words and not is_negative:
+        limit = (MAX_ANSWER_OVERLAP_SPLIT if rec.get("answer_schema") == "split"
+                 else MAX_ANSWER_OVERLAP)
         q_words = set(content_words(question))
         share = sum(1 for w in a_words if w in q_words) / len(a_words)
-        if share > MAX_ANSWER_OVERLAP:
+        if share > limit:
             issues.append(f"{share:.0%} of the answer's content words are already in its "
-                          f"own question (limit {MAX_ANSWER_OVERLAP:.0%})")
+                          f"own question (limit {limit:.0%})")
     return issues
 
 
@@ -364,6 +376,50 @@ def check_clean_answer(answer: str) -> list[str]:
     return issues
 
 
+# The answer/inferred_cause split, and the checks that keep it honest.
+#
+# Measured on job 29576, which passed every other check in this file: 31% of the
+# words across 38 answers, and 54% of the words in the 13 fault answers, were the
+# inferred cause -- exactly one hedged sentence per fault answer, with nothing in the
+# record marking which sentence a reader could not verify. The clean answers were
+# already at 0%, because their guidance forbids explaining.
+#
+# So the cause moved to its own field. The answer now carries only what the
+# annotations state, and these checks exist because a prompt asking for that is not
+# the same as getting it: the model has produced a cause in every fault answer for
+# six consecutive batches, and habit is exactly what a check is for.
+INFERENCE_MARKERS = re.compile(
+    r"\bthe usual cause of this is\b|\bthis is what happens when\b|"
+    r"\bthat pattern points to\b|\bconsistent with\b|\bfollows from\b|"
+    r"\bmost likely\b|\bpoints to\b|\bsuggests?\b|\bindicat\w+\b|"
+    r"\bbecause\b|\bdue to\b|\bresult\w*\s+(?:from|of)\b|\bcaused by\b|"
+    r"\bowing to\b|\bstems? from\b|\battributable to\b|\bwhich allow\w*\b|"
+    r"\brather than\b", re.IGNORECASE)
+
+
+def check_answer_inference_free(rec: dict, qa: dict) -> list[str]:
+    """The answer states annotations only; the cause lives in its own field."""
+    issues: list[str] = []
+    answer = str(qa.get("answer", ""))
+    cause = str(qa.get("inferred_cause", "") or "")
+
+    m = INFERENCE_MARKERS.search(answer)
+    if m:
+        issues.append(f"answer contains an inference ({m.group(0)!r}); it belongs in "
+                      f"inferred_cause, which is the whole point of the split")
+
+    has_faults = bool((rec.get("grounding") or {}).get("faults"))
+    if has_faults and not cause.strip():
+        issues.append("fault record has an empty inferred_cause -- the explanation "
+                      "was dropped rather than moved")
+    if not has_faults and cause.strip():
+        issues.append(f"clean record has an inferred_cause ({cause[:48]!r}); nothing "
+                      f"went wrong, so there is nothing to explain")
+    if cause and len(sentences(cause)) > 2:
+        issues.append(f"inferred_cause is {len(sentences(cause))} sentences; one")
+    return issues
+
+
 CARDINALS = {"two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7,
              "eight": 8, "nine": 9, "ten": 10, "eleven": 11, "twelve": 12}
 
@@ -425,6 +481,38 @@ def check_numbers(rec: dict, answer: str) -> list[str]:
     return []
 
 
+# A fault answer volunteering that the other occurrences were fine. The guidance says
+# "Do not comment on the occurrences that were fine", and it has been ignored in three
+# separate batches -- "while the first three passes completed without issue",
+# "proceeded without incident during the first three attempts". Not a correctness
+# problem: the statement is true and annotation-supported. It is a scope problem, and
+# it went unnoticed for three batches precisely because nothing looked for it.
+#
+# Only fires where some occurrences were clean and some were not. When every
+# occurrence is a fault there is nothing to volunteer, and a wholly clean record is
+# supposed to say exactly this.
+CLEAN_ASIDE = re.compile(
+    r"\b(?:the (?:other|remaining|rest of the)|first \w+|others?)\b[^.]{0,60}"
+    r"\b(?:went (?:fine|well|cleanly)|without (?:error|fault|issue|incident|a mistake)|"
+    r"were fine|proceeded|succeeded|completed)\b|"
+    r"\b(?:proceeded|completed|succeeded)\b[^.]{0,40}\bduring the first\b",
+    re.IGNORECASE)
+
+
+def check_scope(rec: dict, answer: str) -> list[str]:
+    """A fault answer should report the faults, not review the clean occurrences."""
+    g = rec.get("grounding") or {}
+    faults = g.get("faults") or []
+    total = g.get("occurrences") or 0
+    if not faults or len(faults) >= total:
+        return []
+    m = CLEAN_ASIDE.search(answer)
+    if m:
+        return [f"answer comments on the occurrences that were fine "
+                f"({m.group(0)[:46]!r}); the guidance asks for the faults only"]
+    return []
+
+
 def check_locate_answer(rec: dict, answer: str) -> list[str]:
     """A locate answer has to say WHICH occurrence, because the question would not.
 
@@ -465,7 +553,8 @@ def check_answer_states_finding(rec: dict, answer: str) -> list[str]:
     """The answer must report what the annotations showed; the question no longer does."""
     kind = rec.get("question_kind")
     if kind == "locate":
-        issues = check_locate_answer(rec, answer) + check_numbers(rec, answer)
+        issues = (check_locate_answer(rec, answer) + check_numbers(rec, answer)
+                  + check_scope(rec, answer))
         for etype in {t for f in (rec.get("grounding") or {}).get("faults", [])
                       for t in f.get("error_types", [])}:
             pattern = FINDING_TERMS.get(etype)
@@ -621,6 +710,12 @@ def check_record(rec: dict) -> list[str]:
     if not anchored:
         issues.append("never refers to the span or the action the question named")
 
+    # Only for records generated under the split schema. Older batches kept the cause
+    # inside the answer by design, and flagging every one of them would bury the
+    # checks that still apply to them.
+    if rec.get("answer_schema") == "split":
+        issues += check_answer_inference_free(rec, qa)
+
     issues += check_question(rec, question, answer)
     issues += check_answer_states_finding(rec, answer)
     # Clean answers only. A fault answer names other actions for good reason: asked
@@ -691,7 +786,8 @@ NGRAM_SHARE = 0.5      # a phrase in half the answers is a template, not a coinc
 NGRAM_SIZES = (4, 5)
 
 
-def repeated_phrases(answers: list[str]) -> list[tuple[str, int]]:
+def repeated_phrases(answers: list[str],
+                     facts: list[str] | None = None) -> list[tuple[str, int]]:
     """Word sequences appearing in at least NGRAM_SHARE of the answers.
 
     Needed because WATCH is a list of phrases already known to have gone wrong, so it
@@ -706,8 +802,19 @@ def repeated_phrases(answers: list[str]) -> list[tuple[str, int]]:
         for size in NGRAM_SIZES:
             counts.update({" ".join(words[i:i + size])
                            for i in range(len(words) - size + 1)})
+    # A phrase the annotations themselves use is fidelity, not filler. "At the wrong
+    # orientation" appeared in 4 of 8 answers and in the facts given to all four of
+    # those records -- it is the label's own wording, and under the split schema the
+    # answer's entire job is to state the label. Flagging it would push the model to
+    # paraphrase an annotation it should be quoting, which is how a verifiable
+    # statement turns into an approximate one.
+    from_annotation = set()
+    if facts:
+        blob = " ".join(re.findall(r"[a-z']+", " ".join(facts).lower()))
+        from_annotation = {p for p in counts if p in blob}
     hits = [(phrase, n) for phrase, n in counts.items()
             if n / len(answers) >= NGRAM_SHARE
+            and phrase not in from_annotation
             and not any(s in phrase for s in STRUCTURAL_PHRASES)]
     # Longest first, so "commit to a single direct" is reported rather than the
     # several shorter fragments of itself that also cross the threshold.
@@ -839,7 +946,8 @@ def check_batch(recs: list[dict]) -> list[str]:
 
     # Word sequences shared across the whole batch regardless of group: those cannot
     # be explained by subject matter, so they are always worth reporting.
-    for phrase, n in repeated_phrases(answers):
+    for phrase, n in repeated_phrases(
+            answers, [str(r.get("facts_shown_to_model", "")) for r in valid]):
         issues.append(f"repeated phrasing: {n}/{len(answers)} answers ({n / len(answers):.0%}) "
                       f"contain {phrase!r}")
     return issues

@@ -334,6 +334,15 @@ def main() -> int:
             add(wrap("Q: ", str(qa.get("question", ""))))
             add("")
             add(wrap("A: ", str(qa.get("answer", ""))))
+            # Printed under its own heading, and never run together with the answer.
+            # The whole reason it is a separate field is that a reader cannot tell an
+            # annotation-supported statement from an inference once they share a
+            # paragraph -- so a report that reflows them into one would undo the
+            # thing being reported.
+            if str(qa.get("inferred_cause", "") or "").strip():
+                add("")
+                add(wrap("Inferred cause (NOT recorded anywhere -- an inference): ",
+                         str(qa["inferred_cause"])))
             if qa.get("rationale"):
                 add("")
                 add(wrap("Rationale: ", str(qa["rationale"])))

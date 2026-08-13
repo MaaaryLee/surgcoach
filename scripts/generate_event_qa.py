@@ -92,6 +92,9 @@ USER_PROMPT = (
     "attempt\") -- rather than opening every answer the same way. Because the "
     "question does not contain the finding, the answer has to state it; an answer "
     "that only restates the question has said nothing.\n\n"
+    "The answer field carries ONLY what the annotations above state. Every clause "
+    "in it must trace to one of those lines. Why it happened goes in the separate "
+    "inferred_cause field and nowhere else.\n\n"
     "{guidance}\n\n"
     "Return valid JSON only, following the system prompt schema.")
 
@@ -499,9 +502,18 @@ def build_localization_questions(task: str, trial: str, root: Path,
                         "first and third', 'all of them' -- and say what happened "
                         "there. A count on its own ('two of them') is not an answer. "
                         "Do not comment on the occurrences that were fine, and do not "
-                        "mention the annotations or how the error was recorded. Where "
-                        "you name a likely cause, mark it with the words "
-                        f"\"{hedge_for(trial + gesture)}\" and no other hedge. "
+                        "mention the annotations or how the error was recorded. The "
+                        "answer says what happened and stops -- no cause, no "
+                        "mechanism, nothing about why. Put the likely cause in "
+                        "inferred_cause instead, as one sentence beginning with the "
+                        # Capitalized at the point of use. The hedges are stored
+                        # lowercase because they used to appear mid-sentence inside
+                        # the answer; under the split schema they always start
+                        # inferred_cause, and the model copied the stored casing
+                        # exactly -- four of six causes in the first split batch
+                        # began with a lowercase letter.
+                        f"words \"{hedge_for(trial + gesture).capitalize()}\" and no "
+                        "other hedge. "
                         f"{opening_for(trial + gesture, clean=False)}")
         else:
             fact_lines = [f"- None of the {n} occurrences was marked as an error."]
@@ -547,7 +559,9 @@ def build_localization_questions(task: str, trial: str, root: Path,
                         "Write it as something the trainee did, not as something that "
                         "was or was not found -- 'no problem was identified' is wrong. "
                         "Name the action using the question's own words for it; do not "
-                        "substitute a different action. "
+                        "substitute a different action. Leave inferred_cause as an "
+                        "empty string: nothing went wrong, so there is nothing to "
+                        "explain. "
                         f"{opening_for(trial + gesture, clean=True)}")
 
         out.append({
@@ -1088,6 +1102,14 @@ def main() -> int:
                 "dataset": "JIGSAWS", "task": task, "trial_id": trial,
                 "question_kind": q["kind"], "span": q["span"],
                 "generation_mode": "annotation_only_event_grounded",
+                # Which answer schema this record was generated under. "split" means
+                # the answer carries annotation-supported statements only and any
+                # cause lives in qa[0]["inferred_cause"]. Recorded rather than
+                # inferred from the presence of the key, because the failure worth
+                # catching is the model omitting that key on a fault record -- which
+                # is indistinguishable from an older record unless the generator says
+                # which schema it asked for.
+                "answer_schema": "split",
                 "grounding": q["grounding"],
                 "facts_shown_to_model": q["facts"],
                 "answer_guidance": q["guidance"],
