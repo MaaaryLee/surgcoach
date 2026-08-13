@@ -33,18 +33,38 @@
 #   sbatch scripts/run_event_qa_jigsaws.sbatch
 #   WORK_DIR=/home/$USER/annotation_qa sbatch scripts/run_event_qa_jigsaws.sbatch
 #
+# Pass variables as an environment prefix, NOT through --export. sbatch's --export
+# list is comma separated, so --export=ALL,TRIALS="a,b,c" silently sets TRIALS=a and
+# treats b and c as variable names. That cost a job: TRIALS held 10 trials, one
+# arrived, and the log's "explicit list (1 trials)" was the only sign. This works:
+#   TRIALS="a,b,c" sbatch scripts/run_event_qa_jigsaws.sbatch
+# and combines fine with sbatch's own flags:
+#   TRIALS="a,b,c" sbatch --exclude=somenode scripts/run_event_qa_jigsaws.sbatch
+#
 # Resumable: --resume skips every qa_id already recorded valid, and records flush
 # one at a time, so a preemption costs at most one question.
 
 set -euo pipefail
 
+# Slurm runs a COPY of this script from its own spool directory, so ${BASH_SOURCE[0]}
+# points at /var/lib/slurm/slurmd/jobNNNNN/ and nothing else from the repo is beside
+# it. Resolved once here, for every later source, because getting this wrong fails
+# late: job 28435 loaded the env file (which had its own fallback) and then died on
+# "stratified_trials.sh: No such file or directory" after printing a page of
+# apparently healthy setup.
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-if [ -f "$HERE/cluster_env_event_qa.sh" ]; then
-  # shellcheck source=cluster_env_event_qa.sh
-  . "$HERE/cluster_env_event_qa.sh"
-else
-  . "${SLURM_SUBMIT_DIR:-$PWD}/scripts/cluster_env_event_qa.sh"
+if [ ! -f "$HERE/cluster_env_event_qa.sh" ]; then
+  HERE="${SLURM_SUBMIT_DIR:-$PWD}/scripts"
 fi
+if [ ! -f "$HERE/cluster_env_event_qa.sh" ]; then
+  echo "ERROR: cannot find the repo's scripts/ directory. Tried the script's own" >&2
+  echo "       location and \${SLURM_SUBMIT_DIR:-\$PWD}/scripts = $HERE" >&2
+  echo "       Submit from the repo root, or set WORK_DIR." >&2
+  exit 1
+fi
+echo "SCRIPTS             $HERE"
+# shellcheck source=cluster_env_event_qa.sh
+. "$HERE/cluster_env_event_qa.sh"
 printf '%s' "$CLUSTER_NOTES"
 
 MODEL_ID="${MODEL_ID:-Qwen/Qwen3.6-35B-A3B}"
@@ -66,10 +86,87 @@ TASKS_TO_RUN="${TASKS_TO_RUN:-Suturing Knot_Tying Needle_Passing}"
 #   put beside a localized one for the same trial.
 # all: every trial with both a meta row and a transcription, 392 records.
 SUBSET="${SUBSET:-core}"
+
+# USE_ERROR_LABELS=1 builds questions from the UVA-DSA recorded errors instead of
+# from motion proxies. The generator locates them itself -- beside JIGSAWS on the
+# shared mount here, under outputs/ locally -- so a path is only needed for an
+# unusual location, via ERROR_LABELS.
+#
+#   USE_ERROR_LABELS=1 TRIALS=... sbatch scripts/run_event_qa_jigsaws.sbatch
+#
+# The labels are not redistributed with this repo: the source states no licence, so
+# they are cloned separately and live outside the tree.
+#   cd /mnt/sun/shared/datasets/surgical_skill \
+#     && git clone --depth 1 \
+#          https://github.com/UVA-DSA/ExecProc_Error_Analysis.git ExecProc_Error
+#
+# Proxy questions remain the default because they are the only ones covering
+# Knot_Tying, which has no error labels at all.
+# How the question names the moment it asks about. Only consulted with error labels.
+#
+#   timestamp  (default) "At 0:05.5-0:19.5 the trainee was ..."
+#   ordinal    the clock removed, the moment named by which occurrence it was
+#   none       names no moment at all: "The trainee was X multiple times in this
+#              recording. How did those go?" -- the model has to find which
+#              occurrence went wrong, which is the half of the task a timestamp
+#              deletes. This is the only mode that produces negative examples,
+#              because a gesture whose occurrences are all clean is a valid
+#              question whose answer is "they went fine".
+#
+#   USE_ERROR_LABELS=1 ANCHOR=none TRIALS=... sbatch scripts/run_event_qa_jigsaws.sbatch
+ANCHOR="${ANCHOR:-timestamp}"
+case "$ANCHOR" in
+  timestamp|ordinal|none) ;;
+  *) echo "ERROR: ANCHOR must be timestamp, ordinal or none; got '$ANCHOR'" >&2; exit 1 ;;
+esac
+echo "ANCHOR              $ANCHOR"
+
+LABEL_ARGS=()
+if [ -n "${ERROR_LABELS:-}" ]; then
+  if [ ! -d "$ERROR_LABELS" ]; then
+    echo "ERROR: ERROR_LABELS=$ERROR_LABELS is not a directory" >&2
+    exit 1
+  fi
+  LABEL_ARGS=(--error-labels "$ERROR_LABELS")
+  echo "ERROR_LABELS        $ERROR_LABELS"
+elif [ -n "${USE_ERROR_LABELS:-}" ]; then
+  LABEL_ARGS=(--error-labels)
+  echo "ERROR_LABELS        auto-detected by the generator"
+fi
 echo "OUT_ROOT            $OUT_ROOT"
-echo "SUBSET              $SUBSET"
-if [ "$SUBSET" != "all" ]; then
+# An explicit TRIALS list supersedes SUBSET entirely, so say which one is in force
+# rather than printing a SUBSET that will not be consulted -- job 28435's log said
+# "SUBSET core" while TRIALS was set, which is misleading either way.
+if [ -n "${TRIALS:-}" ]; then
+  echo "TRIALS              explicit list ($(echo "$TRIALS" | tr ',' '\n' | grep -c .) trials)"
+  # Narrow TASKS_TO_RUN to the tasks those trials actually belong to, rather than
+  # entering the loop for all three and skipping the empty ones. This matters for
+  # error-grounded runs specifically: ExecProc_Error_Analysis annotates Suturing and
+  # Needle Passing only, so Knot_Tying can never appear in an error-label trial list.
+  # Iterating over it anyway meant validating its kinematics for nothing and relying
+  # on a skip path -- and when that path had a `grep` that exits 1 on no match, under
+  # `set -euo pipefail`, the job died there silently. Not generating a task is more
+  # honest than generating it and discarding the result.
+  derived=""
+  for known in Suturing Knot_Tying Needle_Passing; do
+    if echo "$TRIALS" | tr ',' '\n' | grep -q "^${known}_"; then
+      derived="$derived $known"
+    fi
+  done
+  if [ -z "$derived" ]; then
+    echo "ERROR: no trial in \$TRIALS matches a known task name." >&2
+    echo "       Expected ids like Suturing_B002 or Needle_Passing_C003; got: $TRIALS" >&2
+    exit 1
+  fi
+  TASKS_TO_RUN="${derived# }"
+  echo "TASKS_TO_RUN        $TASKS_TO_RUN  (derived from \$TRIALS)"
+elif [ "$SUBSET" != "all" ]; then
+  echo "SUBSET              $SUBSET"
+  # Only needed for the SUBSET path; sourcing it otherwise is a file dependency for
+  # no reason.
   . "$HERE/stratified_trials.sh"
+else
+  echo "SUBSET              all"
 fi
 
 if [ ! -d "$QWEN36_PACKAGE_DIR" ]; then
@@ -148,7 +245,24 @@ for task in $TASKS_TO_RUN; do
   echo "=== $task ==="
   # --trials names them explicitly; --task takes every trial with a transcription.
   # The generator infers the task from each trial id, so --task is not also needed.
-  if [ "$SUBSET" != "all" ]; then
+  if [ -n "${TRIALS:-}" ]; then
+    # An explicit list, for error-grounded runs. Those select trials by which errors
+    # they contain rather than by the stratified sample, and only Suturing and
+    # Needle Passing have error labels at all, so neither SUBSET value describes the
+    # set. Filtered per task so the per-task loop still works.
+    # `|| true` matters: grep exits 1 when a task has no trials in the list, and with
+    # `set -euo pipefail` that status propagates through the assignment and kills the
+    # job. Job 28437 finished Suturing's 24 records, hit Knot_Tying -- which has no
+    # error labels and so no trials here -- and died before Needle_Passing and before
+    # the combine step, having printed nothing that looked like an error.
+    selected=$(echo "$TRIALS" | tr ',' '\n' | grep "^${task}_" | paste -sd, - || true)
+    if [ -z "$selected" ]; then
+      echo "  no trials in \$TRIALS belong to $task, skipping"
+      continue
+    fi
+    echo "  trials: $selected"
+    SELECT_ARGS=(--trials "$selected")
+  elif [ "$SUBSET" != "all" ]; then
     selected=$(trials_for_task "$task" "$SUBSET")
     if [ -z "$selected" ]; then
       echo "  no $SUBSET trials listed for $task, skipping"
@@ -163,6 +277,8 @@ for task in $TASKS_TO_RUN; do
     --jigsaws-root "$JIGSAWS_ROOT" \
     --system-prompt "$SYSTEM_PROMPT" \
     "${SELECT_ARGS[@]}" \
+    ${LABEL_ARGS[@]+"${LABEL_ARGS[@]}"} \
+    --anchor "$ANCHOR" \
     --backend transformers \
     --model-id "$MODEL_ID" \
     --device-map auto \

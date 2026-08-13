@@ -95,3 +95,33 @@ fi
 
 export PYTORCH_CUDA_ALLOC_CONF="${PYTORCH_CUDA_ALLOC_CONF:-expandable_segments:True}"
 export PYTHONFAULTHANDLER=1
+
+# Every cache that otherwise defaults into $HOME, redirected to node-local scratch.
+# $HOME is not writable from the compute nodes here, and the failure is thoroughly
+# disguised: Triton wants ~/.triton, load_text_model tries three AutoModel classes in
+# turn, each raises "[Errno 13] Permission denied: '/home/paneric'", and the error
+# surfaces as "Could not load model with any AutoModel class" -- which reads like an
+# architecture problem, not a filesystem one. Job 28599 died that way after having
+# parsed 4,159 labels and verified alignment.
+#
+# Node-local rather than the shared mount on purpose: these are compile caches, they
+# are hot during the run and worthless afterwards, and a shared filesystem makes
+# Triton's many small writes slow.
+export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$TMPDIR/xdg_cache}"
+export TRITON_CACHE_DIR="${TRITON_CACHE_DIR:-$TMPDIR/triton}"
+export TORCHINDUCTOR_CACHE_DIR="${TORCHINDUCTOR_CACHE_DIR:-$TMPDIR/inductor}"
+export TORCH_HOME="${TORCH_HOME:-$TMPDIR/torch}"
+export TRANSFORMERS_CACHE="${TRANSFORMERS_CACHE:-$HF_HOME/hub}"
+mkdir -p "$XDG_CACHE_HOME" "$TRITON_CACHE_DIR" "$TORCHINDUCTOR_CACHE_DIR" \
+         "$TORCH_HOME" 2>/dev/null || true
+note "CACHES              $TMPDIR (triton, inductor, torch, xdg)"
+
+# Last resort for libraries that read $HOME directly rather than an XDG variable.
+# Only when it is genuinely unwritable, so an interactive run keeps its real home.
+if ! touch "$HOME/.write_test" 2>/dev/null; then
+  export HOME="$TMPDIR/home"
+  mkdir -p "$HOME" 2>/dev/null || true
+  note "HOME                $HOME  (real \$HOME is not writable from this node)"
+else
+  rm -f "$HOME/.write_test"
+fi

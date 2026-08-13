@@ -46,12 +46,56 @@ import statistics
 from pathlib import Path
 from typing import Any
 
-import numpy as np
+# Imported lazily, and only by the two functions that read kinematics. Everything
+# else here -- meta, transcriptions, gesture spans -- is plain text parsing, and so
+# are the tools built on it: the error-label alignment check and the question
+# preview. Importing numpy at module scope made those fail on a cluster login node,
+# where PYTHONPATH does not point at the shared site-packages the batch job uses.
+# A check that reads two text files should not need a numeric library to be present.
+# Annotations below are strings under `from __future__ import annotations`, so
+# np.ndarray in a signature costs nothing at import time.
+np = None
+
+
+def _numpy():
+    """numpy, or a message saying which paths need it and why it is missing."""
+    global np
+    if np is None:
+        try:
+            import numpy
+        except ImportError as exc:  # noqa: TRY003
+            raise SystemExit(
+                "numpy is required to read kinematics. On a cluster login node:\n"
+                "  export PYTHONPATH=/mnt/sun/shared/datasets/surgical_skill"
+                "/.python/qwen36/site-packages\n"
+                f"({exc})") from exc
+        np = numpy
+    return np
 
 FPS = 30  # JIGSAWS capture rate, per Gao et al. 2014
 
-# Gesture vocabulary (Gao et al. 2014). Used only to describe an event in words;
-# nothing is inferred from the label beyond what the span itself says.
+# Gesture vocabulary. Used only to describe an event in words; nothing is inferred
+# from the label beyond what the span itself says.
+#
+# Source is Gao et al. 2014 (MICCAI M2CAI), Table 2 -- NOT the dataset readme, which
+# gives the file formats and which gesture IDs each task uses but never defines what
+# the IDs mean. Cite the paper, not the readme.
+#
+# Verified rather than assumed, in three ways:
+#   G1  confirmed from video, 2026-08-07, against UVA-DSA's own example clip
+#       Executional_Error_Example_Clips/needledrop_NP_G1_D001_428_606.gif -- it shows
+#       a right hand reaching for the needle.
+#   the per-task gesture sets corroborate the rest structurally. Knot_Tying uses only
+#       {1, 11, 12, 13, 14, 15}, all of which we label as suture or knot work, and
+#       none of the needle-through-tissue gestures appear there. G13 "making a C loop"
+#       occurs only in Knot_Tying; G3 "pushing the needle through the tissue" only in
+#       Suturing and Needle Passing. A scrambled mapping would not produce that.
+#   the readme's own per-task lists match the data for Suturing and Knot_Tying.
+#
+# One documented discrepancy: the readme says Needle Passing uses {1,2,3,4,5,6,8,11},
+# but the transcriptions also contain G9 and G10. Harmless here -- both map to suture
+# handling -- but the readme's per-task list is not authoritative, so do not rely on
+# it to decide whether a gesture can appear in a task.
 GESTURES = {
     "G1": "reaching for the needle with the right hand",
     "G2": "positioning the needle",
@@ -94,10 +138,60 @@ REGRASP_MIN = 3
 MIN_EXPERT_SPANS = 4        # fewer than this and the baseline is not a baseline
 MIN_SPAN_FRAMES = 15        # half a second; shorter spans measure mostly noise
 
+# Floors for calling a span well executed. A ratio alone is not enough on a short
+# span: every one of the six "done well" records in the 8-4 batch sat on a span of
+# 1.5 seconds or less, and the worst told a trainee scoring 7 of 30 they had
+# established sound technique because a 0.9-second reach beat a 1.8-second median.
+# Half a second of difference is measurement noise, and this is why the good-
+# execution detectors validated backwards against the trial scores.
+#
+# Two independent floors, because either one alone still admits noise: the action
+# has to normally take long enough for being quick at it to mean something, and
+# the absolute saving has to be more than a rounding error. Nothing similar is
+# needed on the fault side -- a span running 2x LONGER than a 2-second median is
+# 4 seconds of real hesitation, which is a genuine signal.
+MIN_GOOD_BASELINE_S = 3.0   # the action's expert median must be at least this
+MIN_GOOD_SAVING_S = 1.5     # and the span must beat that median by at least this
+
+# ...and it must not be implausibly fast. This is the actual inversion mechanism:
+# a weak trial fragments its gestures, so a step gets abandoned part-way and the
+# transcription records a very short span, which a ratio test reads as excellent.
+# Needle_Passing_C003 scores 7 of 30 and had a 0.9-second span against a
+# 4.6-second median -- five times faster than the strongest attempts, which is not
+# skill on a bench-top model. Being 1.7x to 2.9x quicker is credible; 5x is a
+# segmentation artefact. Only the good side needs this floor, because on the fault
+# side there is no equivalent: taking far too long is never an artefact of
+# succeeding quickly.
+MIN_GOOD_RATIO = 0.35
+
 
 def timestamp(frame: int) -> str:
     seconds = frame / FPS
     return f"{int(seconds // 60)}:{seconds % 60:04.1f}"
+
+
+# Where JIGSAWS lives, probed in order, for the same reason the error labels are:
+# the shared mount on the cluster, a local clone otherwise. Defaulting to one of
+# them means every tool needs a --jigsaws-root on the other machine, which is the
+# kind of flag that gets forgotten and produces "no meta_file" rather than a result.
+JIGSAWS_ROOT_CANDIDATES = (
+    "/mnt/sun/shared/datasets/surgical_skill/JIGSAWS",
+    "outputs/datasets/JIGSAWS",
+)
+
+
+def resolve_jigsaws_root(explicit: str | Path | None = None) -> Path:
+    """First existing candidate, or the explicit path if given.
+
+    Returns the first candidate even when none exist, so the caller's error message
+    names a concrete path rather than None.
+    """
+    if explicit:
+        return Path(explicit)
+    for cand in JIGSAWS_ROOT_CANDIDATES:
+        if Path(cand).is_dir():
+            return Path(cand)
+    return Path(JIGSAWS_ROOT_CANDIDATES[-1])
 
 
 def resolve_task_root(jigsaws_root: Path, task: str) -> Path:
@@ -138,7 +232,7 @@ def read_kinematics(task_root: Path, trial: str) -> np.ndarray | None:
     for sub in ("AllGestures", ""):
         path = task_root / "kinematics" / sub / f"{trial}.txt"
         if path.exists():
-            return np.loadtxt(path)
+            return _numpy().loadtxt(path)
     return None
 
 
@@ -154,6 +248,7 @@ def span_metrics(kin: np.ndarray | None, start: int, end: int) -> dict[str, floa
     if len(seg) < MIN_SPAN_FRAMES:
         return {}
 
+    np = _numpy()
     metrics: dict[str, float] = {"duration_s": (end - start) / FPS}
     for label, xyz, vel, grip in (
         ("left", SLAVE_L_XYZ, SLAVE_L_VEL, SLAVE_L_GRIP),
@@ -270,7 +365,9 @@ def events_for_trial(task_root: Path, task: str, trial: str, meta: dict,
                 {"duration_s": round(m["duration_s"], 2),
                  "expert_median_s": round(base["duration_s"], 2),
                  "ratio": round(ratio, 2), "n_expert_spans": n})
-        elif 0 < ratio <= FAST_RATIO:
+        elif (MIN_GOOD_RATIO <= ratio <= FAST_RATIO
+                and base["duration_s"] >= MIN_GOOD_BASELINE_S
+                and base["duration_s"] - m["duration_s"] >= MIN_GOOD_SAVING_S):
             add("efficient", "good", start, end, gesture,
                 f"completed in {m['duration_s']:.1f}s against an expert median of "
                 f"{base['duration_s']:.1f}s ({ratio:.1f}x)",
