@@ -62,9 +62,20 @@ from localize_events import (FPS, GESTURES, build_baselines, events_for_trial,
                              read_kinematics, read_meta, read_spans, reference_trials,
                              resolve_jigsaws_root, resolve_task_root, span_metrics,
                              timestamp)
-from run_annotation_qa_jigsaws import (TRANSPORT_BACKOFF_SECONDS, TRANSPORT_RETRIES,
-                                       extract_system_prompt, load_text_model,
+from run_annotation_qa_jigsaws import (extract_system_prompt, load_text_model,
                                        parse_json_payload, run_generation)
+
+# Defined here rather than imported, after the template B branch removed both from
+# run_annotation_qa_jigsaws.py. The merge was textually clean -- no file was touched
+# by both sides -- and this module then failed at import, which is the failure mode a
+# conflict-free merge hides: git compares text, not names.
+#
+# Kept local rather than restored upstream on purpose. That module is being actively
+# reshaped by someone else's pipeline, so reaching into it for two integers is the
+# actual defect; the four functions above are its public surface and stable, these
+# were never more than constants that happened to live next door.
+TRANSPORT_RETRIES = 4
+TRANSPORT_BACKOFF_SECONDS = 5
 
 # The annotation goes here, in the prompt, and NOT in the question.
 #

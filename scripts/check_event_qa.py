@@ -324,8 +324,18 @@ NO_FAULT = re.compile(r"\b(?:did not|didn't) make a mistake\b|"
                       r"\b(?:all|both) (?:of )?(?:them|those|these)\b|"
                       r"\bwent (?:fine|well|smoothly|cleanly|as intended)\b|"
                       r"\bproceeded without\b|\bnothing (?:of note|notable|stood out)\b|"
-                      r"\b(?:executed|completed|finished|passed|went|advanced)\s+"
-                      r"(?:cleanly|successfully|smoothly)\b|"
+                      # A verb of completion next to a word of success, in either
+                      # order, rather than the exact pairs seen so far. This pattern
+                      # has been widened four times -- "without fault", "completed
+                      # successfully", "advanced exactly as intended", "met the
+                      # intended outcome", "all succeeded" -- each time for a correct
+                      # answer it had called defective. Enumerating observed phrasings
+                      # catches last batch's wording, never this batch's.
+                      r"\b(?:executed|completed|finished|passed|went|advanced|"
+                      r"proceeded|met|performed)\b[^.]{0,25}"
+                      r"\b(?:cleanly|successfully|smoothly|correctly|properly|fine|"
+                      r"well|as intended|intended outcome|without)\b|"
+                      r"\b(?:all |both |each )?(?:succeeded|were successful)\b|"
                       r"\b(?:exactly |just )?as intended\b|"
                       r"\bcleanly\b|\ball (?:four|three|two|of them) \w+ed\b",
                       re.IGNORECASE)

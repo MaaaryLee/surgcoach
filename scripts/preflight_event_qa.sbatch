@@ -71,14 +71,18 @@ check "events system prompt present" $? "${SYSTEM_PROMPT:-<not found>}"
 # The work dir is a clone, and the copied-in generator imports four symbols from
 # the runner already there. An older clone can be missing them, which fails at
 # import time -- after the copy looked fine.
+#
+# Four, not six. TRANSPORT_RETRIES and TRANSPORT_BACKOFF_SECONDS were in this list
+# until the template B branch deleted both from the runner; the generator now defines
+# them itself, so checking for them here would fail on a correct clone. This list has
+# to track the import statement, not the history of it.
 echo "clone HEAD: $(cd "$WORK_DIR" && git log --oneline -1 2>/dev/null || echo '<not a git clone>')"
 missing=""
-for sym in TRANSPORT_RETRIES TRANSPORT_BACKOFF_SECONDS load_text_model \
-           run_generation extract_system_prompt parse_json_payload; do
+for sym in load_text_model run_generation extract_system_prompt parse_json_payload; do
   grep -q "$sym" "$WORK_DIR/scripts/run_annotation_qa_jigsaws.py" 2>/dev/null || missing="$missing $sym"
 done
 [ -z "$missing" ]
-check "runner exposes what the generator imports" $? "${missing:-all six present}"
+check "runner exposes what the generator imports" $? "${missing:-all four present}"
 
 # The failure that killed the last attempt: the work dir exists on the login node
 # but is not mounted on compute nodes, or is read-only there.
