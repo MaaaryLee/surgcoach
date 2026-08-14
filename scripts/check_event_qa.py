@@ -501,9 +501,13 @@ def check_numbers(rec: dict, answer: str) -> list[str]:
 # occurrence is a fault there is nothing to volunteer, and a wholly clean record is
 # supposed to say exactly this.
 CLEAN_ASIDE = re.compile(
-    r"\b(?:the (?:other|remaining|rest of the)|first \w+|others?)\b[^.]{0,60}"
-    r"\b(?:went (?:fine|well|cleanly)|without (?:error|fault|issue|incident|a mistake)|"
-    r"were fine|proceeded|succeeded|completed)\b|"
+    # a group of occurrences named as the ones that were fine ...
+    r"\b(?:the (?:other|remaining|rest of the)|others?|"
+    r"the (?:first|second|third|fourth|fifth|sixth|seventh)(?:\s+\w+)?)\b[^.]{0,60}"
+    # ... followed by a verdict that they went well
+    r"\b(?:went (?:fine|well|cleanly|as intended)|proceeded (?:as intended|cleanly|"
+    r"without)|without (?:error|fault|issue|incident|a mistake)|were fine|"
+    r"succeeded|completed (?:cleanly|without|successfully))\b|"
     r"\b(?:proceeded|completed|succeeded)\b[^.]{0,40}\bduring the first\b",
     re.IGNORECASE)
 
