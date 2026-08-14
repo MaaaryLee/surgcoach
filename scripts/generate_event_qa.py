@@ -165,6 +165,18 @@ UNIQUE_ASKS = (
 )
 ORDINALS = ("first", "second", "third", "fourth", "fifth", "sixth", "seventh",
             "eighth", "ninth", "tenth", "eleventh", "twelfth")
+CARDINAL_WORDS = ("one", "two", "three", "four", "five", "six", "seven", "eight",
+                  "nine", "ten", "eleven", "twelve")
+
+
+def number_word(n: int) -> str:
+    """Spelled out where English spells it out, digits beyond that.
+
+    The facts are read by a model that copies their wording into its answer, so they
+    are written as prose rather than as a data structure -- "the second of the four",
+    not "occurrence 2 of 4".
+    """
+    return CARDINAL_WORDS[n - 1] if 1 <= n <= len(CARDINAL_WORDS) else str(n)
 
 # --anchor none: the locate question, which names no moment at all.
 #
@@ -271,14 +283,20 @@ HEDGES = (
 FAULT_OPENINGS = (
     "Open by naming which occurrence it was.",
     "Open with \"The trainee\".",
-    "Open by naming the action, in the question's own words, before saying which "
-    "occurrence went wrong.",
+    "Open by naming the action, using the same verb the question uses, before saying "
+    "which occurrence went wrong.",
     "Open with a phrase that places the moment in the sequence, before the subject.",
     "Do not use the word \"trainee\" anywhere in the answer; refer to the occurrence "
     "or the action instead.",
 )
 CLEAN_OPENINGS = (
-    "Open by naming the action, in the question's own words.",
+    # "In the question's own words" is gone from both banks. It was added to stop a
+    # pushing gesture being described as pulling, and it worked -- but it also made
+    # the gesture's full label the subject of the sentence, which is where "Pushing
+    # the needle through the tissue completed without error" comes from. Naming the
+    # verb is what fixed the wrong-action bug; naming the whole label was never
+    # needed, and it is what makes the answers read like form fields.
+    "Open by naming the action, using the same verb the question uses.",
     "Open with \"The trainee\".",
     "Open by saying how many there were, then name the action.",
     "Open with \"All of them\" or \"Each of them\".",
@@ -364,8 +382,12 @@ ERROR_QUESTIONS = {
         "the needle came out of the instrument's grasp",
         "Describe it in terms of the hold on the needle: what let it escape at this "
         "point in the step."),
+    # "Presented at the wrong orientation for the step" was the wording here, and it
+    # appeared verbatim -- seven and eight words at a stretch -- in half the answers
+    # of a batch. "For the step" is dataset vocabulary that no attending says out
+    # loud, so every answer inherited it. Same meaning, plainer words.
     "Needle Orientation": (
-        "the needle was presented at the wrong orientation for the step",
+        "the needle was held at the wrong angle for the pass",
         "Describe it in terms of how the needle was presented: how its orientation "
         "differed from what the step needs."),
 }
@@ -478,7 +500,23 @@ def build_localization_questions(task: str, trial: str, root: Path,
             continue                      # no localizing to do with one occurrence
 
         if faults:
+            # Written as "The second of the four" rather than "Occurrence 2 of 4".
+            #
+            # The guidance already asks for an ordinal -- "the second", "the first and
+            # third" -- but the facts sit closer to the content than the guidance
+            # does, and the facts won: an answer came back reading "Occurrence 2 of 4
+            # and occurrence 3 of 4 were executed with the needle presented at the
+            # wrong orientation", which is correct, scoreable, and reads like a
+            # database row rather than an assessment.
+            #
+            # Eighth instance of the model copying the wording it was handed. The
+            # pattern is settled enough to state as a rule: anything written in the
+            # facts will appear in an answer, so the facts have to be written the way
+            # an answer should read, not the way a data structure should print.
             fact_lines = [
+                f"- The {ORDINALS[f['index'] - 1]} of the {number_word(n)}: "
+                f"{'; '.join(ERROR_QUESTIONS[t][0] for t in f['error_types'] if t in ERROR_QUESTIONS)}."
+                if f["index"] <= len(ORDINALS) else
                 f"- Occurrence {f['index']} of {n}: "
                 f"{'; '.join(ERROR_QUESTIONS[t][0] for t in f['error_types'] if t in ERROR_QUESTIONS)}."
                 for f in faults if any(t in ERROR_QUESTIONS for t in f["error_types"])]
@@ -495,9 +533,9 @@ def build_localization_questions(task: str, trial: str, root: Path,
             # be faithful to it. Seventh time a phrase from an instruction has
             # returned verbatim, and the first caused by asking for fidelity.
             fact_lines.append(
-                "- Every occurrence went wrong." if rest == 0 else
+                "- All of them went wrong." if rest == 0 else
                 "- The other one went as intended." if rest == 1 else
-                f"- The other {rest} went as intended.")
+                f"- The other {number_word(rest)} went as intended.")
             # "Which" has to mean the ordinal, explicitly. One answer said "during two
             # of those three transfers" -- true, and unscoreable, because it never
             # says which two. Naming them is what lets a record be checked against
@@ -525,7 +563,10 @@ def build_localization_questions(task: str, trial: str, root: Path,
                         "other hedge. "
                         f"{opening_for(trial + gesture, clean=False)}")
         else:
-            fact_lines = [f"- All {n} occurrences went as intended."]
+            # "Both", not "all two". These lines are copied into answers, so an
+            # ungrammatical one becomes an ungrammatical answer.
+            fact_lines = [f"- Both of them went as intended." if n == 2 else
+                          f"- All {number_word(n)} of them went as intended."]
             # Deliberately narrow. "Say so plainly" alone left a vacuum the model
             # filled: one clean answer added "well-managed timing and stable
             # instrument control", neither of which anything recorded, and closed
@@ -567,8 +608,10 @@ def build_localization_questions(task: str, trial: str, root: Path,
                         "consistent or well judged it was -- would be inventing it. "
                         "Write it as something the trainee did, not as something that "
                         "was or was not found -- 'no problem was identified' is wrong. "
-                        "Name the action using the question's own words for it; do not "
-                        "substitute a different action. Leave inferred_cause as an "
+                        "Use the same verb the question uses for the action -- do not "
+                        "substitute a different one -- but say it in your own words "
+                        "rather than repeating the question's phrasing. Leave "
+                        "inferred_cause as an "
                         "empty string: nothing went wrong, so there is nothing to "
                         "explain. "
                         f"{opening_for(trial + gesture, clean=True)}")

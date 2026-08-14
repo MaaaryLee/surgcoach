@@ -257,6 +257,26 @@ FINDING_TERMS = {
 }
 MEASURE_TERMS = r"\b(second|seconds|longer|slower|time|distance|further|travel\w*)"
 
+# Deliberately NOT FINDING_TERMS, which is a vocabulary set for the opposite question.
+# FINDING_TERMS asks "does the answer report the recorded error", so it is broad on
+# purpose -- "attempt", "again", "several" all count as reporting Multiple Attempts.
+# Reusing it here flagged 15 of 38 answers in a clean batch, because "on the second
+# attempt" is simply how you name an occurrence, not a claim that the step was
+# attempted repeatedly.
+#
+# These patterns match a fault being ASSERTED, not the vocabulary surrounding it.
+ASSERTS_FINDING = {
+    "Needle Orientation": r"\b(?:misalign\w*|misdirect\w*|skewed|"
+                          r"(?:wrong|incorrect|poor|bad)\s+(?:angle|orientation|"
+                          r"alignment)|angled away|not (?:aligned|oriented))\b",
+    "Needle Drop": r"\b(?:dropp?ed the needle|needle (?:dropped|slipped|fell)|"
+                   r"came out of the (?:grasp|jaws)|lost (?:the )?(?:needle|grip)|"
+                   r"escaped the (?:grasp|jaws))\b",
+    "Multiple Attempts": r"\b(?:required|needed|took)\s+(?:several|multiple|repeated|"
+                         r"a few|more than one)\s+(?:attempts?|tries|passes|goes)\b|"
+                         r"\brepeated (?:attempts|tries)\b",
+}
+
 
 ORDINAL_WORD = re.compile(
     r"\b(first|second|third|fourth|fifth|sixth|seventh|eighth|ninth|tenth)\b",
@@ -295,7 +315,9 @@ NO_FAULT = re.compile(r"\b(?:did not|didn't) make a mistake\b|"
                       r"\b(?:all|both) (?:of )?(?:them|those|these)\b|"
                       r"\bwent (?:fine|well|smoothly|cleanly|as intended)\b|"
                       r"\bproceeded without\b|\bnothing (?:of note|notable|stood out)\b|"
-                      r"\b(?:executed|completed|finished|passed)\s+cleanly\b|"
+                      r"\b(?:executed|completed|finished|passed|went|advanced)\s+"
+                      r"(?:cleanly|successfully|smoothly)\b|"
+                      r"\b(?:exactly |just )?as intended\b|"
                       r"\bcleanly\b|\ball (?:four|three|two|of them) \w+ed\b",
                       re.IGNORECASE)
 
@@ -512,18 +534,30 @@ CLEAN_ASIDE = re.compile(
     re.IGNORECASE)
 
 
+# The facts' own numbering format appearing in trainee-facing text. "Occurrence 2 of
+# 4 and occurrence 3 of 4 were executed with the needle presented at the wrong
+# orientation" is correct and scoreable and reads like a database row. The facts now
+# spell the ordinal out for exactly this reason; this catches a relapse.
+RECORD_FORMAT = re.compile(r"\boccurrences?\s+\d+\s+of\s+\d+\b", re.IGNORECASE)
+
+
 def check_scope(rec: dict, answer: str) -> list[str]:
     """A fault answer should report the faults, not review the clean occurrences."""
+    issues: list[str] = []
+    m = RECORD_FORMAT.search(answer)
+    if m:
+        issues.append(f"answer uses the facts' numbering format ({m.group(0)!r}); "
+                      f"say 'the second' as the guidance asks")
     g = rec.get("grounding") or {}
     faults = g.get("faults") or []
     total = g.get("occurrences") or 0
     if not faults or len(faults) >= total:
-        return []
+        return issues
     m = CLEAN_ASIDE.search(answer)
     if m:
-        return [f"answer comments on the occurrences that were fine "
-                f"({m.group(0)[:46]!r}); the guidance asks for the faults only"]
-    return []
+        issues.append(f"answer comments on the occurrences that were fine "
+                      f"({m.group(0)[:46]!r}); the guidance asks for the faults only")
+    return issues
 
 
 def check_locate_answer(rec: dict, answer: str) -> list[str]:
@@ -560,6 +594,68 @@ def check_locate_answer(rec: dict, answer: str) -> list[str]:
                 f"(truth: {[f['index'] for f in faults]} of {total}); a count alone "
                 f"cannot be scored against the annotation"]
     return []
+
+
+def check_no_extra_finding(rec: dict, answer: str) -> list[str]:
+    """The answer must not assert an error that was never recorded.
+
+    check_answer_states_finding asks whether the recorded error is reported. Nothing
+    asked the opposite question until an answer to a Multiple Attempts record read
+    "the trainee misaligned the needle on the initial insertion and required multiple
+    passes". The second half is the recorded error; the first half is an orientation
+    error that no annotation contains. It passed every check, because reporting the
+    right finding and inventing an additional one are independent failures.
+
+    The overreach arrived with the instruction to phrase things in the model's own
+    words rather than the annotation's -- given room to rephrase, it elaborated. So
+    this is the cost of readable answers, and it needs a check rather than a
+    retreat.
+
+    Answer only. inferred_cause is allowed to hypothesise; that is its whole purpose.
+    """
+    if rec.get("question_kind") != "locate":
+        return []
+    g = rec.get("grounding") or {}
+    recorded = set(g.get("error_types") or [])
+    issues = []
+    for etype, pattern in ASSERTS_FINDING.items():
+        if etype in recorded:
+            continue
+        m = re.search(pattern, answer, re.IGNORECASE)
+        if m:
+            issues.append(f"answer asserts a {etype!r} finding ({m.group(0)!r}) that "
+                          f"was never recorded; recorded here: "
+                          f"{sorted(recorded) or 'nothing'}")
+    return issues
+
+
+# Which object each recorded error is about. An answer may not leave it out or swap
+# it for another.
+#
+# Two of six fault answers in one batch did: "The second and third passes were
+# presented at an incorrect angle for positioning" never says what was at the wrong
+# angle, and "the trainee presented the instrument at an incorrect angle" names the
+# instrument, where the annotation records the needle. Both read as fluency slips and
+# are not -- Needle Orientation is a fact about the needle, so an answer that reports
+# it of something else has reported a different fact.
+#
+# Not applied to Multiple Attempts: "the step needed several attempts" is about the
+# step, and has no object to name.
+FINDING_SUBJECT = {
+    "Needle Orientation": (r"\bneedle\b", "needle"),
+    "Needle Drop": (r"\bneedle\b", "needle"),
+}
+
+
+def check_finding_subject(rec: dict, answer: str) -> list[str]:
+    """The answer must name the thing the recorded error is about."""
+    issues = []
+    for etype in set((rec.get("grounding") or {}).get("error_types") or []):
+        spec = FINDING_SUBJECT.get(etype)
+        if spec and not re.search(spec[0], answer, re.IGNORECASE):
+            issues.append(f"{etype!r} is a fact about the {spec[1]}, which the answer "
+                          f"never names")
+    return issues
 
 
 def check_answer_states_finding(rec: dict, answer: str) -> list[str]:
@@ -650,12 +746,21 @@ def check_record(rec: dict) -> list[str]:
         issues.append(f"answer is second person ({m.group(0)!r}); the batch is third "
                       f"person throughout")
 
-    # unmeasured mechanics: flagged only when the question did not raise them
-    for m in UNMEASURED.finditer(answer):
-        term = m.group(0)
-        if not re.search(re.escape(term), question, re.IGNORECASE):
-            issues.append(f"asserts a mechanic the question never measured: {term!r}")
-            break
+    # unmeasured mechanics: flagged only when the question did not raise them.
+    #
+    # Checked in inferred_cause as well as in the answer. Rule 4 is absolute -- the
+    # wrists, elbows, grip pressure and tremor are not visible in any of the three
+    # sources, so a hedge does not license them: "consistent with insufficient wrist
+    # rotation during the reach" is still a claim about a wrist nobody saw. Scoping
+    # this to the answer let one straight through on the first split batch, because
+    # the cause field was new and nothing had been pointed at it.
+    for field, text in (("answer", answer),
+                        ("inferred_cause", str(qa.get("inferred_cause", "") or ""))):
+        for m in UNMEASURED.finditer(text):
+            term = m.group(0)
+            if not re.search(re.escape(term), question, re.IGNORECASE):
+                issues.append(f"{field} asserts a mechanic nothing measured: {term!r}")
+                break
 
     # Same exemption as above, and for the same reason: the economy question says
     # "the median across other recorded attempts" and "the typical level for this
@@ -731,6 +836,8 @@ def check_record(rec: dict) -> list[str]:
 
     issues += check_question(rec, question, answer)
     issues += check_answer_states_finding(rec, answer)
+    issues += check_no_extra_finding(rec, answer)
+    issues += check_finding_subject(rec, answer)
     # Clean answers only. A fault answer names other actions for good reason: asked
     # about positioning, it explains that the needle was not seated before the pull
     # began, and asked about pushing, it reports the recorded orientation error. Run
@@ -821,21 +928,30 @@ def repeated_phrases(answers: list[str],
     # answer's entire job is to state the label. Flagging it would push the model to
     # paraphrase an annotation it should be quoting, which is how a verifiable
     # statement turns into an approximate one.
+    # Phrases lifted from the annotation are reported, not dropped.
+    #
+    # They were exempted outright when the answer's job was to state the label, on
+    # the reasoning that quoting it was fidelity. Review disagreed with the output
+    # that produced -- "presented at the wrong orientation for the step" appeared
+    # verbatim, eight words at a stretch, in half a batch, and reads like a database
+    # row. The claim must be supported by the annotation; the wording should not be
+    # copied from it. So these still surface, marked, and the caller prints them as
+    # notes rather than failures -- a shared phrase here is a prompt problem to weigh,
+    # not a defect in any single record.
     from_annotation = set()
     if facts:
         blob = " ".join(re.findall(r"[a-z']+", " ".join(facts).lower()))
         from_annotation = {p for p in counts if p in blob}
     hits = [(phrase, n) for phrase, n in counts.items()
             if n / len(answers) >= NGRAM_SHARE
-            and phrase not in from_annotation
             and not any(s in phrase for s in STRUCTURAL_PHRASES)]
     # Longest first, so "commit to a single direct" is reported rather than the
     # several shorter fragments of itself that also cross the threshold.
     hits.sort(key=lambda kv: (-len(kv[0].split()), -kv[1]))
-    out: list[tuple[str, int]] = []
+    out: list[tuple[str, int, bool]] = []
     for phrase, n in hits:
-        if not any(phrase in kept for kept, _ in out):
-            out.append((phrase, n))
+        if not any(phrase in kept for kept, _, _ in out):
+            out.append((phrase, n, phrase in from_annotation))
     return out[:5]
 
 
@@ -959,10 +1075,15 @@ def check_batch(recs: list[dict]) -> list[str]:
 
     # Word sequences shared across the whole batch regardless of group: those cannot
     # be explained by subject matter, so they are always worth reporting.
-    for phrase, n in repeated_phrases(
+    for phrase, n, from_facts in repeated_phrases(
             answers, [str(r.get("facts_shown_to_model", "")) for r in valid]):
-        issues.append(f"repeated phrasing: {n}/{len(answers)} answers ({n / len(answers):.0%}) "
-                      f"contain {phrase!r}")
+        if from_facts:
+            issues.append(f"note: {n}/{len(answers)} answers ({n / len(answers):.0%}) "
+                          f"reuse the annotation's own wording {phrase!r} -- the claim "
+                          f"should come from the annotation, the phrasing should not")
+        else:
+            issues.append(f"repeated phrasing: {n}/{len(answers)} answers "
+                          f"({n / len(answers):.0%}) contain {phrase!r}")
     return issues
 
 

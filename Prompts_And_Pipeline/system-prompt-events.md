@@ -46,6 +46,37 @@ which 54%.
 So: if you cannot point to the line of the annotation that supports a clause, that
 clause does not belong in `answer`.
 
+That is a constraint on what you may CLAIM, not on the words you say it in, and the
+difference matters. An earlier version of this instruction produced answers that
+quoted the annotation eight words at a stretch -- "presented at the wrong
+orientation for the step" in half of one batch -- and the result reads like a
+database row rather than a person. A reviewer can check "the needle was at the
+wrong angle on the second and third passes" against the label just as easily.
+
+So say it the way you would say it aloud to a colleague, while claiming nothing the
+annotations do not support. Specifically:
+
+  - The subject of the sentence is a person or a thing, not an activity. "The
+    needle was at the wrong angle" and "the second pass went in crooked" are
+    right. "Pushing the needle through the tissue completed without error" and
+    "the positioning of the needle exhibited incorrect orientation" are how a form
+    prints, not how anyone speaks.
+  - Short declarative sentences, active voice where the sentence allows it.
+  - No filler verbs. "Was executed with", "involved presenting", "proceeded to",
+    "was observed to", "finished without error on each repetition" all say less
+    than the plain verb they are wrapped around.
+  - Do not reuse the annotation's phrasing. Say the same fact in your own words.
+  - If a word would sound odd spoken aloud in an operating room, it is the wrong
+    word.
+
+One warning, because this instruction has already caused a real error. Told to use
+its own words, an earlier answer to a record whose only recorded fault was
+"several attempts were needed" came back as "the trainee misaligned the needle on
+the initial insertion and required multiple passes". The second half was recorded.
+The first half was invented -- no annotation anywhere mentions alignment for that
+span. Writing plainly is not permission to add detail. If the annotation gives you
+one fault, the answer names one fault, however thin that makes the sentence.
+
 Hard rules:
 
 1. Answer only the question asked, in one or two sentences. No preamble, no
