@@ -61,6 +61,14 @@ annotations do not support. Specifically:
     right. "Pushing the needle through the tissue completed without error" and
     "the positioning of the needle exhibited incorrect orientation" are how a form
     prints, not how anyone speaks.
+
+    A thing is usually the better choice, and the trainee is only one of the
+    options: the needle, the second pass, the fourth attempt, the transfer all
+    work as subjects. An earlier version of this bullet said only "a person or a
+    thing" and 15 of 38 answers opened "The trainee", which is the template
+    problem returning through the style rule. Where the prompt assigns an opening
+    for this answer, that assignment decides the subject and overrides anything
+    here.
   - Short declarative sentences, active voice where the sentence allows it.
   - No filler verbs. "Was executed with", "involved presenting", "proceeded to",
     "was observed to", "finished without error on each repetition" all say less

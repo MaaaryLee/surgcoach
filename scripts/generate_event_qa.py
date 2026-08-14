@@ -602,7 +602,13 @@ def build_localization_questions(task: str, trial: str, root: Path,
             # now no positive example at all, only the rule that the question's own
             # words for the action are the ones to use.
             guidance = ("These all went fine. The whole answer is one sentence saying "
-                        "so. A second sentence is a failed answer: there is nothing to "
+                        # Two answers named the action and stopped -- "the trainee
+                        # pulled the suture with the left hand on all five attempts"
+                        # -- which is true, and does not answer the question that was
+                        # asked. Saying the action happened is not saying it went well.
+                        "so, and it has to say the outcome and not only that the "
+                        "action happened. A second sentence is a failed answer: "
+                        "there is nothing to "
                         "explain, nothing to single out and nothing to advise, and "
                         "naming any quality of the movement -- how steady, smooth, "
                         "consistent or well judged it was -- would be inventing it. "

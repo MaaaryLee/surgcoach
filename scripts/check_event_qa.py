@@ -251,9 +251,18 @@ def check_question(rec: dict, question: str, answer: str) -> list[str]:
 # beyond its question, and now it fails if it does not.
 FINDING_TERMS = {
     "Needle Drop": r"\b(drop\w*|escap\w*|slip\w*|came out|lost|fell|grasp|jaw|seat\w*)",
-    "Needle Orientation": r"\b(orient\w*|angle|align\w*|direction|perpendicular|curve|"
-                          r"present\w*|face|facing)",
-    "Multiple Attempts": r"\b(attempt|repeat\w*|again|retr\w+|more than once|several)",
+    # \w*align\w* rather than \balign\w*: "misaligned the needle on all of them" is a
+    # plain report of a Needle Orientation error, and the word-boundary version missed
+    # it because "align" sits inside "misaligned". Flagged a correct answer for never
+    # reporting the finding it had just reported.
+    "Needle Orientation": r"\b(orient\w*|angle|\w*align\w*|direction|perpendicular|"
+                          r"curve|present\w*|face|facing)",
+    # "Multiple tries", "multiple efforts", "needed multiple passes" -- three of the
+    # four natural ways to say this missed, because the pattern listed the nouns one
+    # batch had happened to use. The quantifier is the reliable part, not the noun.
+    "Multiple Attempts": r"\b(attempt|repeat\w*|again|retr\w+|more than once|several|"
+                         r"(?:multiple|repeated|numerous)\s+\w+|took \w+ tries|"
+                         r"tries|efforts)",
 }
 MEASURE_TERMS = r"\b(second|seconds|longer|slower|time|distance|further|travel\w*)"
 
@@ -522,16 +531,41 @@ def check_numbers(rec: dict, answer: str) -> list[str]:
 # Only fires where some occurrences were clean and some were not. When every
 # occurrence is a fault there is nothing to volunteer, and a wholly clean record is
 # supposed to say exactly this.
-CLEAN_ASIDE = re.compile(
-    # a group of occurrences named as the ones that were fine ...
-    r"\b(?:the (?:other|remaining|rest of the)|others?|"
-    r"the (?:first|second|third|fourth|fifth|sixth|seventh)(?:\s+\w+)?)\b[^.]{0,60}"
-    # ... followed by a verdict that they went well
-    r"\b(?:went (?:fine|well|cleanly|as intended)|proceeded (?:as intended|cleanly|"
-    r"without)|without (?:error|fault|issue|incident|a mistake)|were fine|"
-    r"succeeded|completed (?:cleanly|without|successfully))\b|"
-    r"\b(?:proceeded|completed|succeeded)\b[^.]{0,40}\bduring the first\b",
-    re.IGNORECASE)
+# Which occurrences the answer names, so they can be compared against which ones are
+# faults. This replaces a lexical CLEAN_ASIDE that matched "an ordinal near a
+# went-well verdict", and which on one batch simultaneously missed "while the first
+# three finished cleanly" -- because "finished cleanly" was not in its verb list --
+# and fired on "proceeded with a misoriented grip during the first and second
+# attempts", which is the fault itself being reported. Wrong in both directions at
+# once is the signal that a judgement is not regex-shaped, and it was the third batch
+# running in which this one had been wrong.
+#
+# Structural instead. The question is not "does this sentence sound positive" but "does
+# it talk about an occurrence that was not a fault", and the grounding knows exactly
+# which those are. "The first three" expands to 1, 2, 3; "the other" and "the
+# remaining" mean the non-faults by definition; a bare ordinal is itself.
+ORDINAL_TO_INDEX = {w: i for i, w in enumerate(
+    ("first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth",
+     "ninth", "tenth"), start=1)}
+COUNT_WORD = {"two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7,
+              "eight": 8, "nine": 9, "ten": 10}
+OTHERS = re.compile(r"\b(?:the )?(?:other|others|remaining|rest)\b", re.IGNORECASE)
+FIRST_N = re.compile(r"\b(?:the )?first\s+(two|three|four|five|six|seven|eight)\b",
+                     re.IGNORECASE)
+
+
+def occurrences_named(answer: str) -> set[int]:
+    """Which occurrence indices an answer refers to."""
+    named: set[int] = set()
+    for m in FIRST_N.finditer(answer):
+        named |= set(range(1, COUNT_WORD[m.group(1).lower()] + 1))
+    text = FIRST_N.sub(" ", answer)
+    for w in re.findall(r"\b(" + "|".join(ORDINAL_TO_INDEX) + r")\b", text, re.I):
+        named.add(ORDINAL_TO_INDEX[w.lower()])
+    for m in re.finditer(r"\b(?:occurrences?|attempts?|passes|transfers?|instances?|"
+                         r"times)\s+(\d+)\b", answer, re.IGNORECASE):
+        named.add(int(m.group(1)))
+    return named
 
 
 # The facts' own numbering format appearing in trainee-facing text. "Occurrence 2 of
@@ -553,10 +587,17 @@ def check_scope(rec: dict, answer: str) -> list[str]:
     total = g.get("occurrences") or 0
     if not faults or len(faults) >= total:
         return issues
-    m = CLEAN_ASIDE.search(answer)
-    if m:
-        issues.append(f"answer comments on the occurrences that were fine "
-                      f"({m.group(0)[:46]!r}); the guidance asks for the faults only")
+    fault_idx = {f["index"] for f in faults}
+    if OTHERS.search(answer):
+        issues.append("answer refers to 'the other' occurrences, which are by "
+                      "definition the ones that were fine; the guidance asks for the "
+                      "faults only")
+        return issues
+    extra = sorted(occurrences_named(answer) - fault_idx)
+    if extra:
+        issues.append(f"answer refers to occurrence(s) {extra} that were not faults "
+                      f"(faults: {sorted(fault_idx)} of {total}); the guidance asks "
+                      f"for the faults only")
     return issues
 
 
