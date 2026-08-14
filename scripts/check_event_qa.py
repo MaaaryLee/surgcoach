@@ -261,8 +261,17 @@ MEASURE_TERMS = r"\b(second|seconds|longer|slower|time|distance|further|travel\w
 ORDINAL_WORD = re.compile(
     r"\b(first|second|third|fourth|fifth|sixth|seventh|eighth|ninth|tenth)\b",
     re.IGNORECASE)
-ALL_WORD = re.compile(r"\ball (?:three|four|five|six|of)\b|\bevery (?:one|attempt|pass|"
-                      r"transfer|occurrence)\b|\beach of\b", re.IGNORECASE)
+# "All of them", "all seven occurrences", "each transfer", "every pass". The first
+# version enumerated three|four|five|six and the nouns it had happened to see, and
+# missed "all seven occurrences" and "Each transfer of the needle" on job 29577 --
+# both correct answers to an all-fault record, both reported as failing to name which
+# occurrence went wrong. Quantifier plus an optional number plus any noun, rather than
+# a list of the combinations observed so far.
+ALL_WORD = re.compile(
+    r"\b(?:all|each|every|both)\s+"
+    r"(?:of\s+(?:them|those|these)|"
+    r"(?:the\s+)?(?:two|three|four|five|six|seven|eight|nine|ten|\d+)\s+\w+|"
+    r"\w+)", re.IGNORECASE)
 # Widened when the locate question stopped asking "did they make a mistake". The old
 # patterns only matched an answer echoing that phrasing back; against a neutral "how
 # did those go?" the negative is stated in the answer's own words, so the ways of

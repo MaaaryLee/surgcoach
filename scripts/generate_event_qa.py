@@ -485,10 +485,19 @@ def build_localization_questions(task: str, trial: str, root: Path,
             if not fact_lines:
                 continue
             rest = n - len(fact_lines)
+            # "Marked as an error" is gone from every one of these lines, and from the
+            # clean case below. The wording was harmless while the answer was asked to
+            # deliver a finding in its own words; it became a trap the moment the
+            # prompt started asking for clauses "traceable to a line you were given".
+            # Job 29577 came back with "none was marked as an error", "none of those
+            # transfers recorded a mistake" and "without a recorded mistake" -- the
+            # model quoting the annotation vocabulary because it had just been told to
+            # be faithful to it. Seventh time a phrase from an instruction has
+            # returned verbatim, and the first caused by asking for fidelity.
             fact_lines.append(
-                "- Every occurrence was marked as an error." if rest == 0 else
-                "- The other one was not marked as an error." if rest == 1 else
-                f"- The other {rest} were not marked as errors.")
+                "- Every occurrence went wrong." if rest == 0 else
+                "- The other one went as intended." if rest == 1 else
+                f"- The other {rest} went as intended.")
             # "Which" has to mean the ordinal, explicitly. One answer said "during two
             # of those three transfers" -- true, and unscoreable, because it never
             # says which two. Naming them is what lets a record be checked against
@@ -516,7 +525,7 @@ def build_localization_questions(task: str, trial: str, root: Path,
                         "other hedge. "
                         f"{opening_for(trial + gesture, clean=False)}")
         else:
-            fact_lines = [f"- None of the {n} occurrences was marked as an error."]
+            fact_lines = [f"- All {n} occurrences went as intended."]
             # Deliberately narrow. "Say so plainly" alone left a vacuum the model
             # filled: one clean answer added "well-managed timing and stable
             # instrument control", neither of which anything recorded, and closed
