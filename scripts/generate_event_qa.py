@@ -410,8 +410,18 @@ VALIDATED_KINDS = ("outlier", "wandering")
 # instruction handing the model the exact phrase the system prompt was simultaneously
 # asking it to vary. The hedge is now assigned per record instead; see hedge_for().
 ERROR_QUESTIONS = {
+    # "The step needed several attempts before it succeeded" was the wording, and
+    # three of five Multiple-Attempts answers in job 29719 borrowed "the step" --
+    # "On the first attempt, the step required several passes before succeeding",
+    # which would read identically for any gesture in the dataset. Zero of five did
+    # so in the batch before it; the newer questions restate the action less, so the
+    # facts' phrasing won instead.
+    #
+    # The other two descriptions name the needle and so carry their own subject. This
+    # one has to describe any gesture, so it cannot name one -- the fix is to give it
+    # no noun to borrow at all, which leaves the model to supply the action itself.
     "Multiple Attempts": (
-        "the step needed several attempts before it succeeded",
+        "needed several attempts before succeeding",
         "Describe it in terms of the attempts: what made the earlier ones fail where "
         "the last one worked."),
     "Needle Drop": (

@@ -155,6 +155,14 @@ OVERLAP_STOP = set(
     "has had having are am would could trainee".split())
 
 
+# Words a locate question uses to frame the ask rather than to name the action. They
+# sit inside the span the label regex captures, so they have to come out again before
+# the remainder counts as "the action the question named".
+QUESTION_SCAFFOLD = set(
+    "several occasions occasion times time multiple point points recording more once "
+    "each every any them those mistake wrong happen happened".split())
+
+
 def content_words(text: str) -> list[str]:
     return [w for w in re.findall(r"[a-z']+", text.lower())
             if w not in OVERLAP_STOP and len(w) > 2]
@@ -864,9 +872,36 @@ def check_record(rec: dict) -> list[str]:
     # anchoring: the answer must point at the span or the action the question named
     span = rec.get("span", "")
     span_parts = [p for p in re.split(r"[-]", span) if p]
-    action_words = set(re.findall(r"\b(?:needle|suture|loop|instrument|reach\w*|orient\w*|"
-                                  r"position\w*|push\w*|pull\w*|transfer\w*|segment\w*)\b",
-                                  question, re.IGNORECASE))
+    # The action is read out of the question rather than matched against a list.
+    #
+    # The list was needle|suture|instrument|reach|orient|position|push|pull|transfer,
+    # which covers most gestures and silently fails on the ones it does not. G5 is
+    # "moving to the centre with the needle in grip", and the answer "all of them went
+    # as intended when moving to the centre" names that action exactly -- but neither
+    # "moving" nor "centre" was in the list, so it was reported as naming no action at
+    # all. Same enumerate-what-you-have-seen mistake as ALL_WORD, NO_FAULT and
+    # FINDING_TERMS before it.
+    #
+    # Every locate question contains the gesture label after "the trainee was", so the
+    # question can say what its own action words are.
+    # The capture has to be stripped of the question's own scaffolding, or the check
+    # goes lax rather than strict. "This recording shows the trainee was positioning
+    # the needle on several occasions" yields "positioning the needle on several
+    # occasions", and an answer reading "The trainee required several attempts before
+    # the fourth attempt succeeded" -- which names no action at all -- then counts as
+    # anchored because it shares the word "several". A false negative is worse here
+    # than the false positive that prompted the change.
+    m_label = re.search(r"trainee was (.+?)(?:\s+in this recording|[.?,;]|$)",
+                        question, re.IGNORECASE)
+    if m_label:
+        action_words = {w for w in re.findall(r"[A-Za-z']+", m_label.group(1))
+                        if w.lower() not in OVERLAP_STOP
+                        and w.lower() not in QUESTION_SCAFFOLD and len(w) > 2}
+    else:
+        action_words = set(re.findall(
+            r"\b(?:needle|suture|loop|instrument|reach\w*|orient\w*|"
+            r"position\w*|push\w*|pull\w*|transfer\w*|segment\w*)\b",
+            question, re.IGNORECASE))
     # Matched on a stem, not the whole word. The question says "pulling suture" and the
     # answer says "during that left-hand pull", which is the same action named naturally
     # -- an exact-word match called three such answers unanchored.
