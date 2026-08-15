@@ -1092,15 +1092,24 @@ def main() -> int:
             continue
         root = resolve_task_root(jigsaws_root, task)
         meta = read_meta(root, task)
-        baselines = build_baselines(root, task, meta, exclude=trial)
+        # Baselines are built only where they are used. Locate questions come from
+        # the transcription and the error labels alone -- no timing, no distance --
+        # but this was computed unconditionally, which meant reading every peer
+        # trial's kinematics, the slowest step in the pipeline, and discarding the
+        # result. It also made numpy a hard requirement for a mode that has no
+        # numerical work in it: previewing the questions on a login node failed with
+        # "numpy is required to read kinematics" for a code path that never reads
+        # any.
         if labels and args.anchor == "none":
             questions = build_localization_questions(task, trial, root, labels)
-        elif labels:
-            questions = build_error_questions(task, trial, root, meta, labels,
-                                              baselines, args.anchor)
         else:
-            events = events_for_trial(root, task, trial, meta, baselines)
-            questions = build_questions(task, trial, root, meta, events)
+            baselines = build_baselines(root, task, meta, exclude=trial)
+            if labels:
+                questions = build_error_questions(task, trial, root, meta, labels,
+                                                  baselines, args.anchor)
+            else:
+                events = events_for_trial(root, task, trial, meta, baselines)
+                questions = build_questions(task, trial, root, meta, events)
         info = meta.get(trial, {})
         print(f"{trial}  skill {info.get('skill_level')}  GRS {info.get('grs_total')}/30  "
               f"-> {len(questions)} questions")
