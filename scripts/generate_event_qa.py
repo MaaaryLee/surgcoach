@@ -227,25 +227,50 @@ def number_word(n: int) -> str:
 # six differ in sentence type -- where the question sits, how many sentences it takes,
 # and whether it is a question at all. That is the ceiling for this question form;
 # beyond it, one of the four requirements would have to be dropped, and none can be.
+# Two rounds of review reshaped these after the first six, and both rounds are worth
+# recording because they cut against instincts that produced the first set.
+#
+# Readability beats structural distance. The first six were built so that each was a
+# different sentence TYPE, and two of them -- "Which of the several times the trainee
+# was X in this recording, if any, involved a mistake?" and "Of the occasions ...,
+# were any faulty, and which?" -- were reported as hard to parse on a first read. They
+# were: both centre-embed, holding a long subject open before the verb arrives, and
+# both bury the yes/no gate mid-clause. That is what packing recurrence, the gate and
+# the "which" into a single sentence costs. Every template is now two sentences, the
+# first naming the action and the second asking plainly; the variety lives in the
+# opening rather than in syntactic contortion.
+#
+# Do not assert how many times it happened. Five of the six used to open "multiple
+# times", "several times", "more than once". Always true -- the builder skips any
+# gesture occurring fewer than twice -- but it hands over for free a fact the model is
+# supposed to establish, and "which occasion?" already implies there are occasions to
+# choose between. Only the first still claims a count, because that is the wording the
+# reviewer approved before this point was raised.
+#
+# "Faulty" is gone with the template that carried it. It is not the annotations'
+# word -- they say "went wrong" and "went as intended" -- and it had already reached
+# three of thirty-eight answers, including "all of them were faulty". Any word
+# introduced here becomes the answers' vocabulary, which by now is a rule rather than
+# a surprise; these six borrow their register from the facts.
 LOCATE_ASKS = (
-    # statement, then yes/no, then elliptical wh. The wording review approved.
+    # statement, yes/no, elliptical wh. The wording review approved, unchanged.
     "The trainee was {label} multiple times in this recording. Did they make a "
     "mistake during one or more of those? If so, which?",
-    # one sentence: conditional protasis, wh apodosis
-    "The trainee was {label} several times in this recording; if any of those went "
-    "wrong, which were they?",
-    # presentational opening, then yes/no, then an imperative closer
-    "This recording shows the trainee was {label} on several occasions. Did any of "
-    "those go wrong? Name it if so.",
-    # an imperative instruction with an embedded interrogative -- no question mark
-    "Review each of the several times the trainee was {label} in this recording, and "
-    "report whether a mistake occurred in any of them and which.",
-    # a single wh-question, the gate carried by a parenthetical "if any"
-    "Which of the several times the trainee was {label} in this recording, if any, "
-    "involved a mistake?",
-    # relative-clause subject, the fault as a predicate adjective
-    "Of the occasions in this recording where the trainee was {label}, were any "
-    "faulty, and which?",
+    # statement, then a single compound question
+    "In this recording the trainee was {label}. Did anything go wrong on any "
+    "occasion, and which?",
+    # a single existential question
+    "Was there a mistake at any point where the trainee was {label} in this "
+    "recording? If so, which occasion?",
+    # imperative opening, embedded interrogative
+    "Go through each time the trainee was {label} in this recording. Report whether "
+    "a mistake happened in any of them, and which.",
+    # imperative opening, then a question
+    "Assess each time the trainee was {label} in this recording. Did a mistake "
+    "happen on any of them, and if so which?",
+    # imperative opening, wh closer
+    "Look at every occasion where the trainee was {label}. Which of them, if any, "
+    "went wrong?",
 )
 
 
