@@ -18,73 +18,86 @@ regenerate them with `python3 scripts/extract_qa_pairs.py <dir>/qa_records.jsonl
 
 Check a batch with `python3 scripts/check_template_d.py <dir>`.
 
-## `outputs JIGSAWS VTS locate 1297 QA - 10-25-2026`
+## `outputs JIGSAWS VTS locate 628 QA blind-filtered - 10-25-2026`
 
 Find-it-in-the-recording questions in the VideoTreeSearch shape (arXiv 2607.16189):
 one question about a whole JIGSAWS recording, answered by one stretch of it. They
 use the kinds and wording of the MultiBypass140 locate set, so the datasets read as
 one. The answer gives the exact time span and what the annotation records there,
-with no judgement or feedback. `jigsaws_locate_full.txt` lays the batch out the way
-the MultiBypass140 file does; `jigsaws_locate_questions.md` holds only the questions.
+with no judgement or feedback. Only questions a model cannot place from their text
+alone are kept, so each one makes it search the video. `jigsaws_locate_full.txt`
+lays the batch out the way the MultiBypass140 file does; `jigsaws_locate_questions.md`
+holds only the questions.
 
 | | |
 | --- | --- |
-| Model | Qwen3.6-35B-A3B Q4_K_M via llama.cpp, one A6000 per job, 9 jobs (`scripts/run_jigsaws_locate.sbatch`) |
+| Model | Qwen3.6-35B-A3B Q4_K_M via llama.cpp, one A6000 per job (`scripts/run_jigsaws_locate.sbatch`) |
 | Prompt | `Prompts_And_Pipeline/system-prompt-jigsaws-locate.md` |
 | Thinking | enabled |
 | Sampling | temperature 0.6, up to 10,000 new tokens, up to 3 retries |
-| Coverage | 100 trials: 38 Suturing, 27 Needle Passing, 35 Knot Tying; 674 / 423 / 200 questions |
-| Validation | 1,297 records, **1,297 valid, 0 rejected**, all on the first attempt |
-| Checker | `scripts/check_locate_qa.py`: **0 uniqueness failures**; blind test below |
+| Coverage | 92 trials: 38 Suturing, 26 Needle Passing, 28 Knot Tying; 374 / 186 / 68 questions |
+| Validation | 628 records, **628 valid, 0 rejected**, all on the first attempt |
+| Checker | `scripts/check_locate_qa.py`: **0 uniqueness failures, 0 found by the blind guess** |
 
 ### What the kinds are
 
 JIGSAWS labels no phases and grades no events, so each MultiBypass140 kind has a
-counterpart here rather than a copy:
+counterpart here rather than a copy, and one kind, the redo, is new:
 
-| Kind | Questions | Exactly one answer because |
-| --- | --- | --- |
-| phase | 164 | one throw by its number (a stitch, a ring pass, a knot throw), cut from the gesture transcription, only in trials with the task's number of throws |
-| step | 158 | the gesture happens once in the trial |
-| step in phase | 471 | the gesture happens once within that throw |
-| step by order | 350 | named by its occurrence ("the second time the surgeon...") |
-| event | 17 | the only UVA-DSA error of its type in the trial |
-| event by order | 109 | named by its occurrence, as the MultiBypass140 set asks for the first bleed |
-| worst delay | 28 | the step furthest over the strongest trials' time for it, by a clear margin; stands in for the most serious bleed |
+| Kind | Asked | Kept | Exactly one answer because |
+| --- | --- | --- | --- |
+| step in phase | 470 | 231 | the gesture happens once within that throw |
+| step by order | 324 | 194 | named by its occurrence ("the second time the surgeon...") |
+| event by order | 109 | 96 | named by its occurrence, as the MultiBypass140 set asks for the first bleed |
+| worst delay | 28 | 26 | the step furthest over the strongest trials' time for it, by a clear margin; stands in for the most serious bleed |
+| step | 158 | 23 | the gesture happens once in the trial |
+| redo | 27 | 23 | the only (or the nth) return to an action right after starting the next one |
+| phase | 164 | 18 | one throw by its number (a stitch, a ring pass, a knot throw), cut from the gesture transcription, only in trials with the task's number of throws |
+| event | 17 | 17 | the only UVA-DSA error of its type in the trial |
 
 Each gesture span is asked about once; the worst delay may share a clip with
 another question, as a MultiBypass140 bleed can be both an event and the worst. All
 clues are at least 3 s and at most 20% of their recording.
 
+### How it was filtered
+
+VideoTreeSearch keeps a question only if a model cannot answer it without the
+video. `scripts/plan_locate_qa.py` builds all 1,297 candidate questions and guesses
+each answer span from its question alone, as the median position of the same
+question's answer in the other trials. It drops any question that guess finds at
+IoU >= 0.3, VideoTreeSearch's threshold for a correct localization, and repeats
+until a guess made from the kept questions themselves finds none: 590 dropped, then
+67, then 12. What goes is what the task's fixed order gives away -- "the third
+stitch" sits in the third quarter, the first reach for the needle at the start --
+which is why only 18 of 164 phases and 23 of 158 once-only steps remain, while
+nearly every error, delay and redo does.
+
+Two other irregular kinds were tried for the hard set and left out. The longest
+pause with both instruments still lasts a median of 1.3 s; the one stitch where the
+needle goes through twice occurs in 3 trials, each time over 20% of the recording.
+
 ### How it was checked
 
 `check_locate_qa.py` recomputes each question's uniqueness from the raw
-transcriptions and labels without calling the builder. Its first run, on the
-1,305 questions this batch started as, found 15 that did not hold. Seven error
-questions counted a type only on spans where it was the main type, so a span
-carrying a wrong angle and multiple attempts was missed from the multiple-attempts
-count. Seven step or worst questions used a gesture the transcription labels twice
-back to back, which reads as one action on screen. One "throw" was a single
-gesture. The builder now handles all three, and the seven affected error questions
-were regenerated.
+transcriptions and labels without calling the builder. Its first run, on an earlier
+1,305-question version, found 15 that did not hold. Seven error questions counted a
+type only on spans where it was the main type. Seven step or worst questions used a
+gesture the transcription labels twice back to back, which reads as one action on
+screen. One "throw" was a single gesture. The builder handles all three.
 
 ### Known limitations
 
-- **Many questions give their answer away.** Guessing each span from the question
-  alone, as the median position of the same question's answer in the other trials,
-  finds 581 of 1,297 at IoU >= 0.3. That is 83% of phases and 81% of once-only
-  steps, because the tasks have a fixed order. Events (8% and 0%) and the worst
-  delay (7%) need the video. VideoTreeSearch drops questions answerable without
-  the video, and this batch is not yet filtered that way.
+- **The blind guess is a statistical prior, not a model.** VideoTreeSearch asks a
+  vision-language model without frames; a text-only LLM baseline has not been run.
 - **"The only needle drop" means the only one labelled.** UVA-DSA scores each error
   type on certain gestures only. In Suturing, needle drops are scored on G5 and G6
   alone, so a drop during any other gesture was never recorded.
 - **Two definitions are ours.** Throws are cut from the gesture labels at each needle
   transfer, and the worst delay is a duration measure. Both await review.
-- **Knot Tying is mostly short.** 132 of its 200 questions come from recordings of
+- **Knot Tying is mostly short.** 38 of its 68 questions come from recordings of
   30-60 s, under the 60 s minimum used for the other tasks. Filter on
   `grounding.trial_s` to drop them.
-- **Some wording is clumsy.** 12 answers open with the label, e.g. "The action of
+- **Some wording is clumsy.** 5 answers open with the label, e.g. "The action of
   positioning the needle...". Error answers say "during positioning the needle"
   rather than "while the surgeon positions the needle".
 
