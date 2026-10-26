@@ -21,6 +21,8 @@ Per record:
                                 span that could carry it labelled
                  event_nth      that occurrence among the spans carrying the type
                  worst          the stored ratio and margin pass the thresholds
+                 redo           that occurrence of the gesture returned to right
+                                after the stored one, counted again from the spans
   flags        not failures, but worth knowing: a gesture labelled twice back to
                back, which reads as one action on screen; a one-gesture throw; an
                error clip carrying a second error type
@@ -29,7 +31,8 @@ Then a blind test, the counterpart of the VideoTreeSearch filter that drops
 questions a model answers without the video: each answer span is guessed from the
 question alone, as the median position of the same question's answer in every other
 trial, and scored by IoU. A question the guess finds at IoU >= 0.3 gives its answer
-away to anyone who knows the task's structure.
+away to anyone who knows the task's structure. plan_locate_qa.py uses the same guess
+to drop such questions before any answer is generated.
 
     python3 scripts/check_locate_qa.py "results/outputs JIGSAWS VTS locate 1297 QA - 10-25-2026"
 """
@@ -79,27 +82,69 @@ def throws_of(task: str, spans: list[tuple[int, int, str]]) -> list[list[tuple[i
     return out
 
 
-def blind_key(r: dict) -> tuple:
-    """What the question tells a model that cannot see the video."""
-    k, g, rec = r["question_kind"], r["grounding"], r["recorded"]
+def blind_keys(r: dict) -> list[tuple]:
+    """What the question tells a model that cannot see the video, most specific first.
+
+    The blind guess uses the first of these that at least BLIND_MIN_OTHERS other
+    trials share, so a question too rare for its exact prior ("the ninth time...")
+    is still guessed from the coarser one ("the ninth time" of any action) rather
+    than let through as if nothing could be guessed.
+    """
+    k, t, g, rec = r["question_kind"], r["task"], r["grounding"], r["recorded"]
     which = re.search(r"\((\w+) of", rec)
+    nth = which.group(1) if which else ""
     if k == "vts_phase":
-        return k, r["task"], rec.split(",")[0]
-    if k == "vts_step":
-        return k, r["task"], g["gesture"]
-    if k == "vts_step_in_phase":
-        return k, r["task"], g["gesture"], re.search(r"in the (\w+) ", rec).group(1)
-    if k == "vts_step_nth":
-        return k, r["task"], g["gesture"], which.group(1)
-    if k in ("vts_event", "vts_event_nth"):
-        return k, r["task"], g["error_types"][0], which.group(1) if which else ""
-    return k, r["task"]
+        keys = [(k, t, rec.split(",")[0])]
+    elif k == "vts_step":
+        keys = [(k, t, g["gesture"])]
+    elif k == "vts_step_in_phase":
+        throw = re.search(r"in the (\w+) ", rec).group(1)
+        keys = [(k, t, g["gesture"], throw), (k, t, throw)]
+    elif k == "vts_step_nth":
+        keys = [(k, t, g["gesture"], nth), (k, t, nth)]
+    elif k in ("vts_event", "vts_event_nth"):
+        keys = [(k, t, g["error_types"][0], nth), (k, t, nth)]
+    elif k == "vts_redo":
+        keys = [(k, t, g["gesture"], g["after"], nth), (k, t, g["gesture"], g["after"])]
+    else:
+        keys = []
+    return keys + [(k, t)]
 
 
 def iou(a: tuple[float, float], b: tuple[float, float]) -> float:
     inter = max(0.0, min(a[1], b[1]) - max(a[0], b[0]))
     union = max(a[1], b[1]) - min(a[0], b[0])
     return inter / union if union else 0.0
+
+
+BLIND_MIN_OTHERS = 3
+
+
+def blind_ious(records: list[dict]) -> list[float | None]:
+    """IoU of a guess made from each question's text alone, per record.
+
+    The guess is the median position, as a share of the recording, of the same
+    question's answer in every other trial, scaled to this recording's length. None
+    where not even the coarsest key has enough other trials to guess from.
+    """
+    by_key: dict[tuple, list[dict]] = defaultdict(list)
+    for r in records:
+        for key in blind_keys(r):
+            by_key[key].append(r)
+    out: list[float | None] = []
+    for r in records:
+        g = r["grounding"]
+        others = next((o for o in ([x for x in by_key[key] if x["trial_id"] != r["trial_id"]]
+                                   for key in blind_keys(r))
+                       if len(o) >= BLIND_MIN_OTHERS), None)
+        if others is None:
+            out.append(None)
+            continue
+        guess = tuple(statistics.median(o["grounding"][f] / FPS / o["grounding"]["trial_s"]
+                                        for o in others) * g["trial_s"]
+                      for f in ("clue_start_frame", "clue_end_frame"))
+        out.append(iou(guess, (g["clue_start_frame"] / FPS, g["clue_end_frame"] / FPS)))
+    return out
 
 
 def main() -> int:
@@ -160,6 +205,13 @@ def main() -> int:
                   and (len(carrying) == 1) == (kind == "vts_event"))
             if len(g["error_types"]) > 1:
                 flags["an error clip carrying a second error type"] += 1
+        elif kind == "vts_redo":
+            returns = [c[:2] for a, b, c in zip(spans, spans[1:], spans[2:])
+                       if a[2] == c[2] == gesture and b[2] == g["after"]]
+            i = g["occurrence"]
+            ok = (len(returns) == g["occurrences"] and len(returns) >= i
+                  and returns[i - 1] == (s, e)
+                  and not any(a[2] == b[2] == gesture for a, b in zip(spans, spans[1:])))
         else:
             ok = g["ratio"] >= 2.0 and (g["runner_up_ratio"] is None
                                         or g["runner_up_ratio"] <= 0.8 * g["ratio"])
@@ -176,21 +228,9 @@ def main() -> int:
     for flag, n in flags.most_common():
         print(f"  flag: {flag}: {n}")
 
-    by_key = defaultdict(list)
-    for r in records:
-        by_key[blind_key(r)].append(r)
     per_kind: dict[str, list[float | None]] = defaultdict(list)
-    for r in records:
-        g = r["grounding"]
-        others = [o for o in by_key[blind_key(r)] if o["trial_id"] != r["trial_id"]]
-        if len(others) < 3:
-            per_kind[r["question_kind"]].append(None)
-            continue
-        guess = tuple(statistics.median(o["grounding"][f] / FPS / o["grounding"]["trial_s"]
-                                        for o in others) * g["trial_s"]
-                      for f in ("clue_start_frame", "clue_end_frame"))
-        per_kind[r["question_kind"]].append(
-            iou(guess, (g["clue_start_frame"] / FPS, g["clue_end_frame"] / FPS)))
+    for r, score in zip(records, blind_ious(records)):
+        per_kind[r["question_kind"]].append(score)
     print(f"\nblind test: answer guessed from the question alone, found at IoU >= {BLIND_IOU}")
     total = found = 0
     for kind, scores in sorted(per_kind.items(), key=lambda kv: -len(kv[1])):

@@ -766,6 +766,18 @@ def build_localization_questions(task: str, trial: str, root: Path,
 #                  measured, and duration is the one measure here validated against
 #                  assessed skill (rho -0.44, VALIDATED_KINDS). Unique only with a
 #                  clear margin, as "the single most serious" is.
+#   redo           the surgeon goes back to an action right after starting the next
+#                  one (X, Y, X in the transcription): "goes back to positioning the
+#                  needle after pushing it through". Unique as the only such return,
+#                  or by its ordinal.
+#
+# Redo exists because the kinds above follow the task's fixed order, so a model can
+# often place them without watching: a blind guess from the question text finds 83%
+# of phases and 81% of once-only steps (check_locate_qa.py). A redo happens wherever
+# it happens. Two other irregular kinds were tried and left out for yielding almost
+# nothing: the longest pause with both instruments still lasts a median of 1.3 s,
+# with only 3 trials reaching 3 s; and the one stitch where the needle goes through
+# twice occurs in 3 trials, each time over 20% of the recording.
 #
 # Every stretch that passes is asked about, the gestures once each: a gesture span
 # carrying an error is asked as the error, otherwise by the least it takes to name
@@ -781,7 +793,7 @@ VTS_MIN_TRIAL_S = 60.0
 # a near tie, not a single worst.
 VTS_WORST_MARGIN = 0.8
 VTS_KINDS = ("phase", "longest", "step", "step_in_phase", "step_nth", "event",
-             "event_nth", "worst")
+             "event_nth", "worst", "redo")
 
 # The answering model gets the annotation and the question and nothing else. The
 # rules live in the system prompt, as they do for the MultiBypass locate questions;
@@ -921,6 +933,18 @@ VTS_EVENT_NTH = {
         "Where in this recording is the {nth} step that takes multiple attempts? Show "
         "the trainee when it happens."),
 }
+# The event frames for a return to an action, and with an ordinal.
+VTS_REDO_ASKS = (
+    "When in this recording does the surgeon go back to {x} after {y}?",
+    "Where in this recording does the surgeon return to {x} right after {y}? Show the "
+    "trainee when it happens.",
+)
+VTS_REDO_NTH_ASKS = (
+    "When in this recording does the surgeon go back to {x} after {y} for the {nth} "
+    "time?",
+    "Show the trainee the {nth} time the surgeon returns to {x} right after {y} in this "
+    "recording.",
+)
 # The worst-bleed frames again, for the longest throw.
 VTS_LONGEST_ASKS = (
     "Which {throw} in this recording takes the longest, and how long does it take?",
@@ -1108,6 +1132,32 @@ def build_vts_questions(task: str, trial: str, root: Path,
                                l["source_file"] for l in task_rows
                                if l["trial_id"] == trial and l["start_frame"] == s
                                and l["end_frame"] == e})}))
+
+    # redo: the return to an action right after starting the next one
+    redos: dict[tuple[str, str], list[tuple[int, int]]] = {}
+    for a, b, c in zip(span_list, span_list[1:], span_list[2:]):
+        if a[2] == c[2] != b[2] and a[2] not in doubled:
+            redos.setdefault((a[2], b[2]), []).append((c[0], c[1]))
+    for (x, y), returns in redos.items():
+        n = len(returns)
+        for i, (s, e) in enumerate(returns, start=1):
+            if ("redo" not in kinds or (s, e) in asked or i > len(ORDINALS)
+                    or not usable(s, e)):
+                continue
+            asked.add((s, e))
+            lines = [f"- Action: {label(x)}, done again right after {label(y)}"]
+            recorded = f"Redo -- {label(x)} again after {label(y)}"
+            if n == 1:
+                question = pick(VTS_REDO_ASKS, "redo").format(x=label(x), y=label(y))
+            else:
+                question = pick(VTS_REDO_NTH_ASKS, "redo nth").format(
+                    x=label(x), y=label(y), nth=nth(i))
+                lines.append(f"- Which: the {nth(i)} of the {number_word(n)} times this "
+                             f"happens in this recording")
+                recorded += f" ({nth(i)} of {number_word(n)})"
+            out.append(record("redo", s, e, question, recorded, lines,
+                              {"gesture": x, "after": y, "occurrence": i,
+                               "occurrences": n}))
 
     # steps: every other gesture span, named by the least that makes it unique
     for s, e, g in span_list:
@@ -1549,6 +1599,9 @@ def main() -> int:
                     help="VideoTreeSearch-style grounded questions: one clue per "
                          "question, long enough to see, unique in the trial. Implies "
                          "--error-labels.")
+    ap.add_argument("--keep", default=None,
+                    help="--vts only: ask just the questions in this list, as written "
+                         "by plan_locate_qa.py")
     ap.add_argument("--vts-kinds", default=",".join(VTS_KINDS),
                     help="comma separated subset of " + ", ".join(VTS_KINDS))
     ap.add_argument("--min-clue-s", type=float, default=VTS_MIN_CLUE_S)
@@ -1620,6 +1673,11 @@ def main() -> int:
     plan: list[tuple[str, str, dict, list[dict[str, Any]]]] = []
     funnel: Counter = Counter()
     tally: Counter = Counter()
+    keep = None
+    if args.keep:
+        keep = {(k["trial_id"], k["kind"], k["span"], k["recorded"])
+                for k in json.loads(Path(args.keep).read_text(encoding="utf-8"))}
+        print(f"keep list: {len(keep)} questions from {args.keep}")
     template = VTS_USER_PROMPT if args.vts else USER_PROMPT
     for trial in wanted:
         task = next((t for t in TASK_OF if trial.startswith(t)), None)
@@ -1642,6 +1700,9 @@ def main() -> int:
                 build_baselines(root, task, meta, exclude=trial),
                 args.min_clue_s, args.max_clue_fraction, args.min_trial_s,
                 tuple(args.vts_kinds.split(",")), funnel, tally)
+            if keep is not None:
+                questions = [q for q in questions
+                             if (trial, q["kind"], q["span"], q["recorded"]) in keep]
         elif labels and args.anchor == "none":
             questions = build_localization_questions(task, trial, root, labels)
         else:

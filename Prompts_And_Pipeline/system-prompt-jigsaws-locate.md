@@ -23,6 +23,10 @@ kinds exists here as labelled. Each has a counterpart instead, built in
   type in the trial, or by which occurrence it is ("the second needle drop"), as the
   MultiBypass140 set asks for the first bleed. These are the UVA-DSA labels, which
   cover Suturing and Needle Passing only.
+- **redo**: the surgeon goes back to an action right after starting the next one
+  ("goes back to positioning the needle after pushing the needle through the
+  tissue"). It happens wherever it happens, unlike the task's fixed order of throws
+  and steps.
 - **worst**: the step that runs furthest over the time the same action takes in the
   strongest trials, in place of the most serious bleed. The error labels carry no
   grade, so the worst has to be measured, and duration is the one measure validated
@@ -46,7 +50,8 @@ where something happens in one recorded robotic training task on a bench-top
 model: suturing, needle passing or knot tying.
 
 The question asks where in the whole recording one phase of the task, one action,
-one error, the longest phase, or the step that runs furthest over time takes place.
+one error, a return to an action, the longest phase, or the step that runs
+furthest over time takes place.
 It may name it by which occurrence it is ("the second time", "the second needle
 drop") or by the phase it falls in ("during the third stitch"). The annotation for
 it is given to you separately, before the question: the time span it occupies in

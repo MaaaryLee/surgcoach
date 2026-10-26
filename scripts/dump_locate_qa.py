@@ -33,7 +33,7 @@ from localize_events import (FPS, build_baselines, read_meta, read_spans,
 SHOW = {"vts_phase": "phase", "vts_longest": "longest phase", "vts_step": "step",
         "vts_step_in_phase": "step in phase", "vts_step_nth": "step by order",
         "vts_event": "event", "vts_event_nth": "event by order",
-        "vts_worst": "worst delay"}
+        "vts_worst": "worst delay", "vts_redo": "redo"}
 
 
 def wrap(prefix: str, text: str) -> str:
@@ -127,9 +127,12 @@ def main() -> int:
         "Each question has exactly one answer in its recording: one throw by its "
         "order, a gesture performed once in the trial or once in its throw or named "
         "by its occurrence, an error that is the only one of its type or named by its "
-        "occurrence, the longest throw, or the single step that runs furthest over "
-        "the time the strongest trials take; the two extremes only by a clear margin "
-        "over the next. JIGSAWS labels no phases, so a throw (a stitch, a pass "
+        "occurrence, a return to an action right after starting the next, the "
+        "longest throw, or the single step that runs furthest over the time the "
+        "strongest trials take; the "
+        "two extremes only by a clear margin over the next. Questions a guess from "
+        "the text alone locates at IoU 0.3 or better are left out "
+        "(plan_locate_qa.py). JIGSAWS labels no phases, so a throw (a stitch, a pass "
         "through a ring, a throw of the knot) is cut from the gesture transcription, "
         "and only in trials with the number of throws the task calls for. The errors "
         "are the UVA-DSA consensus labels, which cover Suturing and Needle Passing "
