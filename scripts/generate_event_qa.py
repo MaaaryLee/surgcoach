@@ -58,12 +58,13 @@ from pathlib import Path
 from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from localize_events import (FPS, GESTURES, build_baselines, events_for_trial,
-                             read_kinematics, read_meta, read_spans, reference_trials,
-                             resolve_jigsaws_root, resolve_task_root, span_metrics,
-                             timestamp)
+from localize_events import (FPS, GESTURES, SLOW_RATIO, build_baselines,
+                             events_for_trial, read_kinematics, read_meta, read_spans,
+                             reference_trials, resolve_jigsaws_root, resolve_task_root,
+                             span_metrics, timestamp)
 from run_annotation_qa_jigsaws import (extract_system_prompt, load_text_model,
-                                       parse_json_payload, run_generation)
+                                       parse_json_payload, run_generation,
+                                       run_generation_llama, verify_llama_server)
 
 # Defined here rather than imported, after the template B branch removed both from
 # run_annotation_qa_jigsaws.py. The merge was textually clean -- no file was touched
@@ -713,6 +714,507 @@ def build_localization_questions(task: str, trial: str, root: Path,
     return out
 
 
+# --vts: grounded long-video QA in the form VideoTreeSearch trains and evaluates on
+# (arXiv 2607.16189). There a question is about a long video, its answer depends on
+# one short interval, and the model has to find that interval as well as answer. The
+# paper keeps a question only if it passes three filters, carried over here:
+#
+#   single clue     the ground truth is one contiguous segment.
+#   long enough     the clue is long enough to be seen, and the recording is long
+#                   enough around it that finding it is a search. The paper keeps
+#                   clues spanning at most 20% of the video; a JIGSAWS gesture can
+#                   also be a fraction of a second, which no frame sampler at 1 fps
+#                   would catch, so there is a floor on the clue as well.
+#   unique          exactly one stretch of the recording answers the question. Each
+#                   kind below says how it gets there.
+#
+# The kinds, the wording and the answers follow the MultiBypass140 locate set
+# (multibypass_locate_full, 10-20-2026, and system-prompt-multibypass-locate.md), so
+# the datasets read as one: the answer reports the stretch and what the annotation
+# records about it, and nothing else -- no judgement and no feedback. That set is
+# about an operation; JIGSAWS records a bench-top task, so each kind has a
+# counterpart rather than a copy:
+#
+#   phase          one throw: a stitch in Suturing, a pass through a ring in Needle
+#                  Passing, a throw of the knot in Knot Tying. JIGSAWS has no phase
+#                  labels, but every task is the same few gestures repeated per throw
+#                  -- 33 of 39 Suturing trials have exactly four, the four the task
+#                  asks for -- so a throw is cut from the transcription, at each
+#                  needle transfer (G4) or each reach that starts a knot throw (G12).
+#                  Unique by its ordinal, and only asked where the trial has the
+#                  task's own number of throws.
+#   longest        the throw that takes longest, by a clear margin over the next.
+#   step           a gesture the surgeon performs once in the trial, as a
+#                  MultiBypass step is.
+#   step_in_phase  a gesture performed once within its throw: "the needle pass in
+#                  the third stitch". Unique by the pair, as a step inside a
+#                  MultiBypass phase is.
+#   step_nth       any other gesture, by which occurrence it is: "the second time
+#                  the surgeon orients the needle". The transcription is complete,
+#                  so the count is exact.
+#   event          an executional error that is the only one of its type in the
+#                  trial, the counterpart of an adverse event.
+#   event_nth      an error whose type recurs, by which occurrence it is: "the second
+#                  needle drop", the counterpart of the MultiBypass first bleed.
+#                  Both event kinds need every span that could carry the type to be
+#                  labelled, so "the only one" and "the second" are claims the labels
+#                  make. Suturing and Needle Passing only: Knot Tying has no error
+#                  labels.
+#   worst          the step that runs furthest over the time the same action takes in
+#                  the strongest trials, the counterpart of the most serious bleed.
+#                  The error labels carry no grade, so "most serious" has to be
+#                  measured, and duration is the one measure here validated against
+#                  assessed skill (rho -0.44, VALIDATED_KINDS). Unique only with a
+#                  clear margin, as "the single most serious" is.
+#
+# Every stretch that passes is asked about, the gestures once each: a gesture span
+# carrying an error is asked as the error, otherwise by the least it takes to name
+# it -- once in the trial, once in its throw, or its ordinal. The two extremes may
+# share a clip with another question, as a MultiBypass bleed can be both an event
+# and the most serious bleed. An earlier version took one phase and one step per
+# trial, as the MultiBypass set does, and stopped at 166 questions.
+VTS_MIN_CLUE_S = 3.0
+VTS_MAX_CLUE_FRACTION = 0.20
+VTS_MIN_TRIAL_S = 60.0
+# The slowest span is "the" worst only when the next slowest is at most this share
+# of it. At the median trial the runner-up is three quarters of the worst, which is
+# a near tie, not a single worst.
+VTS_WORST_MARGIN = 0.8
+VTS_KINDS = ("phase", "longest", "step", "step_in_phase", "step_nth", "event",
+             "event_nth", "worst")
+
+# The answering model gets the annotation and the question and nothing else. The
+# rules live in the system prompt, as they do for the MultiBypass locate questions;
+# USER_PROMPT above belongs to the event questions and asks for an inferred cause,
+# which these answers must not contain.
+VTS_USER_PROMPT = (
+    "The annotation for this question:\n{facts}\n\n"
+    "The question (copy it verbatim into the question field):\n{question}\n\n"
+    "Return valid JSON only, following the system prompt schema.")
+
+# Each gesture in the forms the MultiBypass step frames need. Its labels are nouns
+# ("jejunojejunal stapling") that drop into any frame; the JIGSAWS ones are gerund
+# phrases, which do not, so each is written out: the verb phrase after "does the
+# surgeon", the same with the surgeon as its subject, and what follows "how" in the
+# CholecT50 frame -- passive where that reads naturally, otherwise active.
+GESTURE_FORMS = {
+    "G1": ("reach for the needle with the right hand",
+           "reaches for the needle with the right hand",
+           "the surgeon reaches for the needle with the right hand"),
+    "G2": ("position the needle", "positions the needle", "the needle is positioned"),
+    "G3": ("push the needle through the tissue", "pushes the needle through the tissue",
+           "the needle is pushed through the tissue"),
+    "G4": ("transfer the needle from left to right",
+           "transfers the needle from left to right",
+           "the needle is transferred from left to right"),
+    "G5": ("move to the centre with the needle in grip",
+           "moves to the centre with the needle in grip",
+           "the surgeon moves to the centre with the needle in grip"),
+    "G6": ("pull the suture with the left hand", "pulls the suture with the left hand",
+           "the suture is pulled with the left hand"),
+    "G7": ("pull the suture with the right hand", "pulls the suture with the right hand",
+           "the suture is pulled with the right hand"),
+    "G8": ("orient the needle", "orients the needle", "the needle is oriented"),
+    "G9": ("use the right hand to help tighten the suture",
+           "uses the right hand to help tighten the suture",
+           "the right hand helps tighten the suture"),
+    "G10": ("loosen more suture", "loosens more suture", "more suture is loosened"),
+    "G11": ("drop the suture and move to the end points",
+            "drops the suture and moves to the end points",
+            "the surgeon drops the suture and moves to the end points"),
+    "G12": ("reach for the needle with the left hand",
+            "reaches for the needle with the left hand",
+            "the surgeon reaches for the needle with the left hand"),
+    "G13": ("make a C loop around the right hand", "makes a C loop around the right hand",
+            "a C loop is made around the right hand"),
+    "G14": ("reach for the suture with the right hand",
+            "reaches for the suture with the right hand",
+            "the surgeon reaches for the suture with the right hand"),
+    "G15": ("pull the suture with both hands", "pulls the suture with both hands",
+            "the suture is pulled with both hands"),
+}
+
+# The MultiBypass "phase" frame, the one that asks only when ("When in this operation
+# does the {X} phase take place?"). "Operation" becomes "recording" in every frame
+# here: this is a bench-top exercise, and the MultiBypass set says "recording" itself
+# in one of its step frames.
+VTS_PHASE_ASK = "When in this recording does the {name} take place?"
+VTS_THROW = {"Suturing": "stitch", "Needle_Passing": "pass through a ring",
+             "Knot_Tying": "throw of the knot"}
+# How many throws the task itself asks for. "The second stitch" only names the same
+# stretch a viewer would count where the transcription splits into that many; a
+# trial that splits into six has extra transfers in it, and its "sixth stitch" is
+# not something anyone watching could find.
+VTS_EXPECTED_THROWS = {"Suturing": 4, "Needle_Passing": 4, "Knot_Tying": 2}
+
+# The three MultiBypass "step" frames, then the CholecT50 one ("A trainee wants to
+# see how the cystic artery is clipped. Show them when the surgeon does it in this
+# operation.").
+VTS_STEP_ASKS = (
+    "Where in this recording does the surgeon {base}? Give the time span.",
+    "Show the trainee where in this recording the surgeon {third}.",
+    "A trainee wants to review the surgeon {gerund}. When in this recording does it "
+    "happen?",
+    "A trainee wants to see how {how}. Show them when {doer} in this recording.",
+)
+
+# The two MultiBypass "event" frames, "When in this operation does a ... occur?" and
+# "Where in this operation is there a ...? Show the trainee when it happens.", per
+# error type, because no one noun phrase reads in both for all three. The second
+# element is what the error was, for the annotation and the record.
+VTS_EVENT = {
+    "Needle Drop": (
+        ("When in this recording does a needle drop occur?",
+         "Where in this recording is there a needle drop? Show the trainee when it "
+         "happens."),
+        "Needle drop -- the needle came out of the instrument's grasp"),
+    "Needle Orientation": (
+        ("When in this recording does a needle orientation error occur?",
+         "Where in this recording is there a needle orientation error? Show the "
+         "trainee when it happens."),
+        "Needle orientation error -- the needle was held at the wrong angle"),
+    "Multiple Attempts": (
+        ("When in this recording does a step take multiple attempts?",
+         "Where in this recording is there a step that takes multiple attempts? Show "
+         "the trainee when it happens."),
+        "Multiple attempts -- the step needed several attempts before it succeeded"),
+}
+
+# The two MultiBypass "worst bleed" frames: "Where in this operation is the most
+# serious bleeding, and how serious is it?" and "Show the trainee the most serious
+# bleed in this operation."
+VTS_WORST_ASKS = (
+    "Where in this recording does the surgeon lose the most time on a single step, "
+    "and how much?",
+    "Show the trainee the step in this recording where the surgeon loses the most "
+    "time.",
+)
+
+# Ordinal and within-throw forms of the step frames above, for gestures performed
+# more than once. "First" and "last" read better than "fourth of four", but naming
+# every occurrence by its number keeps one rule for all of them.
+VTS_STEP_NTH_ASKS = (
+    "Where in this recording does the surgeon {base} for the {nth} time? Give the "
+    "time span.",
+    "Show the trainee the {nth} time the surgeon {third} in this recording.",
+    "A trainee wants to review the {nth} time the surgeon {third}. When in this "
+    "recording does it happen?",
+)
+VTS_STEP_IN_PHASE_ASKS = (
+    "During the {phase}, when does the surgeon {base}? Give the time span.",
+    "Show the trainee where the surgeon {third} during the {phase} in this recording.",
+    "A trainee wants to see how {how} in the {phase}. Show them when {doer} in this "
+    "recording.",
+)
+# The event frames with an ordinal, per error type.
+VTS_EVENT_NTH = {
+    "Needle Drop": (
+        "When in this recording does the {nth} needle drop occur?",
+        "Where in this recording is the {nth} needle drop? Show the trainee when it "
+        "happens."),
+    "Needle Orientation": (
+        "When in this recording does the {nth} needle orientation error occur?",
+        "Where in this recording is the {nth} needle orientation error? Show the "
+        "trainee when it happens."),
+    "Multiple Attempts": (
+        "When in this recording is the {nth} step that takes multiple attempts?",
+        "Where in this recording is the {nth} step that takes multiple attempts? Show "
+        "the trainee when it happens."),
+}
+# The worst-bleed frames again, for the longest throw.
+VTS_LONGEST_ASKS = (
+    "Which {throw} in this recording takes the longest, and how long does it take?",
+    "Show the trainee the longest {throw} in this recording.",
+)
+
+
+def vts_throws(task: str, spans: list[tuple[int, int, str]]
+               ) -> list[list[tuple[int, int, str]]]:
+    """The trial cut into throws: at each transfer (G4), or for Knot Tying at each G12.
+
+    Suturing and Needle Passing open with picking the needle up (G1, G5, G8) before
+    the first positioning (G2); that run-in is not a throw, so the first throw starts
+    at G2. The transfer between two throws belongs to neither. Every task ends with
+    G11, dropping the suture and moving to the end points, which is not a throw
+    either.
+    """
+    out: list[list[tuple[int, int, str]]] = []
+    cur: list[tuple[int, int, str]] = []
+    started = task == "Knot_Tying"
+    for span in spans:
+        g = span[2]
+        if g == "G11":
+            break
+        if not started:
+            if g != "G2":
+                continue
+            started = True
+        if (task == "Knot_Tying" and g == "G12") or g == "G4":
+            if cur:
+                out.append(cur)
+            cur = [] if g == "G4" else [span]
+            continue
+        cur.append(span)
+    if cur:
+        out.append(cur)
+    return out
+
+
+def build_vts_questions(task: str, trial: str, root: Path,
+                        labels: list[dict[str, Any]], baselines: dict,
+                        min_clue_s: float = VTS_MIN_CLUE_S,
+                        max_clue_fraction: float = VTS_MAX_CLUE_FRACTION,
+                        min_trial_s: float = VTS_MIN_TRIAL_S,
+                        kinds: tuple[str, ...] = VTS_KINDS,
+                        funnel: Counter | None = None,
+                        tally: Counter | None = None) -> list[dict[str, Any]]:
+    """The locate questions for one trial, in the kinds VTS_KINDS lists.
+
+    funnel, when given, counts why each candidate was dropped, so the cost of every
+    threshold can be read off a run rather than guessed. tally, when given, is shared
+    across trials so each bank's wordings are used in turn.
+    """
+    funnel = funnel if funnel is not None else Counter()
+    tally = tally if tally is not None else Counter()
+    span_list = read_spans(root, trial)
+    if not span_list:
+        return []
+    # The transcription runs to the end of the last gesture, a few frames short of
+    # the video. That understates the trial slightly, which makes the clue fraction
+    # err high -- the conservative direction for a ceiling.
+    trial_s = max(e for _, e, _ in span_list) / FPS
+    if trial_s < min_trial_s:
+        funnel["trial too short"] += 1
+        return []
+
+    # Which gestures each error type is labelled on at all in this task. A needle
+    # drop is only scored on some gestures, so "the only needle drop" needs every
+    # span of those gestures in this trial to carry a needle-drop label.
+    task_rows = [l for l in labels if l["task"] == task]
+    scored_on = {t: {l["gesture"] for l in task_rows if l["error_type"] == t}
+                 for t in ERROR_QUESTIONS}
+    rows: dict[tuple[int, int], dict[str, bool]] = {}
+    for l in task_rows:
+        if l["trial_id"] == trial and l["error_type"] in ERROR_QUESTIONS:
+            rows.setdefault((l["start_frame"], l["end_frame"]), {})[
+                l["error_type"]] = l["is_error"]
+
+    def types_at(key: tuple[int, int]) -> list[str]:
+        return sorted((t for t, err in rows.get(key, {}).items() if err),
+                      key=ERROR_SPECIFICITY.index)
+
+    def covered(t: str) -> bool:
+        return all(t in rows.get((s, e), {}) for s, e, g in span_list
+                   if g in scored_on[t])
+
+    def usable(s: int, e: int) -> bool:
+        clue_s = (e - s) / FPS
+        if clue_s < min_clue_s:
+            funnel["clue too short"] += 1
+            return False
+        if clue_s / trial_s > max_clue_fraction:
+            funnel["clue too large a share of the trial"] += 1
+            return False
+        return True
+
+    def quarter(s: int, e: int) -> int:
+        return min(4, int(4 * (s + e) / 2 / FPS / trial_s) + 1)
+
+    def pick(bank: tuple[str, ...], key: str) -> str:
+        text = bank[tally[key] % len(bank)]
+        tally[key] += 1
+        return text
+
+    def record(kind: str, s: int, e: int, question: str, recorded: str,
+               fact_lines: list[str], extra: dict[str, Any]) -> dict[str, Any]:
+        funnel[f"kept, {kind}"] += 1
+        clue_s = (e - s) / FPS
+        span = f"{timestamp(s)}-{timestamp(e)}"
+        return {
+            "kind": f"vts_{kind}",
+            "span": span,
+            "question": question,
+            "recorded": f"{recorded}, {span}" + extra.pop("_after", ""),
+            "facts": "\n".join(fact_lines + [f"- Time span: from {timestamp(s)} to "
+                                             f"{timestamp(e)}"]),
+            "guidance": "",
+            "grounding": {
+                "clue_start_frame": s, "clue_end_frame": e,
+                "clue_s": round(clue_s, 2), "trial_s": round(trial_s, 2),
+                "clue_fraction": round(clue_s / trial_s, 3),
+                "quarter": quarter(s, e), **extra,
+            },
+        }
+
+    label = lambda g: GESTURES.get(g, g)  # noqa: E731
+    nth = lambda i: ORDINALS[i - 1]  # noqa: E731
+    out: list[dict[str, Any]] = []
+    asked: set[tuple[int, int]] = set()
+    # Gestures the transcription labels twice back to back, as Knot_Tying_B001 does
+    # with its C loop. On screen that is one action, so its count, its ordinals and
+    # the clip itself are not what a viewer sees; no step or worst question uses it.
+    doubled = {a[2] for a, b in zip(span_list, span_list[1:]) if a[2] == b[2]}
+
+    throws = vts_throws(task, span_list)
+    if throws and len(throws) != VTS_EXPECTED_THROWS[task]:
+        funnel[f"phases: trial has {len(throws)} throws, not "
+               f"{VTS_EXPECTED_THROWS[task]}"] += 1
+        throws = []
+    throw_name = lambda k: f"{nth(k)} {VTS_THROW[task]}"  # noqa: E731
+    # The throw a gesture span sits in, where it is that gesture's only span there.
+    alone_in: dict[tuple[int, int], int] = {}
+    for k, throw in enumerate(throws, start=1):
+        here = Counter(g for _, _, g in throw)
+        alone_in.update({(s, e): k for s, e, g in throw if here[g] == 1})
+
+    # events: every labelled error, as the only one of its type or by its ordinal.
+    # A type is counted on every span that carries it. Counting it only where it is
+    # a span's main type made four questions in the 10-24 batch wrong: a span with a
+    # wrong angle AND multiple attempts was left out of the multiple-attempts count,
+    # so "the only step that takes multiple attempts" had a second answer.
+    by_type: dict[str, list[tuple[int, int]]] = {}
+    for s, e, _ in span_list:
+        for t in types_at((s, e)):
+            by_type.setdefault(t, []).append((s, e))
+    for s, e, g in span_list:
+        types = types_at((s, e))
+        if not types:
+            continue
+        t = types[0]
+        if not covered(t):
+            funnel["event: error type not labelled on every span"] += 1
+            continue
+        n, i = len(by_type[t]), by_type[t].index((s, e)) + 1
+        kind = "event" if n == 1 else "event_nth"
+        if kind not in kinds or i > len(ORDINALS) or not usable(s, e):
+            continue
+        asked.add((s, e))
+        what = VTS_EVENT[t][1]
+        lines = [f"- Error: {what}"]
+        if n == 1:
+            question, recorded = pick(VTS_EVENT[t][0], t), what
+        else:
+            question = pick(VTS_EVENT_NTH[t], f"{t} nth").format(nth=nth(i))
+            recorded = f"{what} ({nth(i)} of {number_word(n)})"
+            lines.append(f"- Which: the {nth(i)} of the {number_word(n)} times it "
+                         f"happens in this recording")
+        lines += [f"- Also recorded on the same stretch: {VTS_EVENT[x][1]}"
+                  for x in types[1:]]
+        out.append(record(kind, s, e, question, recorded,
+                          lines + [f"- During: {label(g)}"],
+                          {"gesture": g, "error_types": types, "occurrence": i,
+                           "occurrences": n, "_after": f", during {label(g)}",
+                           "source_files": sorted({
+                               l["source_file"] for l in task_rows
+                               if l["trial_id"] == trial and l["start_frame"] == s
+                               and l["end_frame"] == e})}))
+
+    # steps: every other gesture span, named by the least that makes it unique
+    for s, e, g in span_list:
+        if (s, e) in asked or g not in GESTURE_FORMS:
+            continue
+        if g in doubled:
+            funnel["step: gesture labelled twice back to back"] += 1
+            continue
+        i, n = occurrence_index(span_list, s, g)
+        kind = ("step" if n == 1 else
+                "step_in_phase" if (s, e) in alone_in else "step_nth")
+        if kind not in kinds or i > len(ORDINALS) or not usable(s, e):
+            continue
+        asked.add((s, e))
+        base, third, how = GESTURE_FORMS[g]
+        doer = "it happens" if how.startswith("the surgeon") else "the surgeon does it"
+        if kind == "step":
+            question = pick(VTS_STEP_ASKS, kind).format(
+                base=base, third=third, gerund=label(g), how=how, doer=doer)
+            lines = [f"- Action: {label(g)}, the only time the surgeon does it in this "
+                     f"recording"]
+            recorded = label(g)
+        elif kind == "step_in_phase":
+            k = alone_in[(s, e)]
+            question = pick(VTS_STEP_IN_PHASE_ASKS, kind).format(
+                base=base, third=third, how=how, doer=doer, phase=throw_name(k))
+            lines = [f"- Phase: the {throw_name(k)}",
+                     f"- Action: {label(g)}, the only time the surgeon does it in that "
+                     f"{VTS_THROW[task]}"]
+            recorded = f"{label(g)}, in the {throw_name(k)}"
+        else:
+            question = pick(VTS_STEP_NTH_ASKS, kind).format(
+                base=base, third=third, nth=nth(i))
+            lines = [f"- Action: {label(g)}, the {nth(i)} of the {number_word(n)} times "
+                     f"the surgeon does it in this recording"]
+            recorded = f"{label(g)} ({nth(i)} of {number_word(n)})"
+        out.append(record(kind, s, e, question, recorded, lines,
+                          {"gesture": g, "occurrence": i, "occurrences": n}))
+
+    # phases, and the longest of them by a clear margin
+    spans_k = [(k, t[0][0], t[-1][1]) for k, t in enumerate(throws, start=1)]
+    for k, s, e in spans_k:
+        if len(throws[k - 1]) < 2:
+            funnel["phase: a throw of one gesture"] += 1
+            continue
+        if "phase" in kinds and usable(s, e):
+            out.append(record("phase", s, e, VTS_PHASE_ASK.format(name=throw_name(k)),
+                              throw_name(k),
+                              [f"- Phase: the {throw_name(k)}, of the "
+                               f"{number_word(len(throws))} in this recording"],
+                              {"throw": k, "throws": len(throws),
+                               "gestures": [g for _, _, g in throws[k - 1]]}))
+    ranked = sorted(spans_k, key=lambda x: x[2] - x[1], reverse=True)
+    if "longest" in kinds and len(ranked) > 1:
+        (k, s, e), (_, s2, e2) = ranked[0], ranked[1]
+        took, runner = (e - s) / FPS, (e2 - s2) / FPS
+        if runner > VTS_WORST_MARGIN * took:
+            funnel["longest: no clear single longest"] += 1
+        elif usable(s, e):
+            out.append(record(
+                "longest", s, e,
+                pick(VTS_LONGEST_ASKS, "longest").format(throw=VTS_THROW[task]),
+                f"Longest {VTS_THROW[task]} -- the {throw_name(k)}, {took:.1f} s "
+                f"(next longest {runner:.1f} s)",
+                [f"- Phase: the {throw_name(k)}, the longest of the "
+                 f"{number_word(len(throws))} in this recording",
+                 f"- Duration: {took:.1f} seconds; the next longest takes "
+                 f"{runner:.1f} seconds"],
+                {"throw": k, "throws": len(throws), "duration_s": round(took, 2),
+                 "next_longest_s": round(runner, 2)}))
+
+    # worst: the span furthest over the strongest trials' time, by a clear margin
+    if "worst" in kinds:
+        kin = read_kinematics(root, trial)
+        timed = {}
+        for s, e, g in span_list:
+            m, base = span_metrics(kin, s, e), baselines.get(g, {})
+            if m.get("duration_s") and base.get("duration_s"):
+                timed[(s, e, g)] = (m["duration_s"], base["duration_s"])
+        ratio = lambda k: timed[k][0] / timed[k][1]  # noqa: E731
+        ranked_t = sorted(timed, key=ratio, reverse=True)
+        if not ranked_t or ratio(ranked_t[0]) < SLOW_RATIO:
+            funnel["worst: nothing ran slow"] += 1
+        elif (len(ranked_t) > 1
+              and ratio(ranked_t[1]) > VTS_WORST_MARGIN * ratio(ranked_t[0])):
+            funnel["worst: no clear single worst"] += 1
+        elif ranked_t[0][2] in doubled:
+            funnel["worst: gesture labelled twice back to back"] += 1
+        elif usable(ranked_t[0][0], ranked_t[0][1]):
+            s, e, g = ranked_t[0]
+            took, usual = timed[(s, e, g)]
+            out.append(record(
+                "worst", s, e, pick(VTS_WORST_ASKS, "worst"),
+                f"Delay -- {took:.1f} s where the strongest recorded attempts take "
+                f"about {usual:.1f} s",
+                ["- The step that runs furthest over time in this recording",
+                 f"- Action: {label(g)}",
+                 f"- Duration: {took:.1f} seconds, where the strongest recorded "
+                 f"attempts at the same action take about {usual:.1f} seconds"],
+                {"gesture": g, "duration_s": round(took, 2),
+                 "strongest_s": round(usual, 2), "ratio": round(took / usual, 2),
+                 "runner_up_ratio": round(ratio(ranked_t[1]), 2)
+                 if len(ranked_t) > 1 else None,
+                 "_after": f", during {label(g)}"}))
+    return sorted(out, key=lambda q: q["grounding"]["clue_start_frame"])
+
+
 def build_error_questions(task: str, trial: str, root: Path, meta: dict,
                           labels: list[dict[str, Any]], baselines: dict,
                           anchor: str = "timestamp") -> list[dict[str, Any]]:
@@ -966,13 +1468,13 @@ def build_questions(task: str, trial: str, root: Path, meta: dict,
 
 def generate_ollama(host: str, model: str, system_prompt: str, question: str,
                     facts: str, guidance: str, num_ctx: int, max_new_tokens: int,
-                    temperature: float) -> str:
+                    temperature: float, template: str = USER_PROMPT) -> str:
     payload = {
         "model": model,
         "messages": [
             {"role": "system", "content": system_prompt},
-            {"role": "user", "content": USER_PROMPT.format(question=question, facts=facts,
-                                                       guidance=guidance)},
+            {"role": "user", "content": template.format(question=question, facts=facts,
+                                                    guidance=guidance)},
         ],
         "stream": False,
         "think": True,
@@ -1005,13 +1507,19 @@ def main() -> int:
     ap.add_argument("--jigsaws-root", default=None,
                     help="default: the shared cluster mount if present, else the "
                          "local clone under outputs/")
-    ap.add_argument("--system-prompt", default="Prompts_And_Pipeline/system-prompt-events.md")
+    ap.add_argument("--system-prompt", default=None,
+                    help="default: system-prompt-jigsaws-locate.md with --vts, else "
+                         "system-prompt-events.md")
     ap.add_argument("--trials", default=None, help="comma separated, e.g. Suturing_C004,Knot_Tying_G004")
     ap.add_argument("--task", default=None)
     ap.add_argument("--trial", default=None)
-    ap.add_argument("--backend", choices=["ollama", "transformers"], default="ollama",
-                    help="ollama over HTTP (local, quantised) or transformers "
-                         "in-process (cluster, full precision)")
+    ap.add_argument("--backend", choices=["ollama", "transformers", "llama"],
+                    default="ollama",
+                    help="ollama over HTTP (local, quantised), transformers "
+                         "in-process (cluster, full precision), or a llama.cpp "
+                         "server (cluster, quantised, one GPU)")
+    ap.add_argument("--llama-host", default="http://127.0.0.1:8080",
+                    help="llama backend only")
     ap.add_argument("--ollama-host", default="http://localhost:11434")
     ap.add_argument("--ollama-model", default="qwen3.6-35b-a3b-iq4xs")
     ap.add_argument("--ollama-num-ctx", type=int, default=12288)
@@ -1037,11 +1545,26 @@ def main() -> int:
                     help="how the question names the moment. 'ordinal' drops the clock "
                          "and says which occurrence of the gesture it was, so the model "
                          "has to localize it rather than being handed the span.")
+    ap.add_argument("--vts", action="store_true",
+                    help="VideoTreeSearch-style grounded questions: one clue per "
+                         "question, long enough to see, unique in the trial. Implies "
+                         "--error-labels.")
+    ap.add_argument("--vts-kinds", default=",".join(VTS_KINDS),
+                    help="comma separated subset of " + ", ".join(VTS_KINDS))
+    ap.add_argument("--min-clue-s", type=float, default=VTS_MIN_CLUE_S)
+    ap.add_argument("--max-clue-fraction", type=float, default=VTS_MAX_CLUE_FRACTION)
+    ap.add_argument("--min-trial-s", type=float, default=VTS_MIN_TRIAL_S)
     ap.add_argument("--resume", action="store_true",
                     help="append to an existing qa_records.jsonl, skipping every "
                          "qa_id already recorded valid; for restarting a killed job")
     ap.add_argument("-o", "--output-dir", default="outputs/event_qa")
     args = ap.parse_args()
+    if args.vts and not args.error_labels:
+        args.error_labels = "auto"
+    if args.system_prompt is None:
+        args.system_prompt = ("Prompts_And_Pipeline/system-prompt-jigsaws-locate.md"
+                              if args.vts
+                              else "Prompts_And_Pipeline/system-prompt-events.md")
     jigsaws_root = resolve_jigsaws_root(args.jigsaws_root)
     if not jigsaws_root.is_dir():
         raise SystemExit(f"no JIGSAWS dataset at {jigsaws_root}; pass --jigsaws-root")
@@ -1095,6 +1618,9 @@ def main() -> int:
     # --jigsaws-root or a missing kinematics directory fails in seconds rather
     # than after the load. Nothing here calls the model.
     plan: list[tuple[str, str, dict, list[dict[str, Any]]]] = []
+    funnel: Counter = Counter()
+    tally: Counter = Counter()
+    template = VTS_USER_PROMPT if args.vts else USER_PROMPT
     for trial in wanted:
         task = next((t for t in TASK_OF if trial.startswith(t)), None)
         if not task:
@@ -1110,7 +1636,13 @@ def main() -> int:
         # numerical work in it: previewing the questions on a login node failed with
         # "numpy is required to read kinematics" for a code path that never reads
         # any.
-        if labels and args.anchor == "none":
+        if args.vts:
+            questions = build_vts_questions(
+                task, trial, root, labels,
+                build_baselines(root, task, meta, exclude=trial),
+                args.min_clue_s, args.max_clue_fraction, args.min_trial_s,
+                tuple(args.vts_kinds.split(",")), funnel, tally)
+        elif labels and args.anchor == "none":
             questions = build_localization_questions(task, trial, root, labels)
         else:
             baselines = build_baselines(root, task, meta, exclude=trial)
@@ -1126,11 +1658,19 @@ def main() -> int:
         plan.append((task, trial, info, questions))
     total_questions = sum(len(q) for *_, q in plan)
     print(f"\n{len(plan)} trials, {total_questions} questions")
+    if args.vts:
+        print("VTS filter, per candidate clue (trials for 'trial too short'):")
+        for reason, n in funnel.most_common():
+            print(f"  {n:4d}  {reason}")
 
-    model_label = args.ollama_model if args.backend == "ollama" else args.model_id
+    model_label = {"ollama": args.ollama_model,
+                   "llama": f"llama.cpp at {args.llama_host}"}.get(args.backend,
+                                                                  args.model_id)
     processor = model = None
     if args.backend == "transformers" and not args.questions_only:
         processor, model = load_text_model(args.model_id, args.device_map)
+    if args.backend == "llama" and not args.questions_only:
+        verify_llama_server(args.llama_host)
 
     # Append and flush per record rather than buffering to the end. A cluster run
     # over all of JIGSAWS takes hours, and the earlier all-at-once write meant a
@@ -1168,7 +1708,8 @@ def main() -> int:
                 print(f"  [{q['kind']}] {q['question']}")
                 for line in q["facts"].splitlines():
                     print(f"      {line}")
-                print(f"      (guidance) {q['guidance']}")
+                if q["guidance"]:
+                    print(f"      (guidance) {q['guidance']}")
                 continue
             qa_id = f"event_{trial}_{q['kind']}_{q['span'].replace(':', '')}"
             if qa_id in done:
@@ -1183,12 +1724,19 @@ def main() -> int:
                     raw = generate_ollama(args.ollama_host, args.ollama_model, system_prompt,
                                           q["question"], q["facts"], q["guidance"],
                                           args.ollama_num_ctx,
-                                          args.max_new_tokens, args.temperature)
+                                          args.max_new_tokens, args.temperature,
+                                          template)
+                elif args.backend == "llama":
+                    raw = run_generation_llama(args.llama_host, system_prompt,
+                                               template.format(question=q["question"],
+                                                               facts=q["facts"],
+                                                               guidance=q["guidance"]),
+                                               args.max_new_tokens, args.temperature)
                 else:
                     raw = run_generation(processor, model, system_prompt,
-                                         USER_PROMPT.format(question=q["question"],
-                                                            facts=q["facts"],
-                                                            guidance=q["guidance"]),
+                                         template.format(question=q["question"],
+                                                         facts=q["facts"],
+                                                         guidance=q["guidance"]),
                                          args.max_new_tokens, args.temperature)
                 try:
                     parsed = parse_json_payload(raw)
@@ -1214,7 +1762,8 @@ def main() -> int:
                 "qa_id": qa_id,
                 "dataset": "JIGSAWS", "task": task, "trial_id": trial,
                 "question_kind": q["kind"], "span": q["span"],
-                "generation_mode": "annotation_only_event_grounded",
+                "generation_mode": ("annotation_only_vts_grounded" if args.vts
+                                    else "annotation_only_event_grounded"),
                 # Which answer schema this record was generated under. "split" means
                 # the answer carries annotation-supported statements only and any
                 # cause lives in qa[0]["inferred_cause"]. Recorded rather than
@@ -1222,8 +1771,10 @@ def main() -> int:
                 # catching is the model omitting that key on a fault record -- which
                 # is indistinguishable from an older record unless the generator says
                 # which schema it asked for.
-                "answer_schema": "split",
+                "answer_schema": "answer_rationale" if args.vts else "split",
                 "grounding": q["grounding"],
+                "question": q["question"],
+                "recorded": q.get("recorded"),
                 "facts_shown_to_model": q["facts"],
                 "answer_guidance": q["guidance"],
                 "source_annotation": {"skill_level": info.get("skill_level"),

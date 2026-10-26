@@ -53,12 +53,15 @@ set -euo pipefail
 # "stratified_trials.sh: No such file or directory" after printing a page of
 # apparently healthy setup.
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# WORK_DIR first: on a node other than oprime, SLURM_SUBMIT_DIR is oprime's
+# /playpen-storage path, which only oprime has, and the run directory has to be
+# named by its /mnt/opr path instead.
 if [ ! -f "$HERE/cluster_env_event_qa.sh" ]; then
-  HERE="${SLURM_SUBMIT_DIR:-$PWD}/scripts"
+  HERE="${WORK_DIR:-${SLURM_SUBMIT_DIR:-$PWD}}/scripts"
 fi
 if [ ! -f "$HERE/cluster_env_event_qa.sh" ]; then
   echo "ERROR: cannot find the repo's scripts/ directory. Tried the script's own" >&2
-  echo "       location and \${SLURM_SUBMIT_DIR:-\$PWD}/scripts = $HERE" >&2
+  echo "       location and \${WORK_DIR:-\${SLURM_SUBMIT_DIR:-\$PWD}}/scripts = $HERE" >&2
   echo "       Submit from the repo root, or set WORK_DIR." >&2
   exit 1
 fi
@@ -132,6 +135,15 @@ if [ -n "${ERROR_LABELS:-}" ]; then
 elif [ -n "${USE_ERROR_LABELS:-}" ]; then
   LABEL_ARGS=(--error-labels)
   echo "ERROR_LABELS        auto-detected by the generator"
+fi
+# VTS=1: the find-it-in-the-recording questions, in the MultiBypass140 locate set's
+# four kinds. Its events come from the error labels, so the generator finds them
+# itself, and it has its own prompt: the answer is the time span and what the
+# annotation records, not the events prompt's account and inferred cause.
+if [ -n "${VTS:-}" ]; then
+  LABEL_ARGS+=(--vts)
+  SYSTEM_PROMPT="$WORK_DIR/Prompts_And_Pipeline/system-prompt-jigsaws-locate.md"
+  echo "VTS                 on, prompt $SYSTEM_PROMPT"
 fi
 echo "OUT_ROOT            $OUT_ROOT"
 # An explicit TRIALS list supersedes SUBSET entirely, so say which one is in force

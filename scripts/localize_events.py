@@ -166,8 +166,9 @@ MIN_GOOD_RATIO = 0.35
 
 
 def timestamp(frame: int) -> str:
-    seconds = frame / FPS
-    return f"{int(seconds // 60)}:{seconds % 60:04.1f}"
+    # Round to tenths before splitting into minutes, or 59.97 s prints as "0:60.0".
+    minutes, tenths = divmod(round(frame / FPS * 10), 600)
+    return f"{minutes}:{tenths / 10:04.1f}"
 
 
 # Where JIGSAWS lives, probed in order, for the same reason the error labels are:
