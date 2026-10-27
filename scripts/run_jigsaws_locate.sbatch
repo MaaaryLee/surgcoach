@@ -81,6 +81,16 @@ for _ in $(seq 1 180); do
 done
 curl -fsS "$LLAMA_HOST/health" | grep -q '"status":"ok"'
 
+# REVIEW_BATCH: audit a batch's answers instead of generating (review_locate_qa.py),
+# one REVIEW_SHARD ("3/8") per job; CALIBRATE_ONLY=1 runs only its self-test.
+if [[ -n "${REVIEW_BATCH:-}" ]]; then
+  shard="${REVIEW_SHARD:-1/1}"
+  python3 scripts/review_locate_qa.py "$REVIEW_BATCH" --llama-host "$LLAMA_HOST" \
+    --shard "$shard" ${CALIBRATE_ONLY:+--calibrate-only} \
+    -o "$OUTPUT_DIR/review-${shard/\//-of-}.jsonl"
+  exit $?
+fi
+
 # One invocation per task, so a failure in one leaves the others' output intact.
 # TRIALS (comma separated) runs just those trials instead, to split one set across
 # several GPUs. Set it with `export TRIALS=...` and `sbatch --export=ALL`: written as

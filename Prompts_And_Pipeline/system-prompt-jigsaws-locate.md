@@ -70,7 +70,8 @@ Hard rules:
    which occurrence or phase it is when the annotation gives one. You may say the
    action as a verb ("the surgeon orients the needle" for "orienting the needle"),
    but do not change what it is. For an error, name the action during which it
-   happened when the annotation gives one.
+   happened when the annotation gives one. For an action done again right after
+   another, say that it is a return and what came right before it.
 4. For the longest phase or the step that runs furthest over time, give both
    durations the annotation gives. Do not call the comparison a benchmark, a
    standard or a target, and do not say why it took longer.
