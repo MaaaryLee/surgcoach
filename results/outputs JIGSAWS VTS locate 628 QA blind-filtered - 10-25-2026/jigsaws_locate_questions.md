@@ -124,7 +124,7 @@
 124. Where in this recording does the surgeon pull the suture with the left hand for the fourth time? Give the time span.
 125. Show the trainee the third time the surgeon uses the right hand to help tighten the suture in this recording.
 126. A trainee wants to review the third time the surgeon transfers the needle from left to right. When in this recording does it happen?
-127. Show the trainee the fourth time the surgeon pushes the needle through the tissue in this recording.
+127. Where in this recording does the surgeon push the needle through the tissue for the fourth time? Give the time span.
 128. Where in this recording is the first step that takes multiple attempts? Show the trainee when it happens.
 129. During the first stitch, when does the surgeon position the needle? Give the time span.
 130. Show the trainee where the surgeon pulls the suture with the left hand during the second stitch in this recording.
@@ -247,7 +247,7 @@
 247. A trainee wants to see how more suture is loosened. Show them when the surgeon does it in this recording.
 248. When in this recording does the sixth needle orientation error occur?
 249. Where in this recording does the surgeon lose the most time on a single step, and how much?
-250. Where in this recording does the surgeon return to positioning the needle right after orienting the needle? Show the trainee when it happens.
+250. When in this recording does the surgeon go back to positioning the needle after orienting the needle?
 251. Show the trainee where the surgeon pushes the needle through the tissue during the fourth stitch in this recording.
 252. A trainee wants to see how the suture is pulled with the left hand in the fourth stitch. Show them when the surgeon does it in this recording.
 253. When in this recording does the first needle orientation error occur?
@@ -261,7 +261,7 @@
 261. When in this recording does the fourth needle orientation error occur?
 262. Where in this recording is the second step that takes multiple attempts? Show the trainee when it happens.
 263. Where in this recording does the surgeon lose the most time on a single step, and how much?
-264. Show the trainee the first time the surgeon pulls the suture with the left hand in this recording.
+264. A trainee wants to review the first time the surgeon pulls the suture with the left hand. When in this recording does it happen?
 265. A trainee wants to review the first time the surgeon transfers the needle from left to right. When in this recording does it happen?
 266. When in this recording is the third step that takes multiple attempts?
 267. Where in this recording does the surgeon push the needle through the tissue for the second time? Give the time span.
@@ -293,7 +293,7 @@
 293. Where in this recording does the surgeon position the needle for the first time? Give the time span.
 294. A trainee wants to review the first time the surgeon pulls the suture with the left hand. When in this recording does it happen?
 295. Where in this recording does the surgeon transfer the needle from left to right for the first time? Give the time span.
-296. When in this recording does the surgeon go back to transferring the needle from left to right after using the right hand to help tighten the suture?
+296. Where in this recording does the surgeon return to transferring the needle from left to right right after using the right hand to help tighten the suture? Show the trainee when it happens.
 297. A trainee wants to review the second time the surgeon positions the needle. When in this recording does it happen?
 298. A trainee wants to review the third time the surgeon transfers the needle from left to right. When in this recording does it happen?
 299. Where in this recording does the surgeon position the needle for the third time? Give the time span.
@@ -403,7 +403,7 @@
 403. Show the trainee the second time the surgeon pushes the needle through the tissue in this recording.
 404. A trainee wants to review the second time the surgeon pulls the suture with the left hand. When in this recording does it happen?
 405. Where in this recording does the surgeon position the needle for the third time? Give the time span.
-406. Show the trainee the third time the surgeon pulls the suture with the left hand in this recording.
+406. A trainee wants to review the third time the surgeon pulls the suture with the left hand. When in this recording does it happen?
 407. Where in this recording does the surgeon push the needle through the tissue for the fourth time? Give the time span.
 408. Show the trainee the fourth time the surgeon pulls the suture with the left hand in this recording.
 409. Show the trainee the fifth time the surgeon pulls the suture with the left hand in this recording.
@@ -467,15 +467,15 @@
 467. When in this recording does the fourth pass through a ring take place?
 468. During the fourth pass through a ring, when does the surgeon push the needle through the tissue? Give the time span.
 469. Where in this recording does the surgeon lose the most time on a single step, and how much?
-470. When in this recording does the surgeon go back to moving to the centre with the needle in grip after reaching for the needle with the right hand?
+470. Where in this recording does the surgeon return to moving to the centre with the needle in grip right after reaching for the needle with the right hand? Show the trainee when it happens.
 471. Show the trainee where in this recording the surgeon orients the needle.
 472. When in this recording does the first pass through a ring take place?
 473. During the first pass through a ring, when does the surgeon position the needle? Give the time span.
 474. When in this recording does the second pass through a ring take place?
 475. Show the trainee where the surgeon positions the needle during the second pass through a ring in this recording.
 476. A trainee wants to see how the needle is positioned in the third pass through a ring. Show them when the surgeon does it in this recording.
-477. Where in this recording does the surgeon return to orienting the needle right after positioning the needle? Show the trainee when it happens.
-478. When in this recording does the surgeon go back to positioning the needle after orienting the needle?
+477. When in this recording does the surgeon go back to orienting the needle after positioning the needle?
+478. Where in this recording does the surgeon return to positioning the needle right after orienting the needle? Show the trainee when it happens.
 479. During the second pass through a ring, when does the surgeon pull the suture with the left hand? Give the time span.
 480. Where in this recording is the fourth needle orientation error? Show the trainee when it happens.
 481. When in this recording does the fifth needle orientation error occur?
@@ -584,7 +584,7 @@
 584. During the first throw of the knot, when does the surgeon pull the suture with both hands? Give the time span.
 585. A trainee wants to review the first time the surgeon makes a C loop around the right hand. When in this recording does it happen?
 586. Where in this recording does the surgeon make a C loop around the right hand for the first time? Give the time span.
-587. Where in this recording does the surgeon return to reaching for the suture with the right hand right after pulling the suture with both hands? Show the trainee when it happens.
+587. When in this recording does the surgeon go back to reaching for the suture with the right hand after pulling the suture with both hands?
 588. Where in this recording does the surgeon reach for the needle with the left hand for the second time? Give the time span.
 589. Where in this recording does the surgeon lose the most time on a single step, and how much?
 590. A trainee wants to review the first time the surgeon reaches for the suture with the right hand. When in this recording does it happen?
@@ -602,12 +602,12 @@
 602. Show the trainee the second time the surgeon pulls the suture with both hands in this recording.
 603. A trainee wants to review the third time the surgeon pulls the suture with both hands. When in this recording does it happen?
 604. Show the trainee where the surgeon pulls the suture with both hands during the first throw of the knot in this recording.
-605. When in this recording does the surgeon go back to reaching for the suture with the right hand after pulling the suture with both hands?
+605. Where in this recording does the surgeon return to reaching for the suture with the right hand right after pulling the suture with both hands? Show the trainee when it happens.
 606. Where in this recording does the surgeon return to reaching for the suture with the right hand right after making a C loop around the right hand? Show the trainee when it happens.
 607. A trainee wants to review the surgeon reaching for the needle with the left hand. When in this recording does it happen?
 608. Show the trainee the first time the surgeon reaches for the suture with the right hand in this recording.
 609. Show the trainee where the surgeon pulls the suture with both hands during the first throw of the knot in this recording.
-610. When in this recording does the surgeon go back to reaching for the suture with the right hand after pulling the suture with both hands?
+610. Where in this recording does the surgeon return to reaching for the suture with the right hand right after pulling the suture with both hands? Show the trainee when it happens.
 611. Show the trainee the first time the surgeon makes a C loop around the right hand in this recording.
 612. A trainee wants to review the first time the surgeon pulls the suture with both hands. When in this recording does it happen?
 613. Where in this recording does the surgeon reach for the needle with the left hand for the second time? Give the time span.

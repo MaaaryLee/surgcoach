@@ -27,7 +27,9 @@ one. The answer gives the exact time span and what the annotation records there,
 with no judgement or feedback. Only questions a model cannot place from their text
 alone are kept, so each one makes it search the video. `jigsaws_locate_full.txt`
 lays the batch out the way the MultiBypass140 file does; `jigsaws_locate_questions.md`
-holds only the questions.
+holds only the questions; `jigsaws_vts_locate_628_for_review.json` is the batch for
+people to check against the videos, with each answer's audit and an empty `review`
+field (`scripts/export_locate_qa.py`).
 
 | | |
 | --- | --- |
@@ -38,6 +40,7 @@ holds only the questions.
 | Coverage | 92 trials: 38 Suturing, 26 Needle Passing, 28 Knot Tying; 374 / 186 / 68 questions |
 | Validation | 628 records, **628 valid, 0 rejected**, all on the first attempt |
 | Checker | `scripts/check_locate_qa.py`: **0 uniqueness failures, 0 found by the blind guess** |
+| Audit | `scripts/review_locate_qa.py`: **0 of 628 flagged**, after its self-test got 11 of 11 known answers right |
 
 ### What the kinds are
 
@@ -85,6 +88,19 @@ type only on spans where it was the main type. Seven step or worst questions use
 gesture the transcription labels twice back to back, which reads as one action on
 screen. One "throw" was a single gesture. The builder handles all three.
 
+`review_locate_qa.py` then audits every answer against the annotation it was written
+from, the way `run_jigsaws_enriched_d.py` audits Template D: a second pass of the
+same model lists every problem as the words, the rule and why, and is trusted only
+after it gets answers with a known verdict right. It and rule-based checks found 23
+answers to fix, all regenerated: 6 that did not restate which occurrence they were,
+and 17 redos that did not say they were a return or what came right before (the
+answer prompt now asks for both). Regenerating re-picks each question's wording from
+the same frames, so 11 of the 23 questions also read differently; what they ask is
+unchanged. Twice the audit itself was wrong, flagging
+correct answers for not repeating "the only time" and for giving no duration where
+none existed; its rules were reworded, and the self-test now includes correct
+answers of that shape, which it must pass.
+
 ### Known limitations
 
 - **The blind guess is a statistical prior, not a model.** VideoTreeSearch asks a
@@ -99,7 +115,8 @@ screen. One "throw" was a single gesture. The builder handles all three.
   `grounding.trial_s` to drop them.
 - **Some wording is clumsy.** 5 answers open with the label, e.g. "The action of
   positioning the needle...". Error answers say "during positioning the needle"
-  rather than "while the surgeon positions the needle".
+  rather than "while the surgeon positions the needle". Three redo questions read
+  "transferring the needle from left to right right after...".
 
 ## `outputs after stratified trial selection - 7-29-2026`
 
