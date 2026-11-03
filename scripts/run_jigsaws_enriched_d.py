@@ -13,19 +13,21 @@ must pass the Template D ranking strategy (jigsaws_template_d_plan.py). The mode
   why        for D5 only, why the strongest area matters, restated from that area's own
              Table 3 descriptions (Table 3 gives no reasons)
   plan       which areas, in what order, and how long the answer may be
-  timing     where the trial's time went, for Suturing and Knot Tying trials whose Time and
-             motion rating is 3 or lower, from the gesture transcription, as one short
-             sentence. Trial time is the one measure that tracks a rating, Time and motion
+  timing     for a D2 answer about Time and motion rated 3 or lower, in Suturing or Knot
+             Tying, where the trial's extra time went, from the gesture transcription, as one
+             short sentence. Trial time is the one measure that tracks a rating, Time and motion
              (results/kinematic validation - 10-13-2026, results/area measure validation -
              10-21-2026); no gesture or kinematic measure tracks any other area.
 
 The answer is one short coaching paragraph that names each area the same way ("how you
-planned your course of operation"), never names the rating labels, rephrases the rubric in
-its own words without changing its meaning, and makes no practice or technique suggestion.
+planned your course of operation"), never names the rating labels, describes a level only
+where the rubric does (1, 3 or 5) and then in the description's own words, and makes no
+practice or technique suggestion.
 Two gates check it: pattern checks against the evidence, then a second model call that
 audits every sentence against the rubric levels and timing, and is itself tested on four
 known paragraphs at the start of each run. The rationale is written here from the evidence,
 and verify_jigsaws_step_evidence.py recomputes every timing number from the raw files.
+qa_slim.json keeps only each answer's span, question and answer, for temporal localization.
 
 Dry run (no model; writes the prompts and rationales):
   python3 scripts/run_jigsaws_enriched_d.py --inputs <enriched_trial_inputs.jsonl> \\
@@ -63,9 +65,9 @@ from jigsaws_template_d_plan import (  # noqa: E402
 )
 
 # One question per trial, each allowed by the ranking strategy (jigsaws_template_d_plan.py).
-# D5 covers two different strongest areas (the user's request of 2026-10-21): flow of
-# operation alone at 5 in Suturing_C001, and respect for tissue alone at 4 in
-# Knot_Tying_C001, the only other area ever alone at the top at 4 or 5. D1 opens with the
+# D5 needs one area alone at 5, which in JIGSAWS is only flow of operation in Suturing:
+# Suturing_C001 and Suturing_F002. Knot_Tying_C001, with respect for tissue alone at 4, was
+# dropped because the rubric does not describe a 4 (the user, 2026-10-21). D1 opens with the
 # Overall performance verdict, so its trials sit at the levels the rubric describes: 5
 # (Suturing_F003), 3 (Suturing_B002) and 1 (Needle_Passing_C003). D2 keeps its trials.
 DEFAULT_TRIAL_TEMPLATES = (
@@ -308,14 +310,8 @@ KEEP_GOAL = re.compile(r"\bgoal (?:here |there |now )?is (?:to )?(?:maintain|kee
 HAND = re.compile(r"\b(?:left|right)(?=[- ](?:hand|instrument|arm|side|tool))", re.IGNORECASE)
 KNOT = re.compile(r"\bknots?\b|\bknot[- ]tying\b", re.IGNORECASE)
 # Short answers (the user's request of 2026-10-21): D2 as short as the Knot_Tying_D003 answer
-# the user held up, D1 an overall verdict and a brief word on each area.
+# the user held up, D1 an overall verdict and the areas that stood out.
 MAX_WORDS = {"D1": 50, "D2": 95, "D5": 85}
-# Overall feedback names no area (the user, 2026-10-21).
-AREA_NAME_ANY = re.compile(
-    r"\b(?:the way you handled the tissue|control of the (?:needle and suture|suture and needle)|"
-    r"how efficiently you moved|how you planned your course of operation)\b",
-    re.IGNORECASE,
-)
 # D5's reason must come from the area's rubric, not from where the area ranks.
 CIRCULAR_WHY = re.compile(
     r"\bmatters?\b[^.]*\b(?:stands? (?:out|above)|sets? (?:it|this|this area|this skill) apart|"
@@ -624,8 +620,8 @@ def rubric_lines(area: str, score: int, task_key: str, wants_goal: bool, name_it
 def goal_areas(template_id: str, plan: dict[str, Any]) -> list[str]:
     """The areas whose answer states a goal: only D2's priority area.
 
-    D1 is now an overall verdict and a brief word on each area, and D5 gives the reason
-    the skill matters; a goal for each area is what made D1 long (the user, 2026-10-21).
+    D1 is an overall verdict and the areas that stood out, and D5 gives the reason the
+    skill matters; a goal for each area is what made D1 long (the user, 2026-10-21).
     """
     return list(plan["areas"]) if template_id == "D2" else []
 
@@ -696,7 +692,7 @@ def build_unit(record: dict[str, Any], template_id: str) -> dict[str, Any]:
     if plan is None:
         raise ValueError(
             f"{template_id} cannot be asked of {record['trial_id']} under the ranking strategy "
-            "(D5 needs one technique area alone highest, at 4 or 5; D2 one alone lowest, below 4; "
+            "(D5 needs one technique area alone at 5; D2 one alone lowest, at 1 or 3; "
             "D1 an Overall performance of 1, 3 or 5)"
         )
     task_key = record["task"].replace(" ", "_")
@@ -789,8 +785,9 @@ def rationale(unit: dict[str, Any], record: dict[str, Any]) -> str:
     plan = unit["plan"]
     names = [GRS_RUBRIC[a]["element"] for a in plan["areas"]]
     plan_text = {
-        "overall": (f"Overall performance ({scores['overall_performance']}) as the verdict, then a few words "
-                    "from the descriptions of the elements rated 1, 3 or 5, naming no element"),
+        "overall": (f"Overall performance ({scores['overall_performance']}) as the verdict, then only the "
+                    "elements rated 4 or 5: a 5 with its level 5 description, a 4 named only; elements "
+                    "below 4 are not mentioned"),
         "focus": f"{names[0]} alone is lowest, so it comes first",
         "strongest": f"{names[0]} alone is highest, at {scores[plan['areas'][0]]}",
     }[plan["case"]]
@@ -799,8 +796,8 @@ def rationale(unit: dict[str, Any], record: dict[str, Any]) -> str:
     text = (
         "Ratings (JIGSAWS modified global rating score, Gao et al. 2014, Table 3; one expert "
         f"surgeon's rating of the whole trial, 1-5): {ratings}. {used}. Plan: {plan_text}. Quality "
-        "statements paraphrase the rubric descriptions for ratings of 1, 3 or 5; areas rated 2 or 4, "
-        "which the rubric does not describe, are not described"
+        "statements use the rubric descriptions' own words for ratings of 1, 3 or 5; areas rated 2 or "
+        "4, which the rubric does not describe, are not described"
     )
     if unit["suture_needle_adapted"]:
         text += f", with the Suture/needle handling knot wording restated for {record['task']}"
@@ -888,6 +885,13 @@ def first_sentence(text: str, max_words: int = 25) -> str:
     sentence = match.group(1) if match else text
     words = sentence.split()
     return " ".join(words[:max_words]) + ("..." if len(words) > max_words else "")
+
+
+def slim_record(out: dict[str, Any]) -> dict[str, Any]:
+    """An answer with only what temporal localization needs: the span, question and answer."""
+    start, end = (int(frame) for frame in out["source_annotation"]["video_frame_span"].split("-"))
+    return {"trial_id": out["trial_id"], "template_id": out["template_id"], "timestamp": out["timestamp_or_frame"],
+            "start_frame": start, "end_frame": end, "question": out["question"], "answer": out["qa"][0]["answer"]}
 
 
 # ---------------------------------------------------------------------------
@@ -1095,6 +1099,8 @@ def main() -> int:
 
     settings = {"model_id": args.model_id, "temperature": args.temperature}
     output.with_name("review.md").write_text(review_markdown(out_records, settings, calibration) + "\n", encoding="utf-8")
+    slim = [slim_record(r) for r in out_records if r["qa"]]
+    output.with_name("qa_slim.json").write_text(json.dumps(slim, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
     summary = {
         "records": len(out_records),
         "valid": sum(r["validation_status"] == "valid" for r in out_records),
