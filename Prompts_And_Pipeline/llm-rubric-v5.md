@@ -66,6 +66,8 @@ label_score (1-5) -- does the answer report what the annotation records?
      meaning, not the words.
   4  everything recorded is reported and correct, but one part is stated loosely
      enough that a reader has to infer it, without any recorded value changing.
+     A 4 is never given when a time, a severity, a rating level, a step or a kind
+     of event differs from the block, however close: that is a 1.
   3  part of what was recorded is reported and part omitted -- one of two error
      types, or the fact of an error without the recorded episode count or
      duration when those are the only properties recorded.
