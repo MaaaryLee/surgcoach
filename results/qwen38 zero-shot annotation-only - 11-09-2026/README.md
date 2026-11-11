@@ -11,11 +11,13 @@ That is 741 questions: 50 per type, except where the gated eligibility rules lea
 **Start with [`overview-for-review.md`](overview-for-review.md)** for the results table, the takeaways and seven representative questions.
 
 ## Zero-shot: what was removed from the earlier pipelines
-- The "examples of the voice" block, and the `as in "..."` sample answers in the MB140 D prompts.
+- The "Examples of the voice" block in the MB140 D system prompt.
 - The "openings already used" / recent-answer-openings lists (JIGSAWS D, B).
 - Every retry-with-feedback loop, the audit judges, and their self-tests and calibration.
 
 Kept as before: the system prompts, the per-question answer plans and inline rules, and the B2/B4 "Begin the answer with 'No'" instructions.
+
+Not removed, and it matters for the scores: the MB140 answer plans still give a filled-in sentence. Every D2 plan says, for example, `Name event 1 as the one to address first ... as in "You should address the mechanical injury and bleeding at 0:10:20, during jejunojejunal stapling, first."`, and some D5 plans do the same. These are built from the question's own facts, not taken from another question, so the run is still zero-shot in the strict sense. But the model mostly copies them, which is a large part of why MB140 D2 scores 31/31.
 
 Each question is one request. The identical request is resent at most twice, and only on a transport or parse failure.
 
