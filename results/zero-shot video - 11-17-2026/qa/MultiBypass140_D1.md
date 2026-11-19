@@ -1,0 +1,1190 @@
+# MultiBypass140 D1: 50 questions
+
+Each model saw only the frames listed and the question. *Recorded* is what the annotation records, word for word as the judge got it. [All question types](../README.md#questions)
+
+## 1. mb140_d1_BBP45_3523
+
+Frames shown: 64, from 0:58:51.9 to 1:17:27.1
+
+**Question.** If you were the supervising surgeon, based only on the events occurring during 0:58:43-1:17:36, what feedback would you give on the trainee's performance?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Bern center), video BBP45
+- PHASE: jejunojejunal anastomosis, from 0:58:43 to 1:17:36
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 1:07:33 to 1:07:41 (9 s; say 9 seconds): mechanical injury, "Superficial penetration to vital tissue". Say it as: a mechanical injury, a superficial penetration to vital tissue. It began and ended during the step "jejunojejunal stapling".
+
+**Qwen3.8-27B**
+
+> Overall, this is a safe and competent performance: the mesenteric dissection is controlled, the linear stapler is applied correctly to build the jejunojejunostomy, and the anastomosis plus mesenteric defect are ultimately closed. My main concern is visualization—several frames (e.g., 1:01:48–1:03:35 and 1:04:45) show the lens pressed against bowel or the view taken from inside a trocar, so I would coach you to keep the camera at a working distance and use the retractor to hold a clear, stable field. The hand‑sewn phase from about 1:08:53 to 1:17:09 is methodical but slow; aim for a smoother continuous suture with better needle control and fewer re‑grasps to cut down the time. There is also intermittent oozing on the bowel surfaces, so be more proactive with gentle pressure and irrigation to keep the field dry. With better camera discipline and a more efficient suturing rhythm, this is a procedure you are ready to take the lead on.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee demonstrates competent handling of laparoscopic instruments and executes precise suturing under magnification, showing good dexterity in tying knots and manipulating tissue. The surgical field is well-maintained with clear visualization throughout, indicating effective use of suction and retraction tools. However, there are moments where instrument clashing or minor bleeding occurs, suggesting the need for improved spatial awareness and finer control during complex maneuvers like knot tying. Overall, the trainee’s technique is adequate for this stage of the procedure, but refinement in instrument coordination and hemostasis would enhance their performance.
+
+---
+
+## 2. mb140_d1_SBP14_2702
+
+Frames shown: 64, from 0:45:03.1 to 0:47:17.9
+
+**Question.** If you were the supervising surgeon, based only on the events occurring during 0:45:02-0:47:19, what feedback would you give on the trainee's performance?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Strasbourg center), video SBP14
+- PHASE: anastomosis test, from 0:45:02 to 0:47:19
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:46:52 to 0:47:05 (14 s; say 14 seconds): bleeding, "Very low amount of blood lost". Say it as: a bleed with a very low amount of blood lost. It began and ended during the step "visual assessment".
+  - 2\. From 0:47:10 to 0:48:27 (1 min 18 s; say about a minute): bleeding, "Very low amount of blood lost". Say it as: a bleed with a very low amount of blood lost. It began during the step "visual assessment" and ran on through "coagulation", and on into the "cleaning coagulation" phase.
+
+**Qwen3.8-27B**
+
+> You would overall be satisfied: the trainee has the gastric pouch and Roux limb well positioned, the staple lines look clean and tension‑free, and the dissection and anastomotic work are precise and hemostatic. The main area to improve is camera control—between about 0:46:30 and 0:46:48 the lens is repeatedly bumped against tissue and the field goes completely dark, so I would coach them to hold the scope at a steady distance, let the assistant do the retraction, and never lose the anastomosis from view. I would also flag the blood pooling at the working port around 0:46:54, which should be cleared with suction before it fogs the field. The final opening and inspection of the anastomosis from 0:47:07 onward is handled appropriately, with good bimanual control and a check for bleeding, so with those visualization corrections the performance is at a safe, acceptable level.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee demonstrates competent handling of laparoscopic instruments and steady progress in constructing the Roux-en-Y anastomosis. Their movements are deliberate and precise, showing good spatial awareness within the abdominal cavity. However, moments of instrument clashing or slight hesitation during tissue manipulation suggest areas for improvement in coordination and efficiency. Overall, the performance is adequate for a trainee at this stage of the procedure.
+
+---
+
+## 3. mb140_d1_BBP70_0
+
+Frames shown: 64, from 0:00:01 to 0:02:13
+
+**Question.** If you were the supervising surgeon, based only on the events occurring during 0:00:00-0:02:14, what feedback would you give on the trainee's performance?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Bern center), video BBP70
+- PHASE: preparation, from 0:00:00 to 0:02:14
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:01:00 to 0:01:30 (31 s; say about 30 seconds): mechanical injury, "Superficial penetration to vital tissue" and bleeding, "Very low amount of blood lost", recorded together over the same seconds. Say it as: a mechanical injury, a superficial penetration to vital tissue, and with it a bleed with a very low amount of blood lost. It began during the step "adhesiolysis" and ran on through "coagulation".
+
+**Qwen3.8-27B**
+
+> Overall the trainee handled the critical event in this clip well—the small bleed that appeared around 0:01:01 was recognized promptly and controlled with the Harmonic ultrasonic shear from roughly 0:01:14 to 0:01:54—so the operative result here is acceptable. My main criticism is scope and camera control: the view is repeatedly lost or pressed flat against tissue (the long dark/occluded segments at 0:00:34–0:00:45 and 0:01:58–0:02:13, plus the blurry close-up at the start), which is unsafe and wastes time, so I would coach the trainee to hold the scope at a steady distance and work with the assistant to keep a clear, well-lit field at all times. The fact that a bleeding point was created in the first place suggests the initial dissection with the Harmonic was a touch too aggressive or off the avascular plane, so I want shorter, more controlled bursts kept in the midline rather than dragging across the surface. Positively, the trainee did not panic when the hemorrhage appeared and chose the correct device (ultrasonic coagulation) rather than chasing it with suction, which is exactly the right instinct. Going forward, the goal is to establish the dissection plane before any cutting so that no visible bleeding point is ever created, while maintaining the kind of calm, decisive hemostasis we saw in the second half of this segment.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee demonstrates adequate visualization and instrument handling, but their technique appears hesitant and imprecise during critical steps like tissue dissection and vessel control. The prolonged exposure of raw tissue and visible bleeding at 0:01:12–0:01:37 suggest suboptimal hemostasis and potentially insufficient use of the Harmonic scalpel. There’s also a lack of clear anatomical orientation or landmark identification in some frames, which could indicate spatial disorientation. Overall, while the trainee manages to proceed, they need focused coaching on precision, hemostasis, and maintaining clear surgical field visualization.
+
+---
+
+## 4. mb140_d1_SBP55_280
+
+Frames shown: 64, from 0:04:48.6 to 0:22:56.4
+
+**Question.** If you were the supervising surgeon, based only on the events occurring during 0:04:40-0:23:05, what feedback would you give on the trainee's performance?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Strasbourg center), video SBP55
+- PHASE: gastric pouch creation, from 0:04:40 to 0:23:05
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:07:53 to 0:08:09 (17 s; say about 15 seconds): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began and ended during the step "His angle dissection".
+  - 2\. From 0:21:34 to 0:22:11 (38 s; say about 40 seconds): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began and ended during the step "gastric opening".
+
+**Qwen3.8-27B**
+
+> You performed the core steps of this segment well—the gastrocolic dissection, the Roux‑limb division with appropriately measured staple shots, the anastomosis, and the mesenteric closure all look anatomically sound, and your instrument triangulation was generally good. Your main area to improve is hemostasis and field management: during the mesenteric dissection around 0:07:58–0:09:07 a blood pool accumulated and obscured the plane, so I would want you to apply energy more selectively and use suction/irrigation proactively to keep the field dry. You also had two lapses in visualization—a black screen at 0:14:18 and a steamed lens at 0:22:04—so work on avoiding instrument–scope collisions and clearing the lens before it compromises your view. Finally, keep confirming that the anastomosis and the closed mesenteric defect are tension‑free before you finish. Overall this is a solid performance, with the above refinements it would be excellent.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee demonstrates good visualization and instrument control during the critical steps of gastric stapling and anastomosis, but shows occasional hesitation and requires more precise handling when managing tissue and suturing. The surgical field remains relatively clear despite some bleeding, indicating adequate hemostasis technique. Overall, the trainee is competent in basic laparoscopic skills but needs refinement in fine motor control and decision-making under pressure during complex anastomotic maneuvers.
+
+---
+
+## 5. mb140_d1_BBP15_1136
+
+Frames shown: 64, from 0:18:58.6 to 0:24:20.4
+
+**Question.** If you were the supervising surgeon, based only on the events occurring during 0:18:56-0:24:23, what feedback would you give on the trainee's performance?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Bern center), video BBP15
+- PHASE: omentum division, from 0:18:56 to 0:24:23
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:22:43 to 0:23:41 (59 s; say about a minute): bleeding, "Very low amount of blood lost". Say it as: a bleed with a very low amount of blood lost. It began during the step "omental lifting" and ran on through "omental section".
+
+**Qwen3.8-27B**
+
+> Overall, the trainee's work in this segment is acceptable and shows a developing grasp of the mesenteric dissection, but it is held back by lapses in camera control and hemostasis that I would want corrected before they progress. The positive side is steady, atraumatic handling of the bowel and fat and a logical progression along the avascular plane, with appropriate use of the energy device to seal small vessels as the mesentery is divided. However, from about 0:21:16 to 0:21:36 the field goes dark and the scope is pressed against tissue, showing the trainee has lost the working view; the camera should be left with the assistant and held perpendicular to the dissection plane rather than used to push on structures. I also note increasing oozing along the dissection line from roughly 0:22:40 onward, so the trainee should pause to confirm hemostasis with cautery or a clip and clear the field with suction before advancing. Finally, the trainee should keep good triangulation between the grasper and the dissector and verify each plane before cutting, so the dissection stays efficient and the eventual energy or staple line is safe.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee is performing well with steady, precise instrument handling and good visualization. Their work on the anastomosis appears meticulous, though they occasionally lose focus or need to reposition. The overall technique is appropriate for this stage of the Roux-en-Y gastric bypass.
+
+---
+
+## 6. mb140_d1_SBP38_1526
+
+Frames shown: 64, from 0:25:37.7 to 0:50:16.3
+
+**Question.** If you were the supervising surgeon, based only on the events occurring during 0:25:26-0:50:28, what feedback would you give on the trainee's performance?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Strasbourg center), video SBP38
+- PHASE: gastrojejunal anastomosis, from 0:25:26 to 0:50:28
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:32:08 to 0:34:22 (2 min 15 s; say about two minutes): bleeding, "Very low amount of blood lost". Say it as: a bleed with a very low amount of blood lost. It began and ended during the step "gastrojejunal defect closing".
+  - 2\. From 0:48:44 to 0:49:14 (31 s; say about 30 seconds): bleeding, "Very low amount of blood lost". Say it as: a bleed with a very low amount of blood lost. It began and ended during the step "gastrojejunal defect closing".
+
+**Qwen3.8-27B**
+
+> Overall, the trainee delivered a competent, methodical anastomosis: the bowel limbs were aligned well, the linear stapler was loaded and fired cleanly (≈0:30:42), and the hand‑sewn closure of the staple line that follows is thorough, with even bites and careful, atraumatic tissue handling. My principal critique is efficiency and visualization—the running closure drags on for roughly eighteen minutes (≈0:32–0:50), and several frames (≈0:40:06, 0:40:29, 0:43:37–0:44:00) show the field completely obscured by the scope being pressed into tissue, which is unsafe and reflects poor tip/camera control. I would also have the trainee control the oozing blood at the staple line more proactively and cut down on instrument exchanges so the suture line can be completed more briskly. In short, the work is safe and the anastomosis looks secure, but the trainee needs to keep a clear field, work faster, and tighten the rhythm of the suturing.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee demonstrates steady, focused technique throughout the critical anastomosis phase, maintaining precise instrument control while managing suturing under magnification. Their use of the linear stapler and subsequent suturing appears accurate and methodical, with careful attention to tissue handling and minimizing bleeding. The trainee's ability to maintain a clear field and adjust instrument positioning as needed shows good spatial awareness. While the work is technically proficient, there are moments where slight adjustments in instrument coordination could improve efficiency, particularly during complex knot tying. Overall, this is competent performance for a trainee at this stage of the procedure.
+
+---
+
+## 7. mb140_d1_BBP32_2503
+
+Frames shown: 64, from 0:41:46.8 to 0:49:41.2
+
+**Question.** If you were the supervising surgeon, based only on the events occurring during 0:41:43-0:49:45, what feedback would you give on the trainee's performance?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Bern center), video BBP32
+- PHASE: jejunojejunal anastomosis, from 0:41:43 to 0:49:45
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:49:40 to 0:52:41 (3 min 2 s; say about three minutes): mechanical injury, "Deep penetration to vital tissue" and bleeding, "Very high amount of blood lost", recorded together over the same seconds. Say it as: a mechanical injury, a deep penetration to vital tissue, and with it a bleed with a very high amount of blood lost. It began during the step "jejunojejunal defect closing" and ran on through "irrigation aspiration", then "coagulation", and on into the "cleaning coagulation" phase.
+
+**Qwen3.8-27B**
+
+> Overall this is a competent, safe sequence: the trainee mobilized and positioned the Roux limb, fired the linear stapler to create the gastrojejunostomy, and is now methodically hand‑sewing the residual anastomotic defect with good needle control and secure knots. Tissue handling is gentle and exposure is consistently adequate, and the staple line is well aligned before the closure begins. My main coaching point is hemostasis and field management—there is recurrent blood pooling around the defect (e.g., 0:46:40–0:46:48) that should be cleared with suction before each bite so the suture line can actually be inspected. I would also have them confirm each bite is full‑thickness without narrowing the lumen and that the final knot is locked before advancing. With those refinements, the trainee is progressing well through the anastomotic phase.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee demonstrates steady, focused technique with good instrument control and anatomical awareness throughout the procedure. They handle delicate tissue and suturing tasks with precision, particularly evident during the anastomosis creation and closure phases. The visualization is clear, and the trainee effectively manages bleeding and tissue manipulation. Their movements are deliberate and efficient, indicating strong surgical judgment and coordination. Overall, this is a competent and well-executed performance.
+
+---
+
+## 8. mb140_d1_SBP11_6414
+
+Frames shown: 64, from 1:46:57.8 to 1:54:51.2
+
+**Question.** If you were the supervising surgeon, based only on the events occurring during 1:46:54-1:54:55, what feedback would you give on the trainee's performance?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Strasbourg center), video SBP11
+- PHASE: closure mesenteric defect, from 1:46:54 to 1:54:55
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 1:49:03 to 1:51:16 (2 min 14 s; say about two minutes): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began and ended during the step "mesenteric defect closing".
+  - 2\. From 1:54:55 to 1:56:04 (1 min 10 s; say about a minute): mechanical injury, "Superficial penetration to vital tissue". Say it as: a mechanical injury, a superficial penetration to vital tissue. It began during the step "mesenteric defect closing" and ran on through "irrigation aspiration", then "coagulation", and on into the "cleaning coagulation" phase.
+
+**Qwen3.8-27B**
+
+> Overall I would give positive feedback: the trainee carried the hand‑sewn anastomotic closure through to completion with a consistent needle‑driver‑and‑forceps technique and finished by cutting the suture, with no major complication. I would then coach efficiency, because the closure drags on for many minutes with repeated re‑grasping and the needle often loops around the instruments instead of progressing smoothly along the line. I would also ask them to control the intermittent oozing seen along the suture line by taking firmer, full‑thickness bites and pausing briefly for hemostasis before moving on. Keeping the needle in plain view and cutting down on unnecessary instrument changes would make the work both safer and faster. In short, the task was completed safely, but the needle control and pace need tightening.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee demonstrates competent handling of laparoscopic instruments and precise suturing technique throughout this segment. Their ability to maintain clear visualization, manage tissue with care, and execute a complex anastomosis with steady hands suggests strong technical skill. The suturing appears accurate and secure, indicating good understanding of the anatomical landmarks and surgical goals. Overall, this is a well-executed phase of the procedure, and the trainee is performing at an advanced level suitable for this stage of surgery.
+
+---
+
+## 9. mb140_d1_BBP57_3707
+
+Frames shown: 64, from 1:01:48.5 to 1:04:57.5
+
+**Question.** If you were the supervising surgeon, based only on the events occurring during 1:01:47-1:04:59, what feedback would you give on the trainee's performance?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Bern center), video BBP57
+- PHASE: jejunal separation, from 1:01:47 to 1:04:59
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 1:03:25 to 1:03:49 (25 s; say about 25 seconds): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began and ended during the step "mesenteric opening".
+
+**Qwen3.8-27B**
+
+> Overall, the trainee delivered an acceptable and methodical division of the mesentery, using good bimanual technique—steady forceps traction paired with controlled Harmonic energy—and the oozing at the cut edges stayed minor and was managed as they went. I would commend the patience in this vascular plane and the consistent counter-traction, which kept the dissection safe. My main critique is visualization: smoke from the energy device repeatedly fogged the field (notably around 1:03:00–1:03:24), so I would want more frequent suction/irrigation and better camera positioning to keep the dissection plane centered and clear before each firing. I would also encourage confirming the avascular plane and keeping the energy tip off the adjacent bowel walls, which lie close together here. With those adjustments to field management and camera work, the dissection was safe and acceptable to continue.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee demonstrates steady, focused technique with good instrument control during the anastomosis creation and staple line placement. They maintain a clear field despite occasional smoke and bleeding, showing adaptability. The use of the Harmonic scalpel is precise and controlled, minimizing tissue damage. Overall, the performance is competent and appropriate for the stage of the procedure shown.
+
+---
+
+## 10. mb140_d1_SBP41_2299
+
+Frames shown: 64, from 0:38:21.8 to 0:44:14.2
+
+**Question.** If you were the supervising surgeon, based only on the events occurring during 0:38:19-0:44:17, what feedback would you give on the trainee's performance?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Strasbourg center), video SBP41
+- PHASE: closure petersen space, from 0:38:19 to 0:44:17
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:40:36 to 0:42:51 (2 min 16 s; say about two and a half minutes): bleeding, "Very low amount of blood lost". Say it as: a bleed with a very low amount of blood lost. It began and ended during the step "petersen space closing".
+  - 2\. From 0:40:54 to 0:44:24 (3 min 31 s; say about three and a half minutes): bleeding, "Very low amount of blood lost". Say it as: a bleed with a very low amount of blood lost. It began during the step "petersen space closing" and ran on through "mesenteric opening", and on into the "jejunal separation" phase. It began while event 13 was still going.
+
+**Qwen3.8-27B**
+
+> Overall this is safe, competent work: you dissected the mesenteric fat steadily with good triangulation and minimal trauma, then hand‑sutured the defect methodically, placing consistent bites and well‑formed square knots that left a neat, well‑approximated line by the end. The one issue to correct is the blood pooling along the suture line in the mid‑sequence (about 0:41:00–0:41:15); pause, irrigate, and confirm hemostasis with a hemostatic stitch or coagulation before you keep suturing, so you are not stitching through an active bleeder. Also make sure every knot has adequate throws and the long tails are trimmed, as a few look a little loose. Keep the field as clean as you have it here and you are performing well.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee is performing well, demonstrating good instrument handling and anatomical awareness. They are carefully manipulating the sutures and tissue with precision, maintaining a clear field of view. The suturing technique appears deliberate and controlled, showing attention to detail in creating secure anastomoses. Their movements are steady, suggesting they are managing the laparoscopic instruments effectively under pressure. Overall, this is a competent performance that meets surgical standards for this phase of the procedure.
+
+---
+
+## 11. mb140_d1_BBP07_2506
+
+Frames shown: 64, from 0:41:55.9 to 1:02:43.1
+
+**Question.** If you were the supervising surgeon, based only on the events occurring during 0:41:46-1:02:53, what feedback would you give on the trainee's performance?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Bern center), video BBP07
+- PHASE: gastrojejunal anastomosis, from 0:41:46 to 1:02:53
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:48:47 to 0:58:39 (9 min 53 s; say about ten minutes): thermal injury, "Deep penetration to vital tissue to the level of muscularis/parenchyma" and bleeding, "Very low amount of blood lost", recorded together over the same seconds. Say it as: a thermal injury, a deep penetration to vital tissue, to the level of the muscularis or parenchyma, and with it a bleed with a very low amount of blood lost. It began during the step "gastrojejunal stapling" and ran on through "gastrojejunal defect closing".
+
+**Qwen3.8-27B**
+
+> Overall, the trainee completed the Roux‑limb division and the hand‑sewn anastomosis/closure competently, so my feedback would be largely positive with two specific points to sharpen. The clearest concern is the active bleeding and dark clot visible during mesenteric dissection around 0:46–0:50, which tells me the trainee should isolate and cauterize small vessels more deliberately before dividing fat rather than relying on after‑the‑fact hemostasis. Exposure and tissue handling were otherwise good—the liver stayed retracted, the bougie kept the lumen open, and the staple lines and final suture line look intact with no obvious leak. The hand‑sewn phase, running from roughly 0:50 to 1:02, was meticulous but slow, so I would coach the trainee to keep stitch size and spacing consistent and to maintain a faster, more rhythmic pace while preserving the secure closure they achieved. In short, this is a safe, well‑constructed anastomosis; next time aim for cleaner hemostasis during mobilization and a more efficient suturing tempo.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee demonstrates good instrument handling and spatial awareness, effectively using laparoscopic tools to manipulate tissues and perform precise suturing. The suturing technique appears accurate and controlled, with careful attention to tissue approximation and knot tying. There are moments of slight hesitation or minor instrument misalignment, but overall the procedure is executed competently within the timeframe shown. The trainee maintains good visualization and adapts well to the confined surgical field.
+
+---
+
+## 12. mb140_d1_SBP45_7607
+
+Frames shown: 64, from 2:06:50.5 to 2:14:08.5
+
+**Question.** If you were the supervising surgeon, based only on the events occurring during 2:06:47-2:14:12, what feedback would you give on the trainee's performance?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Strasbourg center), video SBP45
+- PHASE: cleaning coagulation, from 2:06:47 to 2:14:12
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 2:10:54 to 2:11:59 (1 min 6 s; say about a minute): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began during the step "irrigation aspiration" and ran on through "coagulation".
+  - 2\. From 2:13:22 to 2:13:53 (32 s; say about 30 seconds): bleeding, "Very low amount of blood lost". Say it as: a bleed with a very low amount of blood lost. It began during the step "irrigation aspiration" and ran on through "coagulation".
+
+**Qwen3.8-27B**
+
+> Overall, the trainee's work in this segment is competent and safe—the hand-sewn closure and sponge-assisted exposure are done well—but hemostasis and field control need tightening. The suture placement and knot-tying during the anastomotic/mesenteric closure (2:07:04–2:07:46) are deliberate and secure, and the trainee appropriately re-inspects the line afterward. The introduction and use of the laparoscopic sponge (2:10:19–2:12:45) to retract the Roux limb shows good judgment in gaining exposure without excessive traction. However, recurrent pooling of blood (2:07:53–2:09:23) repeatedly obscures the anastomosis, so the trainee should pause to suction/irrigate or achieve definitive hemostasis before proceeding. Finally, the camera is held quite close and the field is crowded at times, so improving instrument triangulation and keeping a slightly wider view would make the suturing smoother and safer.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee demonstrates competent handling of laparoscopic instruments, showing good dexterity in suturing and tissue manipulation, particularly evident in the precise knot-tying and anastomotic closure. Their ability to maintain a clear surgical field and manage bleeding with cautery suggests solid technical skills. However, there are moments where instrument clashing or excessive tissue retraction could be improved for smoother workflow. Overall, the trainee is performing adequately and safely within the procedure’s demands.
+
+---
+
+## 13. mb140_d1_BBP36_416
+
+Frames shown: 64, from 0:07:01.3 to 0:18:09.7
+
+**Question.** If you were the supervising surgeon, based only on the events occurring during 0:06:56-0:18:15, what feedback would you give on the trainee's performance?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Bern center), video BBP36
+- PHASE: gastric pouch creation, from 0:06:56 to 0:18:15
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:11:23 to 0:12:55 (1 min 33 s; say about a minute and a half): bleeding, "Very low amount of blood lost". Say it as: a bleed with a very low amount of blood lost. It began during the step "horizontal stapling" and ran on through "vertical stapling".
+
+**Qwen3.8-27B**
+
+> Overall, the trainee's work is competent: the lesser sac and gastrohepatic ligament are opened in a recognizable avascular plane, and small vessels are coagulated with energy in a measured way during the first half (≈0:07:00–0:11:00). My main concern is the second half, where from about 0:15:00 the field becomes progressively bloodied and the dissection looks more traumatic, so I would instruct you to pause, suction, and obtain definitive hemostasis before continuing rather than dissecting through a blood‑filled plane. The brief loss of view at 0:14:05 suggests scope–instrument collision, so use more deliberate camera control and better instrument triangulation to keep the field stable. I would also have you explicitly identify and protect the short gastric vessels and the esophagus/hiatus before dividing any further tissue. In short, good foundational dissection, but tighten your hemostasis, your scope discipline, and your awareness of critical structures before completing the gastric mobilization.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee demonstrates steady progress through complex steps of the Roux-en-Y gastric bypass, showing good control of instruments and anatomical dissection. However, there are moments—particularly around 0:12:30-0:13:02 and 0:16:44-0:17:06—where excessive bleeding or tissue trauma occurs, suggesting a need for more careful handling or better hemostasis technique. The trainee’s ability to maintain visualization and adapt to changing anatomy is commendable, but the feedback should emphasize refining precision to minimize complications during critical anastomotic construction and closure phases.
+
+---
+
+## 14. mb140_d1_SBP60_1573
+
+Frames shown: 64, from 0:26:14.7 to 0:29:46.3
+
+**Question.** If you were the supervising surgeon, based only on the events occurring during 0:26:13-0:29:48, what feedback would you give on the trainee's performance?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Strasbourg center), video SBP60
+- PHASE: omentum division, from 0:26:13 to 0:29:48
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:26:18 to 0:26:21 (4 s; say 4 seconds): mechanical injury, "Superficial penetration to less vital tissue, needle poke to tissue". Say it as: a mechanical injury, a superficial penetration to less vital tissue, or a needle poke to tissue. It began and ended during the step "omental lifting".
+  - 2\. From 0:27:58 to 0:28:17 (20 s; say about 20 seconds): bleeding, "Very low amount of blood lost". Say it as: a bleed with a very low amount of blood lost. It began and ended during the step "omental section".
+
+**Qwen3.8-27B**
+
+> Overall, I would give the trainee positive feedback with a few coaching points, as the mesenteric dissection and division were performed safely and in a controlled manner. The choice of the LigaSure energy device to seal and divide the mesentery was appropriate, and the trainee consistently used the grasper to provide counter-traction and expose a working plane before each firing. The main area for improvement is hemostasis and plane definition: there is intermittent oozing and small bleeding points along the cut edges, so I would encourage a sharper, more avascular dissection and a clean field before applying energy to limit thermal spread to the adjacent bowel. The pace was methodical and there was no loss of orientation or major vascular injury, which is reassuring for a trainee. I would let the trainee continue with this technique while reminding them to inspect each sealed edge after a cut to confirm adequate sealing before advancing.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee demonstrates steady, precise handling of laparoscopic instruments, maintaining good visualization and control throughout the procedure. Their use of the LigaSure device for vessel sealing is accurate and effective, with clear attention to avoiding thermal injury to surrounding tissues. They show appropriate tissue manipulation and dissection skills, though occasional minor bleeding or tissue displacement requires careful management. Overall, the trainee’s technique is competent and shows a solid understanding of the surgical steps within this phase of the Roux-en-Y gastric bypass.
+
+---
+
+## 15. mb140_d1_BBP58_2710
+
+Frames shown: 64, from 0:45:21.5 to 1:09:33.5
+
+**Question.** If you were the supervising surgeon, based only on the events occurring during 0:45:10-1:09:45, what feedback would you give on the trainee's performance?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Bern center), video BBP58
+- PHASE: jejunojejunal anastomosis, from 0:45:10 to 1:09:45
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:51:14 to 0:52:03 (50 s; say about a minute): mechanical injury, "Superficial penetration to vital tissue" and bleeding, "Very low amount of blood lost", recorded together over the same seconds. Say it as: a mechanical injury, a superficial penetration to vital tissue, and with it a bleed with a very low amount of blood lost. It began during the step "jejunojejunal stapling" and ran on through "jejunojejunal defect closing".
+  - 2\. From 1:02:29 to 1:02:35 (7 s; say 7 seconds): bleeding, "Very low amount of blood lost". Say it as: a bleed with a very low amount of blood lost. It began and ended during the step "jejunojejunal defect closing".
+
+**Qwen3.8-27B**
+
+> Overall I would let the trainee continue, as they are managing the hand‑sewn anastomosis competently, but I would give them a few targeted corrections. The mesenteric dissection and the stapled division of the limb (≈0:50:21) are clean and the staple line looks secure, which is reassuring. The biggest issue is hemostasis at the suture line — there is recurrent oozing (e.g. 0:55:20, 0:58:25, 1:00:20) that should be dealt with by a brief clip or gentle pressure rather than left to pool and blur the field. Exposure and camera work also need coaching, since several frames (e.g. 0:59:34 and the trocar‑ringed views) show the suture line obscured, so I would have them maintain steady counter‑traction with the needle driver and grasper and ask the camera to keep the anastomosis centered. Finally, knot security is acceptable but I want each throw confirmed with a visible, secure knot before advancing, and a steadier rhythm to reduce the bowel tension that is contributing to the surface bleeding.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee demonstrates competent handling of laparoscopic instruments and precise suturing technique throughout this segment. They maintain steady control of the endoscopic tools while performing anastomotic closure, showing good spatial awareness and dexterity in a confined abdominal field. The suturing appears accurate and consistent, with careful attention to tissue alignment and tension. While the work is technically proficient, opportunities for refinement may exist in minimizing tissue trauma and improving efficiency during knot tying under the constraints of laparoscopy. Overall, this is a strong performance indicative of an advanced trainee ready for increased autonomy.
+
+---
+
+## 16. mb140_d1_SBP28_119
+
+Frames shown: 64, from 0:02:10.3 to 0:25:48.7
+
+**Question.** If you were the supervising surgeon, based only on the events occurring during 0:01:59-0:26:00, what feedback would you give on the trainee's performance?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Strasbourg center), video SBP28
+- PHASE: gastric pouch creation, from 0:01:59 to 0:26:00
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:05:51 to 0:09:54 (4 min 4 s; say about four minutes): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began during the step "His angle dissection" and ran on through "horizontal stapling", then "retrogastric dissection", then "vertical stapling".
+  - 2\. From 0:11:40 to 0:14:24 (2 min 45 s; say about two and a half minutes): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began and ended during the step "vertical stapling".
+
+**Qwen3.8-27B**
+
+> Overall, the trainee carried out the gastric pouch dissection, stapling, and staple‑line oversewing competently and safely, so the case was well managed end to end. The principal criticism is hemostasis: at several points (notably around 11:30, 13:00–14:00, and 16:00–17:00) the field filled with blood, forcing reliance on sponge tamponade and repeated LigaSure applications rather than clean, anticipatory control of the short gastric and gastroepiploic vessels. I would ask the trainee to dissect more deliberately in the avascular plane and to seal or clip each vessel before it bleeds, and to use suction/irrigation more proactively to keep the field clear. The long, laborious oversewing of the staple line (roughly 16:00–22:30) suggests the initial staple line was not as secure as it could have been; better stapler alignment and tissue tensioning up front would shorten this phase considerably. Finally, instrument exchange and needle handling were functional but could be smoother, so I would encourage more economy of motion to reduce the overall operative time.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee demonstrates precise handling of instruments and good anatomical orientation throughout this segment. They effectively manage bleeding with suction and hemostatic agents, showing awareness of maintaining a clear field. Their suturing technique appears steady and accurate, indicating strong technical skill. Overall, their performance is competent and meets expected standards for this phase of the procedure.
+
+---
+
+## 17. mb140_d1_BBP09_2813
+
+Frames shown: 64, from 0:46:54.6 to 0:50:12.4
+
+**Question.** If you were the supervising surgeon, based only on the events occurring during 0:46:53-0:50:14, what feedback would you give on the trainee's performance?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Bern center), video BBP09
+- PHASE: cleaning coagulation, from 0:46:53 to 0:50:14
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:47:48 to 0:49:36 (1 min 49 s; say about two minutes): bleeding, "High amount of blood lost". Say it as: a bleed with a high amount of blood lost. It began during the step "irrigation aspiration" and ran on through "coagulation".
+
+**Qwen3.8-27B**
+
+> Overall the trainee is moving the case forward through the distal anastomosis and mesenteric work, but the dominant problem in this segment is a persistently bloody, poorly visualized field. I would have them pause the dissection, suction and irrigate, and identify and control the oozing points before proceeding, because the pooled blood is obscuring the anatomy and the suture/staple line. The camera work also needs steadying—several views are motion‑blurred or fouled by tissue touching the lens—so I'd coach them to hold a consistent working distance and use retraction to expose the plane rather than pushing the scope into the tissue. With a clear, hemostatic field and a stable image, the manipulation itself looks acceptable and on task, so this is more a visualization/hemostasis issue than a technical one.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee is performing well, demonstrating good control of instruments and clear visualization of anatomical structures. The suturing appears precise and the anastomosis is being constructed with care, though there is some bleeding that requires attention. The trainee should continue to maintain steady hand movements and ensure hemostasis before proceeding. Overall, this is a competent and progressing performance.
+
+---
+
+## 18. mb140_d1_SBP24_2476
+
+Frames shown: 64, from 0:41:31 to 1:12:57
+
+**Question.** If you were the supervising surgeon, based only on the events occurring during 0:41:16-1:13:12, what feedback would you give on the trainee's performance?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Strasbourg center), video SBP24
+- PHASE: gastrojejunal anastomosis, from 0:41:16 to 1:13:12
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:44:19 to 0:45:04 (46 s; say about 45 seconds): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began during the step "jejunum opening" and ran on through "gastrojejunal stapling".
+  - 2\. From 1:04:09 to 1:09:13 (5 min 5 s; say about five minutes): bleeding, "Intermediate amount of blood lost". Say it as: a bleed with an intermediate amount of blood lost. It began and ended during the step "gastrojejunal defect closing".
+
+**Qwen3.8-27B**
+
+> Overall I would give the trainee positive but corrective feedback: the bowel mobilization, stapler placement, and the long hand‑sewn closure of the anastomosis and mesenteric defect were done with careful, steady suturing and good tissue handling, which is reassuring. The main point to improve is efficiency and proactive hemostasis—several bleeds from the staple line and mesentery had to be controlled with a gauze sponge in the middle of the suture line, and the suturing ran for roughly twenty‑five minutes, so earlier, more definitive coagulation and a tighter suture rhythm would shorten the case. I would also ask the trainee to keep the field clear of loose suture ends and to use the assistant and retraction more purposefully to expose the suture line rather than relying on the sponge as a retractor. The final inspection after the sponge is removed looks satisfactory and confirms the anastomosis is secure, so the technical foundation is sound and only pacing and hemostasis discipline need work.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee demonstrates competent handling of laparoscopic instruments and executes precise suturing under direct visualization. Their steady hand and focused attention to anatomical landmarks indicate good spatial awareness and motor control. The suturing technique is methodical, with careful knot tying and tissue approximation, minimizing bleeding and maintaining surgical field clarity. Overall, the performance is technically sound and appropriate for the stage of the procedure shown.
+
+---
+
+## 19. mb140_d1_BBP61_2200
+
+Frames shown: 64, from 0:36:49.2 to 0:56:04.8
+
+**Question.** If you were the supervising surgeon, based only on the events occurring during 0:36:40-0:56:14, what feedback would you give on the trainee's performance?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Bern center), video BBP61
+- PHASE: jejunojejunal anastomosis, from 0:36:40 to 0:56:14
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:51:11 to 0:51:53 (43 s; say about 45 seconds): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began and ended during the step "jejunojejunal defect closing".
+  - 2\. From 0:53:53 to 0:55:33 (1 min 41 s; say about a minute and a half): mechanical injury, "Superficial penetration to less vital tissue, needle poke to tissue" and bleeding, "Very low amount of blood lost", recorded together over the same seconds. Say it as: a mechanical injury, a superficial penetration to less vital tissue, or a needle poke to tissue, and with it a bleed with a very low amount of blood lost. It began and ended during the step "jejunojejunal defect closing".
+
+**Qwen3.8-27B**
+
+> Overall, the trainee handled this segment competently, progressing logically from division of the Roux mesentery with the energy device and linear stapler to a methodical hand‑sewn anastomosis that concludes with a clean, well‑formed suture line. The suturing itself is the strongest part, showing deliberate, controlled passes with appropriate traction, counter‑traction, and secure knot tying—the most demanding skill in the bypass. The clearest area to improve is camera and field control, since several frames (e.g., 0:37:44–0:38:57 and 0:41:24–0:41:42) show the lens pressed against bowel or lost from the field, so the trainee should keep the scope steady and the lens clean to maintain a consistent working view. Second, there is intermittent bleeding in the anastomotic field (notably around 0:49:21 and 0:51:48), so applying firmer hemostasis and a brief irrigation before each suture would sharpen visualization and reduce the chance of a misplaced stitch. With those refinements in visualization and hemostasis, the trainee is performing at a level appropriate to continue the anastomosis under close supervision.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee demonstrates competent handling of laparoscopic instruments and maintains good visualization throughout the procedure. Their suturing technique appears precise and controlled, with careful attention to tissue manipulation and knot tying. There are moments of slight instrument hesitation or misalignment, but overall, they manage complex maneuvers within the confined abdominal cavity effectively. The surgical field remains clear, and there is minimal bleeding, suggesting good hemostasis and tissue handling skills.
+
+---
+
+## 20. mb140_d1_SBP23_2226
+
+Frames shown: 64, from 0:37:15.5 to 0:57:07.5
+
+**Question.** If you were the supervising surgeon, based only on the events occurring during 0:37:06-0:57:17, what feedback would you give on the trainee's performance?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Strasbourg center), video SBP23
+- PHASE: gastrojejunal anastomosis, from 0:37:06 to 0:57:17
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:45:24 to 0:47:50 (2 min 27 s; say about two and a half minutes): bleeding, "Very low amount of blood lost". Say it as: a bleed with a very low amount of blood lost. It began and ended during the step "gastrojejunal defect closing".
+  - 2\. From 0:51:31 to 0:51:34 (4 s; say 4 seconds): mechanical injury, "Superficial penetration to less vital tissue, needle poke to tissue". Say it as: a mechanical injury, a superficial penetration to less vital tissue, or a needle poke to tissue. It began and ended during the step "gastrojejunal defect closing".
+
+**Qwen3.8-27B**
+
+> Overall, your performance in this segment was safe and well organized: the mesenteric dissection and stapled division to create the Roux limb were clean, and you kept good exposure and gentle tissue handling throughout the hand‑sewn anastomosis. Your suture work is methodical and looks full‑thickness, with secure intracorporeal knots and no major hemorrhage or loss of the field. The biggest area to improve is efficiency, since the anastomosis is running long—practice smoother needle passing and faster, more consistent knot‑tying to cut down the time the bowel is handled. You also let blood pool and blur the suture line at several points (notably around 0:45–0:47), so call for suction/irrigation more proactively to keep a dry, clear field. Finally, before moving on, inspect the finished anastomosis for tension, luminal patency, and a leak‑free closure, and confirm the staple line is fully hemostatic.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee demonstrates steady, precise handling of laparoscopic instruments and shows good hand-eye coordination during the complex suturing and anastomosis phases. They maintain a clear field of view and manage tissue effectively without significant bleeding. However, there is room for improvement in instrument coordination and efficiency; the movements are deliberate but occasionally slow, which could be optimized under time pressure. Overall, the performance is competent and safe for this stage of the procedure.
+
+---
+
+## 21. mb140_d1_BBP33_3215
+
+Frames shown: 64, from 0:53:36.4 to 0:56:32.6
+
+**Question.** If you were the supervising surgeon, based only on the events occurring during 0:53:35-0:56:34, what feedback would you give on the trainee's performance?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Bern center), video BBP33
+- PHASE: jejunal separation, from 0:53:35 to 0:56:34
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:55:37 to 0:57:36 (2 min; say about two minutes): bleeding, "High amount of blood lost". Say it as: a bleed with a high amount of blood lost. It began during the step "irrigation aspiration" and ran on through "mesenteric opening", then "jejunal section", then back to "irrigation aspiration", then "coagulation", then back to "irrigation aspiration", and on into the "cleaning coagulation" phase.
+
+**Qwen3.8-27B**
+
+> Overall the trainee is moving in the right direction—advancing the mesenteric dissection with the energy device and ultimately positioning the linear stapler—but the performance is undermined by persistent, uncontrolled bleeding that repeatedly floods and obscures the operative field. I would stress that they must pause the moment blood accumulates, switch to suction and targeted pressure or energy to secure the bleeding point, and only then resume, because dissecting into a blood‑filled field risks an unrecognized vascular injury. Their visualization management also needs work: the endoscope is out of the field for several moments and smoke and blood blur the view, so better suction‑irrigation and steadier camera positioning are required. On the positive side, the two‑handed coordination of grasper and energy device and the eventual correct stapler placement show they understand the sequence of steps. In short, the technique is acceptable, but the habit of pushing through the bleeding without first achieving hemostasis is the main point I want them to correct before progressing to independent cases.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee demonstrates competent handling of laparoscopic instruments and maintains steady visualization throughout the procedure. Their movements are deliberate and controlled as they manipulate tissue and apply sutures. There is some minor bleeding that requires attention, but it is managed effectively with suction and cautery. The overall technique is sound for this stage of the Roux-en-Y gastric bypass, showing good spatial awareness and dexterity.
+
+---
+
+## 22. mb140_d1_SBP54_339
+
+Frames shown: 64, from 0:06:02.1 to 0:54:28.9
+
+**Question.** If you were the supervising surgeon, based only on the events occurring during 0:05:39-0:54:52, what feedback would you give on the trainee's performance?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Strasbourg center), video SBP54
+- PHASE: gastric pouch creation, from 0:05:39 to 0:54:52
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:20:39 to 0:20:58 (20 s; say about 20 seconds): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began and ended during the step "retrogastric dissection".
+  - 2\. From 0:42:24 to 0:42:48 (25 s; say about 25 seconds): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began and ended during the step "gastric opening".
+  - 3\. From 0:44:32 to 0:45:36 (1 min 5 s; say about a minute): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began during the step "gastric opening" and ran on through "coagulation".
+
+**Qwen3.8-27B**
+
+> Overall, the trainee managed this bypass competently and I would let them proceed toward independent cases, with a few targeted refinements. The dissection of the lesser omentum and transverse colon was anatomic, the Harmonic energy and linear stapler were applied appropriately, and the anastomoses were built over a calibrated bougie with intact, well-approximated staple lines. The main area for improvement is hemostasis and field management: at several points (e.g. 0:29–0:37 and 0:41–0:45) blood pooled in the field, so I would expect more frequent irrigation and suction and earlier sealing of oozing vessels rather than relying on gauze to tamponade. I would also encourage sharper, more deliberate dissection through the fatty mesentery and better tissue tension before each stapler fire to limit oozing and the number of firings. With that feedback on bleeding control, the underlying technical foundation—instrument handling, spatial orientation, and anastomotic construction—looks solid.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee demonstrates competent handling of laparoscopic instruments and precise tissue manipulation throughout this segment. Their work is steady and deliberate, with clear visualization of anatomical landmarks and effective use of retractors and graspers to manage the surgical field. The suturing appears accurate and controlled, indicating good technique. While the procedure remains complex and requires constant attention to detail, the trainee’s actions are appropriate for the stage of surgery shown, suggesting they are progressing well under supervision.
+
+---
+
+## 23. mb140_d1_BBP20_3594
+
+Frames shown: 64, from 0:59:55 to 1:02:07
+
+**Question.** If you were the supervising surgeon, based only on the events occurring during 0:59:54-1:02:08, what feedback would you give on the trainee's performance?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Bern center), video BBP20
+- PHASE: anastomosis test, from 0:59:54 to 1:02:08
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 1:00:07 to 1:00:23 (17 s; say about 15 seconds): insufficient closure of the anastomosis, "All insufficient closure of anastomosis". Say it as: an insufficient closure of the anastomosis. It began and ended during the step "ink injection".
+
+**Qwen3.8-27B**
+
+> Overall, this is a safe and competent dissection: you hold good exposure with the liver retractor, keep your instruments in the correct plane, and you correctly identify and clip the small vessels before dividing tissue, which is exactly the structure‑first technique I want to see. The main area to tighten is hemostasis—around 1:00:09 to 1:00:22 there is a small bleed and a bloody streak across the pouch, suggesting you were dissecting a touch too close to a vessel without isolating it first, so slow down and use a sharper, more atraumatic plane near vascular structures. You also lost the field of view a few times (the obscured frames near 1:00:26 and 1:01:18–1:01:20), so work on camera discipline to keep the dissection site centered and the lens clear. When you regain that control, as you do from 1:01:23 onward with the clean isolation and clipping of the pedicle, the work is at a standard I would let you continue with without me over your shoulder. Keep this deliberate, vessel‑first approach and you are progressing well.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee demonstrates steady, precise manipulation of instruments and good visualization throughout the procedure. They handle tissue confidently and maintain a clear field of view, indicating strong hand-eye coordination and spatial awareness. The suturing appears deliberate and accurate, with careful attention to tension and alignment. Overall, this is a competent performance showing solid technical skills for a complex laparoscopic task.
+
+---
+
+## 24. mb140_d1_SBP27_825
+
+Frames shown: 64, from 0:13:53.5 to 0:31:38.5
+
+**Question.** If you were the supervising surgeon, based only on the events occurring during 0:13:45-0:31:47, what feedback would you give on the trainee's performance?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Strasbourg center), video SBP27
+- PHASE: gastrojejunal anastomosis, from 0:13:45 to 0:31:47
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:16:29 to 0:18:08 (1 min 40 s; say about a minute and a half): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began and ended during the step "gastrojejunal stapling".
+  - 2\. From 0:25:33 to 0:25:49 (17 s; say about 15 seconds): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began and ended during the step "gastrojejunal defect closing".
+
+**Qwen3.8-27B**
+
+> Overall, the trainee carried out the Roux‑limb creation and mesenteric closure in a safe, logical sequence, so I would give qualified praise with a few specific coaching points. The dissection, identification of the limb, and stapled division of the mesentery were well exposed and progressed in the correct order, with no uncontrolled major bleeding left behind. That said, the blood pooling around the staple line at 0:16:42–0:18:24 shows hemostasis was not fully secured before moving on, so I would insist they confirm a dry staple line before advancing. The hand‑sewn work from 0:18:40 onward was thorough but slow and somewhat irregular, so I would coach more efficient, evenly spaced, non‑inverting bites together with steadier camera and gentler tissue handling to shorten that phase. In short, the performance is correct and safe, but the trainee still needs to refine hemostasis, suture economy, and bimanual steadiness before operating without supervision.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee demonstrates steady hands and good instrument control throughout the critical anastomosis phase, accurately placing and tightening sutures with minimal tissue trauma. Their focus remains sharp as they manage bleeding and maintain a clear surgical field. The only area for improvement is occasional slight hesitation during knot-tying, which could be refined with practice to increase efficiency. Overall, this is a competent and confident performance suitable for a trainee at this stage.
+
+---
+
+## 25. mb140_d1_BBP17_9
+
+Frames shown: 64, from 0:00:11.5 to 0:05:30.5
+
+**Question.** If you were the supervising surgeon, based only on the events occurring during 0:00:09-0:05:33, what feedback would you give on the trainee's performance?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Bern center), video BBP17
+- PHASE: preparation, from 0:00:09 to 0:05:33
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:02:54 to 0:03:08 (15 s; say about 15 seconds): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began and ended during the step "trocar placement".
+
+**Qwen3.8-27B**
+
+> Overall, the trainee is working safely—across 0:00:09–0:05:33 there is no visible hemorrhage, organ injury, or loss of the operative field, and the upper abdominal anatomy (lesser curvature, lesser sac, omental fat, transverse colon) is being correctly identified. My main criticism is camera control: for much of the first minute and a half the image is out of focus or pressed against tissue, so I would ask the trainee to hold the scope at a steadier distance and keep the target centered rather than drifting. The dissection of the gastrohepatic ligament and lesser sac (roughly 0:02:50–0:03:40) is adequate but exploratory and slow; I would encourage more deliberate dissection with consistent counter‑traction from the non‑dominant hand. Before the instruments are brought in for stapling at the end (0:05:00–0:05:30), I would want the trainee to explicitly confirm the left gastric vessels and the duodenum/pancreas to avoid a vascular or pancreatic injury. In short: safe and anatomically on track, but needs improvement in scope steadiness, field orientation, and pace.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee demonstrates competent handling of laparoscopic instruments and clear visualization of anatomical landmarks throughout the procedure. Their movements are steady and precise, with good depth perception and control during critical steps like suturing and vessel dissection. There are no obvious errors or complications visible in this segment, indicating a well-executed surgical technique. Overall, the trainee is performing at an advanced level suitable for a complex gastrointestinal surgery.
+
+---
+
+## 26. mb140_d1_SBP30_125
+
+Frames shown: 64, from 0:02:11.3 to 0:15:29.7
+
+**Question.** If you were the supervising surgeon, based only on the events occurring during 0:02:05-0:15:36, what feedback would you give on the trainee's performance?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Strasbourg center), video SBP30
+- PHASE: gastric pouch creation, from 0:02:05 to 0:15:36
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:08:17 to 0:09:12 (56 s; say about a minute): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began and ended during the step "retrogastric dissection".
+  - 2\. From 0:10:43 to 0:11:19 (37 s; say about 35 seconds): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began during the step "vertical stapling" and ran on through "calibration", then back to "vertical stapling".
+
+**Qwen3.8-27B**
+
+> Overall I would rate this as a safe, competent performance: the trainee took the lesser omentum, secured the left gastric, and fired the stapler for the pouch and anastomosis in a logical, well‑retracted sequence without any major mishap, so I would let them continue. My main coaching point is hemostasis—there is recurrent oozing and pooling of blood (notably around 0:03:30, 0:06:40, 0:09:20, 0:11:00 and 0:14:00) that forces repeated suctioning and blurs the field, so I would want tighter, more deliberate control of the raw lesser‑curvature and gastrohepatic surfaces with low‑energy coag or clips before advancing. Instrument handling, retraction and the geometry of the stapled lines look good and straight, which tells me the trainee understands the anastomosis well. I would also encourage a brief pause after each dissection plane to confirm the field is dry before the next firing, to keep the case efficient. In short, a solid, safe run with the single reminder to prioritize a bloodless field.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee demonstrates steady, precise handling of laparoscopic instruments throughout the procedure, showing good control during dissection and anastomosis creation. Their technique is methodical, with clear visualization and careful manipulation of tissues, indicating a solid grasp of surgical fundamentals. However, moments of instrument clashing or slight hesitation in tissue handling suggest room for improvement in spatial coordination and efficiency under pressure. Overall, the trainee performs competently and safely within the scope of the procedure.
+
+---
+
+## 27. mb140_d1_BBP04_1310
+
+Frames shown: 64, from 0:21:51.8 to 0:25:42.2
+
+**Question.** If you were the supervising surgeon, based only on the events occurring during 0:21:50-0:25:44, what feedback would you give on the trainee's performance?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Bern center), video BBP04
+- PHASE: omentum division, from 0:21:50 to 0:25:44
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:22:50 to 0:23:27 (38 s; say about 40 seconds): bleeding, "Very low amount of blood lost". Say it as: a bleed with a very low amount of blood lost. It began during the step "omental lifting" and ran on through "omental section".
+
+**Qwen3.8-27B**
+
+> Overall this is a safe, competent transmesenteric dissection, and I would tell the trainee they have good instrument control and hemostasis: the Harmonic is applied in short, deliberate bites with the grasper giving steady lift, and the small bleeds (the red streaks around 0:22:50 and the dark vessel at 0:24:14) are recognized and sealed without a major hemorrhage. The main point to work on is anticipating bleeding—several segments of fat are cut before the small vessels within them are fully coagulated, which is why those bloody patches appear, so pausing to seal the pedicle first would keep the field cleaner. I would also coach on instrument and camera positioning, because in several frames (0:22:10, 0:23:41, 0:25:02) the shafts or the trocar rim block the lens and force you to reorient; keeping the instruments more parallel and the view clear would make the plane easier to follow. The dissection does end on a clean, well-visualized plane by 0:25:31, so the result is good—maintain this methodical traction-and-cut rhythm and you will progress well.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee demonstrates competent handling of laparoscopic instruments, showing good control and precision in manipulating tissue and using the Harmonic scalpel for cutting and coagulation. The surgical field is generally well maintained, with clear visualization despite some instrument movement and occasional obstruction by the scope. There are moments where tissue is handled roughly, causing minor bleeding that requires immediate attention, indicating a need to refine gentle tissue handling techniques. Overall, the trainee’s performance is adequate for a complex procedure like Roux-en-Y gastric bypass, but improvement in minimizing tissue trauma would enhance safety and efficiency.
+
+---
+
+## 28. mb140_d1_SBP21_5788
+
+Frames shown: 64, from 1:36:54.7 to 2:32:54.3
+
+**Question.** If you were the supervising surgeon, based only on the events occurring during 1:36:28-2:33:21, what feedback would you give on the trainee's performance?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Strasbourg center), video SBP21
+- PHASE: jejunojejunal anastomosis, from 1:36:28 to 2:33:21
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 1:45:57 to 1:52:10 (6 min 14 s; say about six minutes): mechanical injury, "Superficial penetration to vital tissue". Say it as: a mechanical injury, a superficial penetration to vital tissue. It began and ended during the step "jejunojejunal stapling".
+  - 2\. From 2:10:14 to 2:13:43 (3 min 30 s; say about three and a half minutes): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began and ended during the step "jejunojejunal defect closing".
+
+**Qwen3.8-27B**
+
+> You completed the intracorporeal hand‑sewn closure of the anastomosis in a safe, acceptable manner, but the main point I would stress is hemostasis: there is recurrent oozing and blood pooling at the suture line (e.g. around 2:10–2:15) that should have been cleared with brief pressure or cautery before each bite rather than sutured through. Your suture bites are inconsistent in size and spacing, and in several frames the bowel edge looks bunched, indicating you are taking too much seromuscular tissue and not inverting/everting the wall uniformly. Knot security and tension are generally fine, but your needle‑driver mechanics and instrument triangulation are inefficient, producing long tie times and repeated loss of exposure. Field management is fair—you keep the anastomosis centered—but you let the Roux limb and mesenteric fat drift into the working space, narrowing your view. To progress, I would want you to pause for a dry field, standardize your bite pattern, and tighten your knot‑tying before you move on to the next anastomosis.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee demonstrates steady, focused technique with precise instrument handling and good visualization throughout the anastomosis. Their suturing is consistently accurate, showing strong hand-eye coordination and control. They manage bleeding effectively and maintain a clear field. The overall execution of the Roux-en-Y gastric bypass segment appears technically proficient and appropriate for the procedure’s complexity.
+
+---
+
+## 29. mb140_d1_BBP65_4343
+
+Frames shown: 64, from 1:12:25.8 to 1:18:21.2
+
+**Question.** If you were the supervising surgeon, based only on the events occurring during 1:12:23-1:18:24, what feedback would you give on the trainee's performance?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Bern center), video BBP65
+- PHASE: cleaning coagulation, from 1:12:23 to 1:18:24
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 1:12:28 to 1:17:30 (5 min 3 s; say about five minutes): mechanical injury, "Superficial penetration to vital tissue". Say it as: a mechanical injury, a superficial penetration to vital tissue. It began and ended during the step "calibration".
+
+**Qwen3.8-27B**
+
+> Overall this is a competent, safe sequence: you gained good early exposure with the sponge and grasper, then carried out a complete hand‑sewn closure of the mesenteric defect and finished by inspecting the anastomosis and the closed line, which is the correct endpoint. The clearest area to improve is suture management—several frames show long, slack tails (the blue suture dangling at 1:14:07–1:14:18 and again at 1:15:20) floating in the field, so cut or secure the tails sooner and keep the needle under positive control to avoid tangling. Your bite spacing and knot security are acceptable, but take a touch more deliberate, evenly spaced bites so the mesentery does not pucker or narrow the lumen. Keep using the sponge for spot hemostasis and to clear the view, as you did at 1:17:41–1:17:58, before placing each suture. With tighter suture‑tail discipline and a steadier hand on the needle driver, this would be a clean, efficient closure.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee demonstrates competent handling of laparoscopic instruments and precise suturing technique throughout the procedure. Their movements are deliberate and controlled, showing good spatial awareness within the abdominal cavity. The suturing appears accurate, with consistent tension and proper knot-tying, which is critical for anastomotic integrity in gastric bypass surgery. Overall, the trainee's performance is technically proficient and meets the expected standards for this stage of the procedure.
+
+---
+
+## 30. mb140_d1_SBP58_1331
+
+Frames shown: 64, from 0:22:23.4 to 0:48:23.6
+
+**Question.** If you were the supervising surgeon, based only on the events occurring during 0:22:11-0:48:36, what feedback would you give on the trainee's performance?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Strasbourg center), video SBP58
+- PHASE: gastrojejunal anastomosis, from 0:22:11 to 0:48:36
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:38:55 to 0:40:23 (1 min 29 s; say about a minute and a half): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began and ended during the step "gastrojejunal defect closing".
+  - 2\. From 0:43:13 to 0:44:12 (1 min; say about a minute): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began and ended during the step "gastrojejunal defect closing".
+
+**Qwen3.8-27B**
+
+> Overall the trainee took the jejunojejunostomy through in the correct sequence—mobilizing the Roux limb, making a clean enterotomy, and firing the linear stapler with good orientation and a well‑formed staple line—so the core anastomosis itself is sound. My principal concern is hemostasis and field management: from roughly 0:28 onward blood steadily pools around the staple line and is never cleared, so I would have them use suction and irrigation and apply pressure, clips, or cautery to each bleeding point before advancing. The hand‑sewn back closure is also prolonged, with the suture often left in loose loops without adequate tension, so I would coach tighter, more efficient knot tying. I would also remind them to keep the field organized and the anastomosis exposed rather than working into a blood‑filled space. With better bleeding control and more confident suturing, this would have been a clean, efficient anastomosis.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee demonstrates competent handling of laparoscopic instruments and precise execution of key steps, including stapling and suturing, which are critical for a successful Roux-en-Y gastric bypass. The suturing appears meticulous, with careful knot tying under magnification, suggesting good dexterity and attention to detail. However, there is noticeable blood loss during the anastomosis phase, which indicates that hemostasis could be more effectively managed—perhaps by using additional cautery or suction devices more proactively. Overall, the trainee's technique is adequate for this stage of the procedure, but improvement in controlling bleeding would enhance safety and efficiency.
+
+---
+
+## 31. mb140_d1_BBP23_350
+
+Frames shown: 64, from 0:05:54.6 to 0:15:38.4
+
+**Question.** If you were the supervising surgeon, based only on the events occurring during 0:05:50-0:15:43, what feedback would you give on the trainee's performance?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Bern center), video BBP23
+- PHASE: gastric pouch creation, from 0:05:50 to 0:15:43
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:08:06 to 0:08:54 (49 s; say about 50 seconds): bleeding, "Very low amount of blood lost". Say it as: a bleed with a very low amount of blood lost. It began and ended during the step "His angle dissection".
+  - 2\. From 0:13:32 to 0:14:17 (46 s; say about 45 seconds): bleeding, "Very low amount of blood lost". Say it as: a bleed with a very low amount of blood lost. It began during the step "vertical stapling" and ran on through "retrogastric dissection".
+
+**Qwen3.8-27B**
+
+> Overall this is a competent, safe progression through the small‑bowel division, so I would largely endorse the trainee's work and let them continue. The trainee correctly identified the mesenteric root and the Roux/common‑channel transition, used the Harmonic scalpel judiciously to divide the mesentery with good hemostasis, and applied the linear stapler in the correct orientation, leaving intact, well‑approximated staple lines. I would ask them to improve camera stability, since many frames are blurred by motion, and to suction/irrigate more often because oozing accumulates along the mesenteric dissection (notably around 0:07:36–0:08:50 and 0:13:47–0:14:15). I would also remind them to keep the energy tip off the bowel serosa to limit thermal spread and to confirm the mesenteric defect is closed before finishing, to prevent an internal hernia. With those refinements the trainee is ready to complete this phase with only light supervision.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee demonstrates competent handling of laparoscopic instruments and steady progress through complex dissection and anastomosis creation. Their movements are deliberate and controlled, showing good spatial awareness in the confined abdominal cavity. The surgical field is generally well-maintained with minimal bleeding, indicating effective hemostasis. However, there are moments where instrument clashing or slight tissue trauma occurs, suggesting room for improvement in coordination and precision. Overall, the trainee’s performance is solid and meets expected standards for this stage of the procedure.
+
+---
+
+## 32. mb140_d1_SBP36_3789
+
+Frames shown: 64, from 1:03:18.6 to 1:23:32.4
+
+**Question.** If you were the supervising surgeon, based only on the events occurring during 1:03:09-1:23:42, what feedback would you give on the trainee's performance?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Strasbourg center), video SBP36
+- PHASE: jejunojejunal anastomosis, from 1:03:09 to 1:23:42
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 1:17:41 to 1:17:47 (7 s; say 7 seconds): mechanical injury, "Superficial penetration to less vital tissue, needle poke to tissue". Say it as: a mechanical injury, a superficial penetration to less vital tissue, or a needle poke to tissue. It began and ended during the step "jejunojejunal defect closing".
+  - 2\. From 1:20:55 to 1:21:44 (50 s; say about a minute): bleeding, "Very low amount of blood lost". Say it as: a bleed with a very low amount of blood lost. It began and ended during the step "jejunojejunal defect closing".
+
+**Qwen3.8-27B**
+
+> The trainee completed the jejunojejunostomy competently—creating the mesenteric window, dividing the limbs, stapling the anastomosis, and hand-sewing the common channel shut—ending with a well-approximated, patent anastomosis, so the core task was achieved safely. The main area to improve is efficiency and hemostasis during the prolonged hand-sewn closure (roughly 1:12 to 1:23), where intermittent oozing along the suture line (e.g., 1:21:17, 1:22:34) suggests bites taken with inconsistent depth or tension. I would coach the trainee to take smaller, more uniform full-thickness bites with steady tension and to confirm hemostasis before and after each segment to avoid the bloody suture line seen here. Instrument handling and atraumatic bowel grasp were good and the field was kept reasonably clear, which is worth reinforcing. Finally, before finishing, the trainee should habitually inspect the completed suture line and consider a leak test to confirm integrity rather than relying on visual appearance alone.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee demonstrates competent handling of laparoscopic instruments and precise suturing technique throughout this segment. Their movements are deliberate and controlled, particularly evident in the careful knot-tying and tissue manipulation during the anastomosis. The surgical field is well-maintained with minimal bleeding, suggesting good hemostasis and tissue handling. Overall, the trainee’s performance is proficient and meets expected standards for this phase of the procedure.
+
+---
+
+## 33. mb140_d1_BBP22_199
+
+Frames shown: 64, from 0:03:24.5 to 0:14:54.5
+
+**Question.** If you were the supervising surgeon, based only on the events occurring during 0:03:19-0:15:00, what feedback would you give on the trainee's performance?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Bern center), video BBP22
+- PHASE: gastric pouch creation, from 0:03:19 to 0:15:00
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:05:31 to 0:07:43 (2 min 13 s; say about two minutes): bleeding, "High amount of blood lost". Say it as: a bleed with a high amount of blood lost. It began during the step "His angle dissection" and ran on through "horizontal stapling", then "coagulation".
+
+**Qwen3.8-27B**
+
+> Overall, the trainee carried the case through to completion—dividing the gastrohepatic ligament and lesser omentum, firing the stapler, and placing the bougie to size the gastric pouch—so the operative sequence and anatomy were well recognized. My principal criticism is hemostasis: from roughly 0:05:30 onward the field is repeatedly flooded with blood, showing that bleeding from the dissection plane was not controlled promptly and the view was repeatedly compromised. I would also counsel gentler, more meticulous dissection, since the ecchymotic streaks and thermal marks on the omental fat (e.g., 0:04:30–0:05:14) indicate that traction and energy were applied more forcefully than necessary. I would further remind the trainee to suction and irrigate thoroughly before each staple firing so the new staple line can be inspected for bleeding and integrity. With tighter hemostasis and lighter tissue handling, this is a competent and complete performance.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee is performing well, showing steady hands and good instrument control during critical steps like division and anastomosis. Their tissue handling appears precise, minimizing bleeding, though some frames show moderate blood loss that could be improved with better hemostasis techniques. They are focused and adapting to the 3D visual field, which is essential for this complex procedure. Continue maintaining this level of precision, and work on refining your suturing technique for even more secure anastomoses.
+
+---
+
+## 34. mb140_d1_SBP01_1468
+
+Frames shown: 64, from 0:24:36 to 0:41:22
+
+**Question.** If you were the supervising surgeon, based only on the events occurring during 0:24:28-0:41:30, what feedback would you give on the trainee's performance?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Strasbourg center), video SBP01
+- PHASE: gastrojejunal anastomosis, from 0:24:28 to 0:41:30
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:29:44 to 0:30:02 (19 s; say about 20 seconds): mechanical injury, "Superficial penetration to less vital tissue, needle poke to tissue". Say it as: a mechanical injury, a superficial penetration to less vital tissue, or a needle poke to tissue. It began and ended during the step "gastrojejunal defect closing".
+  - 2\. From 0:39:25 to 0:39:46 (22 s; say about 20 seconds): mechanical injury, "Superficial penetration to less vital tissue, needle poke to tissue". Say it as: a mechanical injury, a superficial penetration to less vital tissue, or a needle poke to tissue. It began and ended during the step "gastrojejunal defect closing".
+
+**Qwen3.8-27B**
+
+> Overall, the trainee handled this segment competently: the Roux limb is mobilized with good perfusion, the mesenteric window is created and divided cleanly with the stapler, and the hand-sewn closure of the mesenteric (Petersen's) defect is meticulous, with no serosal tears or active bleeding. My main critique is efficiency—the hand-sewing runs from roughly 0:28 to 0:41 with many small bites, so I would encourage fewer, more deliberate bites or a running suture to shorten the case without sacrificing quality. I would also ask the trainee to suction the field between bites and to keep the camera centered on the suture line, since the needle driver and long suture loops repeatedly obscure the view. Tissue handling and instrument exchange are otherwise smooth, and I would let the trainee continue with this technique under supervision.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee demonstrates steady hands and good instrument control during the anastomosis closure, with precise suturing technique and effective use of laparoscopic tools. Their visualization is adequate, though they occasionally struggle with depth perception and spatial orientation in the confined abdominal cavity. They manage bleeding well with cautery and hemostatic agents, showing appropriate judgment in handling complications. The overall execution of the Roux-en-Y anastomosis appears technically sound and within acceptable standards for a trainee performing this complex step.
+
+---
+
+## 35. mb140_d1_BBP11_1859
+
+Frames shown: 64, from 0:31:07.6 to 0:49:08.4
+
+**Question.** If you were the supervising surgeon, based only on the events occurring during 0:30:59-0:49:17, what feedback would you give on the trainee's performance?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Bern center), video BBP11
+- PHASE: jejunojejunal anastomosis, from 0:30:59 to 0:49:17
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:35:15 to 0:35:41 (27 s; say about 25 seconds): thermal injury, "Superficial penetration to vital tissue". Say it as: a thermal injury, a superficial penetration to vital tissue. It began and ended during the step "jejunojejunal stapling".
+
+**Qwen3.8-27B**
+
+> Overall this was a competent and safe performance: the gastrojejunostomy is well constructed with a patent, tension‑free stoma and intact staple lines, and the common channel is ultimately closed securely. Your stapler work was the strong point—clean firings, good triangulation, and a wide anastomotic lumen that should drain well. The main concern is the hand‑sewn phase, where oozing and a small bleed around 0:41–0:45 left the field bloody and forced you to suture in a degraded view; pause to achieve hemostasis and reassess before the next bite. Your needle control and suture tension were inconsistent and the closure was slow, so practice more deliberate, evenly spaced bites with steady tension to speed up the work and limit tissue trauma. Finally, keep the anastomosis centered and reduce instrument crowding, since the camera lost the field several times; with those fixes this would be a solid, textbook anastomosis.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee demonstrates steady hand-eye coordination and precise instrument handling throughout the procedure, successfully completing key steps like anastomosis creation and suturing without significant errors or complications. Their use of the laparoscopic instruments is appropriate for the task, showing good spatial awareness within the confined abdominal cavity. The suturing technique appears accurate, with consistent tension and placement of the suture material. Overall, the trainee’s performance during this segment is competent and meets expected standards for a surgical trainee at this stage.
+
+---
+
+## 36. mb140_d1_SBP43_129
+
+Frames shown: 64, from 0:02:25.6 to 0:37:18.4
+
+**Question.** If you were the supervising surgeon, based only on the events occurring during 0:02:09-0:37:35, what feedback would you give on the trainee's performance?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Strasbourg center), video SBP43
+- PHASE: gastric pouch creation, from 0:02:09 to 0:37:35
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:10:38 to 0:11:29 (52 s; say about a minute): bleeding, "Intermediate amount of blood lost". Say it as: a bleed with an intermediate amount of blood lost. It began and ended during the step "His angle dissection".
+  - 2\. From 0:14:50 to 0:21:49 (7 min; say about seven minutes): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began during the step "His angle dissection" and ran on through "horizontal stapling", then "retrogastric dissection".
+
+**Qwen3.8-27B**
+
+> Overall the trainee performed competently, carrying out the lesser‑curvature/gastrocolic dissection, creating the gastric pouch, and completing the stapled anastomosis with appropriate LigaSure use and steady instrument handling. The principal concern is the recurrent bleeding visible from about 10:43 through 17:55, which forced reliance on laparoscopic sponges for tamponade rather than definitive energy or clip hemostasis, indicating the dissection in the gastrocolic and lesser‑omentum planes was not consistently kept avascular. I would coach the trainee to anticipate and skeletonize the left gastric and short gastric vessels before cutting, to maintain sharper retraction and exposure, and to secure each bleeding point at the moment of injury instead of packing it. The encouraging note is that the trainee recovered cleanly from each episode, kept the field workable, and fired the staples accurately, so with improved vessel awareness and a bit more efficiency the performance is solid and safe.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee demonstrates competent handling of laparoscopic instruments and precise anatomical dissection throughout the procedure. They effectively manage bleeding with hemostatic agents and sponges, maintaining a clear surgical field. The use of energy devices for cutting and coagulation appears accurate and controlled. Their spatial awareness and coordination between instruments are adequate for the complexity of gastric bypass. However, some moments show slight hesitation in instrument manipulation, which could be improved with more practice under direct supervision to enhance efficiency and reduce procedural time. Overall, they are performing at a proficient level suitable for a trainee in this advanced surgical context.
+
+---
+
+## 37. mb140_d1_BBP66_713
+
+Frames shown: 64, from 0:11:58.8 to 0:24:14.2
+
+**Question.** If you were the supervising surgeon, based only on the events occurring during 0:11:53-0:24:20, what feedback would you give on the trainee's performance?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Bern center), video BBP66
+- PHASE: gastrojejunal anastomosis, from 0:11:53 to 0:24:20
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:16:50 to 0:17:55 (1 min 6 s; say about a minute): bleeding, "Very low amount of blood lost". Say it as: a bleed with a very low amount of blood lost. It began and ended during the step "gastrojejunal defect closing".
+
+**Qwen3.8-27B**
+
+> Overall, I would give the trainee a positive assessment: the intestinal work in this segment was sound, with the Roux limb well mobilized, a well‑aligned stapled jejunojejunostomy (≈0:13:00–0:14:20), and a hand‑sewn anastomosis completed without an obvious leak. My main constructive point is hemostasis—the field became progressively bloody and oozing through the long hand‑sewn phase (≈0:16:27–0:22:05), so I would want oozing points controlled with energy or clips before and during suturing rather than letting the field fill. I would also flag visualization, since several frames are fully occluded or blurry (e.g., 0:22:17–0:23:04 and 0:24:02–0:24:14), and ask the trainee to keep the lens clear and the camera steady. The suture handling and knot‑tying were competent, but the hand‑sewn portion was slow, so I would encourage more efficient, evenly spaced bites to shorten that phase. In short, a safe and complete anastomosis, with room to improve in hemostasis, camera discipline, and speed.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee demonstrates steady progress through the complex phases of the Roux-en-Y gastric bypass, particularly in handling instruments and managing tissue. However, there are moments where instrument control appears less precise, leading to some tissue manipulation that could be more refined. The suturing technique shows improvement but occasionally lacks consistent tension or alignment, which may affect the integrity of the anastomosis. Overall, the trainee is learning well but needs to focus on enhancing dexterity and precision during critical steps like vessel handling and suture placement.
+
+---
+
+## 38. mb140_d1_SBP15_4553
+
+Frames shown: 64, from 1:16:05.4 to 1:42:02.6
+
+**Question.** If you were the supervising surgeon, based only on the events occurring during 1:15:53-1:42:15, what feedback would you give on the trainee's performance?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Strasbourg center), video SBP15
+- PHASE: jejunojejunal anastomosis, from 1:15:53 to 1:42:15
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 1:25:29 to 1:26:43 (1 min 15 s; say about a minute): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began and ended during the step "jejunojejunal defect closing".
+  - 2\. From 1:27:31 to 1:30:05 (2 min 35 s; say about two and a half minutes): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began and ended during the step "jejunojejunal defect closing".
+
+**Qwen3.8-27B**
+
+> Overall, the trainee completed the gastrojejunostomy competently—creating the anastomotic opening, firing the stapler, and then working through a methodical hand‑sewn closure with the blue suture—so the core task was achieved with acceptable instrument handling. My main concern is hemostasis: at several points (notably around 1:25–1:29) blood pooled and obscured the suture line, so I would want you to pause more often to suction and obtain definitive hemostasis (cautery or a hemostatic/figure‑of‑eight suture) before taking the next bite rather than suturing through a bloody field. I would also push for crisper, more efficient needle‑driver work and more deliberate use of the gauze retractor to keep the pouch and Roux limb stable and the view clear, and for a cleaner, more linear gastrotomy/enterotomy to make the anastomosis easier to construct. In short, a solid, safe performance that is ready for refinement in blood control, field management, and speed.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee demonstrates competent handling of laparoscopic instruments and executes precise suturing under direct visualization. Their movements are deliberate and controlled, showing good spatial awareness within the abdominal cavity. The surgical field is maintained with minimal bleeding, indicating effective hemostasis techniques. They manage tissue retraction and instrument coordination well, suggesting strong technical proficiency for this stage of the procedure.
+
+---
+
+## 39. mb140_d1_BBP62_178
+
+Frames shown: 64, from 0:03:06 to 0:19:52
+
+**Question.** If you were the supervising surgeon, based only on the events occurring during 0:02:58-0:20:00, what feedback would you give on the trainee's performance?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Bern center), video BBP62
+- PHASE: gastric pouch creation, from 0:02:58 to 0:20:00
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:04:39 to 0:06:49 (2 min 11 s; say about two minutes): bleeding, "Intermediate amount of blood lost". Say it as: a bleed with an intermediate amount of blood lost. It began during the step "His angle dissection" and ran on through "horizontal stapling".
+  - 2\. From 0:07:18 to 0:07:49 (32 s; say about 30 seconds): bleeding, "High amount of blood lost". Say it as: a bleed with a high amount of blood lost. It began during the step "horizontal stapling" and ran on through "coagulation".
+  - 3\. From 0:07:57 to 0:08:58 (1 min 2 s; say about a minute): bleeding, "High amount of blood lost". Say it as: a bleed with a high amount of blood lost. It began during the step "retrogastric dissection" and ran on through "coagulation".
+
+**Qwen3.8-27B**
+
+> Overall, the trainee carried the case through competently—dividing the gastrocolic omentum and short gastric vessels, firing the stapler to create the gastric pouch, and building the anastomoses with a serviceable suture line. My principal feedback is on hemostasis: the field is repeatedly saturated with blood (notably around 0:04:41, 0:08:25, and 0:15:36), so I would coach them to control the gastroepiploic and short gastric vessels more meticulously with the Harmonic and to suction/irrigate before every staple or suture pass. A clearer field would also let them verify each fired staple line and the completed anastomosis for bleeding or a leak before advancing, which I would make a habit. Instrument handling and the dissection planes were acceptable, and the bowel at 0:19:52 looks well perfused, so with tighter hemostatic technique this would be a strong performance.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee demonstrates competent handling of laparoscopic instruments and anatomical dissection during this segment, showing steady progress in isolating structures and applying energy devices for tissue division. There are moments of slight instrument hesitation or suboptimal camera positioning, but overall technique appears precise and controlled. The trainee maintains adequate visualization and manages bleeding effectively with cautery and clamping. With continued refinement in hand-eye coordination and spatial awareness under pressure, the trainee is well-positioned to handle more complex steps of the procedure.
+
+---
+
+## 40. mb140_d1_SBP67_4089
+
+Frames shown: 64, from 1:08:20.5 to 1:32:32.5
+
+**Question.** If you were the supervising surgeon, based only on the events occurring during 1:08:09-1:32:44, what feedback would you give on the trainee's performance?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Strasbourg center), video SBP67
+- PHASE: gastrojejunal anastomosis, from 1:08:09 to 1:32:44
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 1:10:32 to 1:10:43 (12 s; say 12 seconds): mechanical injury, "Superficial penetration to less vital tissue, needle poke to tissue". Say it as: a mechanical injury, a superficial penetration to less vital tissue, or a needle poke to tissue. It began and ended during the step "gastrojejunal defect closing".
+  - 2\. From 1:20:12 to 1:21:07 (56 s; say about a minute): bleeding, "Very low amount of blood lost". Say it as: a bleed with a very low amount of blood lost. It began and ended during the step "gastrojejunal defect closing".
+  - 3\. From 1:31:16 to 1:31:22 (7 s; say 7 seconds): mechanical injury, "Superficial penetration to less vital tissue, needle poke to tissue". Say it as: a mechanical injury, a superficial penetration to less vital tissue, or a needle poke to tissue. It began and ended during the step "gastrojejunal defect closing".
+  - 4\. From 1:31:21 to 1:32:19 (59 s; say about a minute): bleeding, "Very low amount of blood lost". Say it as: a bleed with a very low amount of blood lost. It began and ended during the step "gastrojejunal defect closing". It began while event 8 was still going.
+
+**Qwen3.8-27B**
+
+> Overall I would rate the trainee's performance as competent and largely independent: the hand‑sewn anastomosis was carried through steadily over this segment with good bimanual control, consistent bite size, maintained suture tension, and a stable camera view, progressing to a closed line by the end. The working field was kept reasonably organized and the needle driver and grasper were used appropriately throughout. The principal area for improvement is blood management, because dark blood repeatedly pooled at the suture line (notably around 1:13–1:17 and 1:25–1:26) and intermittently obscured the needle and tissue, so more frequent, targeted suction and irrigation between bites would have sharpened visualization and probably saved time. A few passes also look slightly uneven or redundant, so I would coach the trainee to take more uniform full‑thickness bites and avoid re‑grasping or kinking the needle. With those refinements in hemostasis and suture regularity, the technique is at a level suitable for continuing to perform anastomoses independently under supervision.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee demonstrates steady progress in handling laparoscopic instruments and performing suturing under direct visualization. They maintain good instrument control and anatomical awareness throughout the procedure, showing competence in tying knots and managing tissue. Their movements are deliberate and focused, indicating a solid grasp of the technique. However, there is room for improvement in precision during knot-tying, as some loops appear slightly irregular, suggesting a need for more refined dexterity. Overall, this is a competent performance that reflects strong foundational skills suitable for advancing to more complex tasks.
+
+---
+
+## 41. mb140_d1_BBP37_281
+
+Frames shown: 64, from 0:04:45.5 to 0:14:13.5
+
+**Question.** If you were the supervising surgeon, based only on the events occurring during 0:04:41-0:14:18, what feedback would you give on the trainee's performance?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Bern center), video BBP37
+- PHASE: gastric pouch creation, from 0:04:41 to 0:14:18
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:08:15 to 0:08:23 (9 s; say 9 seconds): bleeding, "Very low amount of blood lost". Say it as: a bleed with a very low amount of blood lost. It began and ended during the step "His angle dissection".
+
+**Qwen3.8-27B**
+
+> Overall the trainee handles this segment well: the lesser omental/avascular plane is developed competently with the Harmonic, retraction is adequate, and the stapler is applied correctly to divide the stomach and expose the esophagus. My main reservation is hemostasis, since there is recurrent oozing through the dissection (visible from about 0:07:36 onward) and a fresh red bleed at 0:14:13 that I would want controlled immediately with the Harmonic or a clip rather than allowed to pool. I would also have them clear the field more often, because the view is obscured by smoke and blood around 0:13:10, which makes the next dissection steps unsafe. With tighter attention to bleeding and a cleaner field, the technique is sound and I would be comfortable letting the trainee proceed.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee is performing well overall, demonstrating good instrument handling and anatomical awareness. The use of the Harmonic scalpel at 0:05:21 and 0:06:51 shows appropriate tissue dissection, though some cautery smoke obscures the field briefly. At 0:09:25-0:10:19, the trainee carefully manipulates a blue suture passer to secure the anastomosis, indicating precision in suturing technique. However, from 0:13:19 to 0:14:18, the view becomes increasingly obscured by smoke and bleeding, suggesting difficulty managing hemostasis or tissue manipulation under pressure; this could benefit from improved suction control or assistant support. Overall, the trainee is competent but could refine their ability to maintain clear visualization during critical steps.
+
+---
+
+## 42. mb140_d1_SBP69_2602
+
+Frames shown: 64, from 0:43:30.4 to 1:01:08.6
+
+**Question.** If you were the supervising surgeon, based only on the events occurring during 0:43:22-1:01:17, what feedback would you give on the trainee's performance?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Strasbourg center), video SBP69
+- PHASE: jejunojejunal anastomosis, from 0:43:22 to 1:01:17
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:45:34 to 0:46:28 (55 s; say about a minute): thermal injury, "Superficial penetration to vital tissue". Say it as: a thermal injury, a superficial penetration to vital tissue. It began during the step "alimentary limb opening" and ran on through "jejunojejunal stapling".
+  - 2\. From 0:48:02 to 0:48:36 (35 s; say about 35 seconds): bleeding, "Very low amount of blood lost". Say it as: a bleed with a very low amount of blood lost. It began during the step "jejunojejunal stapling" and ran on through "jejunojejunal defect closing".
+  - 3\. From 0:56:06 to 0:56:11 (6 s; say 6 seconds): mechanical injury, "Superficial penetration to less vital tissue, needle poke to tissue". Say it as: a mechanical injury, a superficial penetration to less vital tissue, or a needle poke to tissue. It began and ended during the step "jejunojejunal defect closing".
+  - 4\. From 0:56:11 to 0:56:48 (38 s; say about 40 seconds): bleeding, "Very low amount of blood lost". Say it as: a bleed with a very low amount of blood lost. It began and ended during the step "jejunojejunal defect closing". It began while event 13 was still going.
+  - 5\. From 0:58:27 to 0:58:46 (20 s; say about 20 seconds): bleeding, "Very low amount of blood lost". Say it as: a bleed with a very low amount of blood lost. It began and ended during the step "jejunojejunal defect closing".
+
+**Qwen3.8-27B**
+
+> Overall this is a competent hand‑sewn completion of the stapled gastrojejunostomy, with good apposition of the gastric pouch and Roux limb and steady, controlled suturing, so I would affirm the trainee's tissue handling and knot security. My main concern is hemostasis: at 0:47:42–0:48:32 there is visible oozing from the staple line and the anastomotic defect that should have been fully secured (cautery or a hemostatic stitch) before closure began, since suturing over a wet, bleeding field risks a missed vessel and a later leak. I would also counsel the trainee to keep the suture bites moderate and consistent as the line runs from 0:49:06 to 1:01:08, avoiding full‑thickness bites that could narrow the lumen and serosa‑only bites that could evert and leak. Finally, I would have the trainee pause at the end to inspect the whole anastomosis for tension, ischemia, and a watertight closure before moving on, a check the frames do not yet confirm.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee demonstrates precise and steady instrument handling throughout the anastomosis, showing good control during suturing and knot tying. Their technique is methodical, with careful attention to tissue manipulation and avoiding excessive tension on the suture. The sutures appear well-placed and the anastomosis is being closed securely, indicating a solid grasp of the surgical steps. Overall, the trainee’s performance is competent and meets expected standards for this phase of the procedure.
+
+---
+
+## 43. mb140_d1_BBP26_742
+
+Frames shown: 64, from 0:12:27.9 to 0:24:51.1
+
+**Question.** If you were the supervising surgeon, based only on the events occurring during 0:12:22-0:24:57, what feedback would you give on the trainee's performance?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Bern center), video BBP26
+- PHASE: gastrojejunal anastomosis, from 0:12:22 to 0:24:57
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:22:10 to 0:23:46 (1 min 37 s; say about a minute and a half): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began and ended during the step "gastrojejunal defect closing".
+
+**Qwen3.8-27B**
+
+> Overall I would call this a competent, safe performance: the mesentery is divided cleanly with the Harmonic and the subsequent hand‑sewn closure is methodical with good tissue approximation, so I would let you continue with confidence. My main coaching point is camera control—several views (e.g. around 0:13:26, 0:14:49 and 0:21:30) go out of focus or get too close to the tissue, so keep the scope steady and hold a consistent working distance. Second, the field tends to get crowded with three or four instruments at once and there is some oozing after division; keep only the two active instruments in view and use suction/irrigation to dry the suture line so each bite lands accurately. The sequence is correct and the knots and suture line look secure, with hemostasis properly addressed before suturing, which is exactly the right order. With a little more deliberate scope handling and field management, this work is ready for you to perform with minimal supervision.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee demonstrates steady progress through the critical phases of the Roux-en-Y gastric bypass, showing good control of instruments and anatomical dissection. Their use of energy devices like the Harmonic scalpel is appropriate for tissue cutting and coagulation. However, there are moments where the view becomes obscured or instruments appear to be in close proximity, suggesting a need for improved spatial awareness and camera management. The suturing appears technically sound, though the trainee could benefit from more consistent tension on the suture line and smoother transitions between steps. Overall, the performance is competent but requires refinement in visualization and instrument coordination.
+
+---
+
+## 44. mb140_d1_SBP04_2234
+
+Frames shown: 64, from 0:37:23 to 0:56:18
+
+**Question.** If you were the supervising surgeon, based only on the events occurring during 0:37:14-0:56:27, what feedback would you give on the trainee's performance?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Strasbourg center), video SBP04
+- PHASE: jejunojejunal anastomosis, from 0:37:14 to 0:56:27
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:40:03 to 0:41:09 (1 min 7 s; say about a minute): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began during the step "alimentary limb opening" and ran on through "jejunojejunal stapling".
+  - 2\. From 0:43:20 to 0:46:15 (2 min 56 s; say about three minutes): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began during the step "jejunojejunal stapling" and ran on through "jejunojejunal defect closing".
+
+**Qwen3.8-27B**
+
+> Overall, this is a competent run of the jejunojejunostomy and mesenteric closure, and I would tell the trainee they managed the sequencing and instrument control well. The dissection of the common mesenteric gap and the stapled work (0:37:23–0:39:11) were clean, and the long linear staple line for the side-to-side anastomosis (0:41:17–0:42:47) was placed in a reasonable configuration. My main concern is the active bleed visible at the staple line around 0:40:23–0:40:41; next time I would want you to pause and secure hemostasis with a suture or clip before proceeding, rather than relying on the staple line alone. The hand-sewn closure of the defect (0:43:23–0:56:18) is methodical but somewhat protracted, with loose suture loops visible mid-tying, so I would coach you to tie knots more securely and approximate the mesenteric edges tightly to avoid a residual gap and internal hernia. Keep this level of steady work up and focus on hemostasis and knot security, and you will be operating at a safe, independent level.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee demonstrates competent handling of laparoscopic instruments and executes precise suturing under direct visualization. Their movements are deliberate and controlled, showing good spatial awareness within the abdominal cavity. The suturing technique is accurate, with consistent knot-tying and appropriate tissue approximation, indicating a solid grasp of surgical fundamentals. I would encourage maintaining this level of precision while continuing to build confidence in complex maneuvers like multi-layer closure.
+
+---
+
+## 45. mb140_d1_BBP49_253
+
+Frames shown: 64, from 0:04:18.3 to 0:15:29.7
+
+**Question.** If you were the supervising surgeon, based only on the events occurring during 0:04:13-0:15:35, what feedback would you give on the trainee's performance?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Bern center), video BBP49
+- PHASE: gastric pouch creation, from 0:04:13 to 0:15:35
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:08:20 to 0:09:17 (58 s; say about a minute): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began during the step "horizontal stapling" and ran on through "retrogastric dissection".
+
+**Qwen3.8-27B**
+
+> Overall you performed a safe, methodical dissection and anastomotic construction, with steady bimanual control and appropriate, judicious use of the Harmonic scalpel and the stapler, so I would affirm the technique and encourage you to keep working in this manner. My principal concern is hemostasis: at several points (notably around 0:08:23, 0:09:06, 0:11:35–0:11:56, and 0:14:25–0:15:08) the mesenteric plane bled and the field filled with blood, which obscured your dissection and suggests the vascular arcades were not being identified and controlled before you cut. Going forward, develop a wider avascular plane first, take the mesenteric vessels more deliberately with clips or energy before dividing, and use suction and irrigation more proactively to keep the field clear. Your instrument triangulation and exposure were generally good, but a few moments of crowding near the staple line would have been safer with a slower, more deliberate approach. In short, this was a competent and safe performance that needs refinement in bleeding control and plane development to be truly excellent.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee demonstrates steady progress through complex laparoscopic maneuvers, showing good control of instruments and spatial awareness. There are moments of precision, particularly in tissue handling and suturing, but some frames reveal excessive bleeding or tissue trauma that requires immediate correction. The trainee should focus on minimizing unnecessary manipulation to reduce bleeding and improve tissue preservation. Overall, the performance is competent but needs refinement in hemostasis and gentle tissue handling for optimal outcomes.
+
+---
+
+## 46. mb140_d1_SBP59_3237
+
+Frames shown: 64, from 0:54:08.5 to 1:18:16.5
+
+**Question.** If you were the supervising surgeon, based only on the events occurring during 0:53:57-1:18:28, what feedback would you give on the trainee's performance?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Strasbourg center), video SBP59
+- PHASE: gastrojejunal anastomosis, from 0:53:57 to 1:18:28
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:59:29 to 1:00:00 (32 s; say about 30 seconds): mechanical injury, "Superficial penetration to vital tissue". Say it as: a mechanical injury, a superficial penetration to vital tissue. It began and ended during the step "gastrojejunal stapling".
+  - 2\. From 1:06:46 to 1:08:31 (1 min 46 s; say about two minutes): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began and ended during the step "gastrojejunal defect closing".
+
+**Qwen3.8-27B**
+
+> Overall, the trainee delivered a safe and methodical sequence—clean dissection of the lesser sac and transverse colon, appropriate use of the linear stapler, and a steady running hand‑sewn closure of the anastomosis with good needle control and even, full‑thickness bites. The principal area for improvement is hemostasis, because persistent oozing and pooling of blood around the suture line (e.g., 1:05:15, 1:07:55, 1:08:18) repeatedly obscured the anastomosis, so I would coach them to suction and apply pressure more proactively and to clear the field before each stitch. Endoscope management also needs work, as the view was lost to a fluid‑covered lens at 1:11:22 and to complete occlusion at 0:56:03 and 1:12:08; they should wipe the scope and keep it in the field, especially mid‑suture. Instrument handling and triangulation were otherwise good, with no evidence of bowel injury, staple‑line blowout, or major hemorrhage. With better field control and lens care, the anastomotic technique itself is sound and the trainee is progressing well toward independent performance.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee demonstrates competent handling of laparoscopic instruments and precise suturing technique throughout the procedure. Their steady hand and clear visualization suggest good spatial awareness and control. They efficiently manage tissue manipulation and maintain a clear surgical field, indicating strong foundational skills. Overall, their performance is technically sound and appropriate for this stage of the surgery.
+
+---
+
+## 47. mb140_d1_BBP16_2247
+
+Frames shown: 64, from 0:37:32.6 to 0:49:12.4
+
+**Question.** If you were the supervising surgeon, based only on the events occurring during 0:37:27-0:49:18, what feedback would you give on the trainee's performance?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Bern center), video BBP16
+- PHASE: jejunojejunal anastomosis, from 0:37:27 to 0:49:18
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:41:54 to 0:43:04 (1 min 11 s; say about a minute): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began and ended during the step "jejunojejunal defect closing".
+  - 2\. From 0:44:10 to 0:47:18 (3 min 9 s; say about three minutes): bleeding, "Intermediate amount of blood lost". Say it as: a bleed with an intermediate amount of blood lost. It began and ended during the step "jejunojejunal defect closing".
+
+**Qwen3.8-27B**
+
+> The trainee worked through the stepwise sequence—dividing the mesentery with the stapler/energy device and then progressing to a hand‑sewn closure—competently, but my main feedback is that hemostasis must be secured before committing to the anastomotic suture line. From roughly 0:44:00 to 0:46:00 a bleeding point opened and the field filled with blood, yet the trainee kept advancing sutures through a compromised view instead of pausing to control the source first with pressure, a clip, coagulation, or a temporary hemostatic stitch. I would have them stop, clear the field, and re‑identify the vessel before continuing, because suturing blind in blood raises the risk of a missed or malformed stitch at the anastomosis. The early dissection, the clean suturing seen from about 0:41:25 to 0:43:39, and the fact that the closure is ultimately completed by 0:49:12 all show good instrument handling and an understanding of the steps, so the technical foundation is there. Keep that steady hand and stepwise approach, but always achieve a dry, clear field before you place the anastomotic sutures.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee demonstrates steady progress in handling laparoscopic instruments and maintaining a clear field of view, which is essential for precise suturing. However, there are moments where instrument clashing or excessive tissue manipulation occurs, potentially risking injury to surrounding structures or compromising the surgical field. The trainee’s suturing technique appears adequate but could benefit from smoother, more controlled movements to reduce bleeding and improve stitch alignment. Overall, the performance shows competence, but refinement in instrument coordination and tissue handling is needed for optimal outcomes.
+
+---
+
+## 48. mb140_d1_SBP06_0
+
+Frames shown: 64, from 0:00:02.9 to 0:06:10.1
+
+**Question.** If you were the supervising surgeon, based only on the events occurring during 0:00:00-0:06:13, what feedback would you give on the trainee's performance?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Strasbourg center), video SBP06
+- PHASE: gastric pouch creation, from 0:00:00 to 0:06:13
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:00:13 to 0:02:03 (1 min 51 s; say about two minutes): bleeding, "Very low amount of blood lost". Say it as: a bleed with a very low amount of blood lost. It began during the step "vertical stapling" and ran on through "gastric opening".
+  - 2\. From 0:04:52 to 0:06:01 (1 min 10 s; say about a minute): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began and ended during the step "gastric opening".
+
+**Qwen3.8-27B**
+
+> Overall, the trainee handled this segment competently: the staple line was created with a steady hand, visualization was maintained, and the LigaSure energy device was used appropriately to dissect and seal the tissue, with the anastomosis looking intact by the end of the clip. My main coaching point would be hemostasis, because the dissection bed and staple edges ooze repeatedly and a pool of blood accumulates in the later frames, so I would have the trainee seal or clip bleeding points as they appear rather than allowing the field to fill. I would also remind them to reduce the traction they are placing on the stapled tissue with the graspers, using atraumatic, low‑tension handling to protect the new anastomosis. The step sequence was logical and the instrument control was sound, so I would encourage them to continue at this level while tightening their proactive hemostatic technique.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee demonstrates steady, precise handling of laparoscopic instruments throughout the procedure, maintaining good visualization and control. Their technique in suturing and anastomosis appears accurate, with careful attention to hemostasis and tissue handling. The trainee’s ability to manage bleeding and maintain a clear field is commendable. Overall, they show competence and focus appropriate for this complex surgery.
+
+---
+
+## 49. mb140_d1_BBP34_1392
+
+Frames shown: 64, from 0:23:22.6 to 0:45:36.4
+
+**Question.** If you were the supervising surgeon, based only on the events occurring during 0:23:12-0:45:47, what feedback would you give on the trainee's performance?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Bern center), video BBP34
+- PHASE: gastrojejunal anastomosis, from 0:23:12 to 0:45:47
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:29:46 to 0:33:13 (3 min 28 s; say about three and a half minutes): bleeding, "Intermediate amount of blood lost". Say it as: a bleed with an intermediate amount of blood lost. It began during the step "irrigation aspiration" and ran on through "gastrojejunal defect closing", then back to "irrigation aspiration", then "coagulation".
+
+**Qwen3.8-27B**
+
+> Overall, the trainee carried the case through the correct sequence—mobilizing the Roux limb, performing the stapled jejunojejunostomy, and hand-sewing the mesenteric defect—so I would endorse the plan and the order of steps. My main concern is the episode of brisk bleeding after the staple division (roughly 0:29–0:31), when the field filled with blood before hemostasis looked secure; I would have the trainee stop, suction, and obtain definitive hemostasis of the mesenteric vessels and staple line before proceeding. The subsequent closure of the defect, although ultimately complete, was prolonged and labored, with many repeated passes and knots that look loose, so I would coach a more efficient running or fewer, well-secured sutures with better needle control to cut down time and tension. I would also require the trainee to inspect the anastomosis for a leak and confirm the defect is closed without narrowing the lumen before declaring the step done. With that targeted coaching on bleeding control and knot security, this is a satisfactory performance for the trainee's level.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee demonstrates competent handling of laparoscopic instruments and maintains adequate visualization throughout the procedure. Their technique appears steady and precise as they manipulate tissues and sutures, particularly evident during the anastomosis phase. The surgical field remains relatively clear with minimal bleeding, indicating good hemostatic control. However, occasional instrument clashing or slight tissue manipulation could be refined for smoother transitions. Overall, the trainee is performing well and progressing appropriately through the critical stages of the Roux-en-Y gastric bypass.
+
+---
+
+## 50. mb140_d1_SBP70_270
+
+Frames shown: 64, from 0:04:38.7 to 0:22:58.3
+
+**Question.** If you were the supervising surgeon, based only on the events occurring during 0:04:30-0:23:07, what feedback would you give on the trainee's performance?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Strasbourg center), video SBP70
+- PHASE: gastric pouch creation, from 0:04:30 to 0:23:07
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:05:07 to 0:05:36 (30 s; say about 30 seconds): bleeding, "Very low amount of blood lost". Say it as: a bleed with a very low amount of blood lost. It began and ended during the step "crura dissection".
+  - 2\. From 0:12:19 to 0:12:52 (34 s; say about 35 seconds): bleeding, "Very low amount of blood lost". Say it as: a bleed with a very low amount of blood lost. It began and ended during the step "retrogastric dissection".
+  - 3\. From 0:17:27 to 0:19:40 (2 min 14 s; say about two minutes): bleeding, "Very low amount of blood lost". Say it as: a bleed with a very low amount of blood lost. It began during the step "retrogastric dissection" and ran on through "vertical stapling", then "coagulation".
+  - 4\. From 0:20:14 to 0:21:02 (49 s; say about 50 seconds): bleeding, "Very low amount of blood lost". Say it as: a bleed with a very low amount of blood lost. It began and ended during the step "gastric opening".
+
+**Qwen3.8-27B**
+
+> Overall I would grade this as a competent, safe performance: you worked methodically through the upper‑abdominal dissection, the gastric division, and the subsequent bowel mobilization with good instrument triangulation and confident use of both the energy device and the linear stapler. Hemostasis was generally well controlled—the oozing that appeared during the lesser‑sac/gastrohepatic dissection was promptly addressed with the LigaSure and clips, and the staple lines you created look full‑thickness and intact when inspected. The main area to refine is keeping the field clean, because blood and fluid pooled repeatedly (notably around 0:08:43–0:10:10 and again after each staple line) and more frequent suction and irrigation would have preserved the visualization you need in this tight space. I would also like you to pause deliberately after every staple line to confirm complete hemostasis and, where appropriate, perform a leak check before advancing to the next step, rather than moving straight into the next dissection. Finally, a few frames show the lens obscured by glare or an instrument across the field, so better camera control and calling for suction proactively would smooth out the case; with those adjustments you are at a level I am comfortable letting you continue to lead.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee demonstrates steady, focused technique with good instrument control and anatomical awareness throughout the procedure. Their handling of delicate tissue and use of suturing tools appears precise and confident. They maintain a clear field of view and manage bleeding effectively, showing good hemostasis skills. Overall, their performance is competent and appropriate for the stage of the surgery shown.

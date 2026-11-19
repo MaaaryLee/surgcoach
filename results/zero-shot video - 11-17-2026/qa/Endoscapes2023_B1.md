@@ -1,0 +1,1201 @@
+# Endoscapes2023 B1: 50 questions
+
+Each model saw only the frames listed and the question. *Recorded* is what the annotation records, word for word as the judge got it. [All question types](../README.md#questions)
+
+## 1. endoscapes_B1_b1_endoscapes_01
+
+Frames shown: 31, from 11:21 to 11:51
+
+**Question.** At timestamp 11:51, identify the most urgent patient-safety concern.
+
+**Recorded**
+
+- cvs_structures_identified: 0.00 (not achieved unanimously)
+- cvs_hepatocystic_triangle_cleared: 0.00 (not achieved unanimously)
+- cvs_gallbladder_separated: 0.00 (not achieved unanimously)
+- labeled_structure_or_tool_classes_present: cystic_artery, cystic_duct, gallbladder, tool
+- class_presence_limit: names only; no appearance, condition, motion, or position may be inferred
+
+**Qwen3.8-27B**
+
+> At 11:51 the most urgent patient‑safety concern is the risk of inadvertent clipping or transection of the common bile duct or cystic artery, because the open jaws of the clip applier are resting directly on the clipped cystic duct/artery complex while the gallbladder is pulled inferiorly, distorting the hepatocystic triangle and placing these critical structures in the instrument's line of fire. A misclip or cut here would produce a bile leak or hemorrhage, and the small blood‑tinged area at the clip site indicates the structure is not yet fully secured. The traction‑induced distortion also makes it harder to confirm the identity of the structure in the jaws. The safest immediate action is to pause, re‑establish the critical view of safety, and positively identify the duct and artery before firing the clip or dividing the tissue.
+
+**Qwen3-VL-8B-Instruct**
+
+> At 11:51, the most urgent patient-safety concern is the risk of bile duct or vascular injury due to the close proximity of surgical instruments to critical structures and the presence of active bleeding or tissue trauma in the operative field. The surgeon must maintain extreme caution to avoid damaging surrounding anatomy while manipulating the gallbladder neck or cystic duct.
+
+---
+
+## 2. endoscapes_B1_b1_endoscapes_02
+
+Frames shown: 31, from 17:56 to 18:26
+
+**Question.** At timestamp 18:26, identify the most urgent patient-safety concern.
+
+**Recorded**
+
+- cvs_structures_identified: 0.00 (not achieved unanimously)
+- cvs_hepatocystic_triangle_cleared: 0.00 (not achieved unanimously)
+- cvs_gallbladder_separated: 1.00 (achieved unanimously)
+- labeled_structure_or_tool_classes_present: cystic_artery, cystic_duct, cystic_plate, gallbladder, tool
+- class_presence_limit: names only; no appearance, condition, motion, or position may be inferred
+
+**Qwen3.8-27B**
+
+> At 18:26 the most urgent patient-safety concern is active bleeding from the dissected cystic pedicle — the bright red, oozing structure in the lower field, most likely an unsecured cystic artery or the cut cystic-duct bed. The dissecting instrument tip is resting directly on this bleeding point, so further manipulation risks worsening the hemorrhage. Uncontrolled bleeding in Calot's triangle is dangerous because it rapidly fills the field and destroys the critical view of safety, which in turn raises the risk of misidentifying the common bile duct. The thin tubular structure held by the grasper is therefore also vulnerable to biliary injury if the view is lost. The immediate priority is to obtain hemostasis (clip/ligate the bleeding vessel) before any further dissection or clipping of the pedicle.
+
+**Qwen3-VL-8B-Instruct**
+
+> At 18:26, the most urgent patient-safety concern is the significant bleeding from the surgical site, indicated by the large amount of fresh red blood visible in the field, which could lead to hypovolemia or hemorrhagic shock if not controlled immediately.
+
+---
+
+## 3. endoscapes_B1_b1_endoscapes_03
+
+Frames shown: 31, from 7:32 to 8:02
+
+**Question.** At timestamp 8:02, identify the most urgent patient-safety concern.
+
+**Recorded**
+
+- cvs_structures_identified: 0.67 (achieved by a majority, not unanimously)
+- cvs_hepatocystic_triangle_cleared: 1.00 (achieved unanimously)
+- cvs_gallbladder_separated: 1.00 (achieved unanimously)
+- labeled_structure_or_tool_classes_present: calot_triangle, cystic_artery, cystic_duct, cystic_plate, gallbladder, tool
+- class_presence_limit: names only; no appearance, condition, motion, or position may be inferred
+
+**Qwen3.8-27B**
+
+> At 8:02 the most urgent patient‑safety concern is the risk of iatrogenic bile‑duct injury. The dissecting/cautery instrument tip is in direct contact with the tubular structure at the cystic‑duct–common‑bile‑duct junction, where the CBD could be mistaken for the cystic duct and cut, or suffer a thermal injury from energy. The critical view of safety is not yet clearly established, so the duct's relationship to the gallbladder remains uncertain. Any further cut or energy application at this moment could transect or thermally damage the common or hepatic duct. The surgeon should pause, improve exposure and traction, and confirm the anatomy before continuing the dissection.
+
+**Qwen3-VL-8B-Instruct**
+
+> At 8:02, the most urgent patient-safety concern is the visible bleeding from the cut edge of the gallbladder bed, which could lead to significant intra-abdominal hemorrhage if not controlled immediately. The surgical field shows active oozing and pooling of blood near the dissection site, indicating ongoing vessel injury. This requires immediate hemostasis using clamps, energy devices, or sutures to prevent complications like hypovolemic shock or surgical site bleeding.
+
+---
+
+## 4. endoscapes_B1_b1_endoscapes_04
+
+Frames shown: 31, from 31:03 to 31:33
+
+**Question.** At timestamp 31:33, identify the most urgent patient-safety concern.
+
+**Recorded**
+
+- cvs_structures_identified: 0.33 (not achieved by a majority)
+- cvs_hepatocystic_triangle_cleared: 0.33 (not achieved by a majority)
+- cvs_gallbladder_separated: 0.00 (not achieved unanimously)
+- labeled_structure_or_tool_classes_present: calot_triangle, cystic_artery, cystic_duct, cystic_plate, gallbladder, tool
+- class_presence_limit: names only; no appearance, condition, motion, or position may be inferred
+
+**Qwen3.8-27B**
+
+> The most urgent patient‑safety concern at 31:33 is the risk of iatrogenic bile‑duct (common bile duct) injury. The dissecting instrument is in direct contact with the biliary anatomy inside a tight, partially obscured hepatocystic triangle, and the critical view of safety does not appear to be fully established, so the pale structure being retracted/dissected could be the CBD rather than the cystic duct. There is no clear active hemorrhage or bile leak in this frame, so the dominant threat is ductal misidentification and transection. In short, the instruments are working too close to the major bile ducts for the dissection to be considered safe at this moment.
+
+**Qwen3-VL-8B-Instruct**
+
+> At 31:33, the most urgent patient-safety concern is the risk of bile duct injury due to the proximity of the surgical instruments to the biliary anatomy, which could lead to leakage or perforation if not handled with extreme care.
+
+---
+
+## 5. endoscapes_B1_b1_endoscapes_05
+
+Frames shown: 31, from 78:39 to 79:09
+
+**Question.** At timestamp 79:09, identify the most urgent patient-safety concern.
+
+**Recorded**
+
+- cvs_structures_identified: 0.33 (not achieved by a majority)
+- cvs_hepatocystic_triangle_cleared: 0.67 (achieved by a majority, not unanimously)
+- cvs_gallbladder_separated: 0.33 (not achieved by a majority)
+- labeled_structure_or_tool_classes_present: cystic_artery, cystic_duct, cystic_plate, gallbladder, tool
+- class_presence_limit: names only; no appearance, condition, motion, or position may be inferred
+
+**Qwen3.8-27B**
+
+> At 79:09 the most urgent patient‑safety concern is active, uncontrolled hemorrhage from the dissection site in the hepatocystic triangle / cystic pedicle. The frame shows a fresh pool of blood in the field and a gauze sponge at the left that is now heavily blood‑soaked, indicating ongoing bleeding. This is critical because the accumulating blood is beginning to obscure the cystic duct and common bile duct, so any further dissection risks inadvertent biliary or hepatic‑artery injury. The immediate priority is to control the bleeding (compression, cautery, or clipping) and re‑establish a bloodless, clearly visualized field before proceeding.
+
+**Qwen3-VL-8B-Instruct**
+
+> At 79:09, the most urgent patient-safety concern is active bleeding from the surgical site, indicated by the visible pooling and flow of blood around the instruments and tissues. The ongoing dissection near major vascular structures suggests a risk of significant hemorrhage if control is not immediately secured. The presence of multiple surgical tools actively engaged in the area further increases the potential for uncontrolled injury or vessel rupture. Immediate hemostasis is required to prevent catastrophic blood loss.
+
+---
+
+## 6. endoscapes_B1_b1_endoscapes_06
+
+Frames shown: 31, from 46:11 to 46:41
+
+**Question.** At timestamp 46:41, identify the most urgent patient-safety concern.
+
+**Recorded**
+
+- cvs_structures_identified: 0.67 (achieved by a majority, not unanimously)
+- cvs_hepatocystic_triangle_cleared: 0.33 (not achieved by a majority)
+- cvs_gallbladder_separated: 0.33 (not achieved by a majority)
+- labeled_structure_or_tool_classes_present: cystic_artery, cystic_duct, cystic_plate, gallbladder, tool
+- class_presence_limit: names only; no appearance, condition, motion, or position may be inferred
+
+**Qwen3.8-27B**
+
+> The most urgent patient-safety concern at 46:41 is active hemorrhage: a substantial pool of dark blood has collected in the dependent part of the field, and the dissection plane over the gallbladder and liver bed is oozing. This accumulating blood is progressively obscuring the operative view, which immediately raises the risk of losing the critical view of Calot's triangle and inadvertently injuring the common or hepatic bile ducts. Uncontrolled bleeding also threatens the patient's hemodynamic stability. The priority is to pause dissection, suction and irrigate to clear the blood, and secure hemostasis before continuing. In short, uncontrolled bleeding with a blood-obscured field is the dominant safety issue at this moment.
+
+**Qwen3-VL-8B-Instruct**
+
+> At 46:41, the most urgent patient-safety concern is the significant bleeding from the surgical site, which is actively pooling and appears to be ongoing. The instruments are still engaged with the tissue, suggesting active dissection or manipulation, which could exacerbate hemorrhage if not immediately controlled. There is no visible hemostatic agent or clamp applied to stop the bleeding, increasing the risk of hypovolemic shock. Immediate action to control bleeding—such as applying pressure, using a hemostat, or cauterizing—is critical.
+
+---
+
+## 7. endoscapes_B1_b1_endoscapes_07
+
+Frames shown: 31, from 22:15 to 22:45
+
+**Question.** At timestamp 22:45, identify the most urgent patient-safety concern.
+
+**Recorded**
+
+- cvs_structures_identified: 0.33 (not achieved by a majority)
+- cvs_hepatocystic_triangle_cleared: 0.00 (not achieved unanimously)
+- cvs_gallbladder_separated: 0.67 (achieved by a majority, not unanimously)
+- labeled_structure_or_tool_classes_present: cystic_artery, cystic_duct, cystic_plate, gallbladder, tool
+- class_presence_limit: names only; no appearance, condition, motion, or position may be inferred
+
+**Qwen3.8-27B**
+
+> At 22:45 the most urgent patient‑safety concern is the risk of an iatrogenic bile‑duct injury: the hepatocystic triangle is edematous and inflamed, the critical view of safety is not yet established, and the blunt dissector is in direct contact with a tubular structure that cannot be definitively separated from the common bile duct. A secondary concern is the small dark‑red oozing point at the dissection site, indicating minor bleeding from a small vessel that should be controlled. The correct response is to pause the dissection, re‑establish a clear critical view (isolating the cystic duct from both the gallbladder and the liver bed), and confirm the identity of the structure before any division. This distorted, difficult field is precisely the situation in which misidentifying the CBD as the cystic duct produces a major bile‑duct injury.
+
+**Qwen3-VL-8B-Instruct**
+
+> At 22:45, the most urgent patient-safety concern is the continued manipulation of the gallbladder neck and cystic duct area, which risks injuring the bile duct or causing bile leakage into the peritoneal cavity. The instrument is still actively dissecting or coagulating tissue near critical anatomical structures, increasing the risk of iatrogenic injury.
+
+---
+
+## 8. endoscapes_B1_b1_endoscapes_08
+
+Frames shown: 31, from 73:47 to 74:17
+
+**Question.** At timestamp 74:17, identify the most urgent patient-safety concern.
+
+**Recorded**
+
+- cvs_structures_identified: 0.33 (not achieved by a majority)
+- cvs_hepatocystic_triangle_cleared: 1.00 (achieved unanimously)
+- cvs_gallbladder_separated: 1.00 (achieved unanimously)
+- labeled_structure_or_tool_classes_present: calot_triangle, cystic_artery, cystic_duct, cystic_plate, gallbladder, tool
+- class_presence_limit: names only; no appearance, condition, motion, or position may be inferred
+
+**Qwen3.8-27B**
+
+> At 74:17 the most urgent patient‑safety concern is active hemorrhage: a pool of fresh red blood is accumulating in the dependent part of the operative field (bottom of the image, by the grasper), indicating an uncontrolled bleeding point from the dissection. This is critical because the pooling blood obscures the critical anatomy of the hepatocystic triangle—cystic artery, cystic duct, and common bile duct—making it difficult to confirm safe dissection and increasing the risk of a vascular or biliary injury. The energy/dissecting tip is also working in close proximity to these structures while the field is filling with blood, so the priority is immediate hemostasis (retraction, irrigation, and clip/energy control of the bleeding vessel) before continuing dissection. In short, uncontrolled bleeding with loss of a clear surgical view is the immediate threat to patient safety at this timestamp.
+
+**Qwen3-VL-8B-Instruct**
+
+> At 74:17, the most urgent patient-safety concern is the active bleeding from the surgical site, indicated by the pooling of blood and the ongoing use of the electrocautery device to control it. The area is visibly vascular and hemorrhagic, requiring immediate attention to prevent significant blood loss or complications during the laparoscopic cholecystectomy.
+
+---
+
+## 9. endoscapes_B1_b1_endoscapes_09
+
+Frames shown: 30, from 7:40 to 8:09
+
+**Question.** At timestamp 8:09, identify the most urgent patient-safety concern.
+
+**Recorded**
+
+- cvs_structures_identified: 0.67 (achieved by a majority, not unanimously)
+- cvs_hepatocystic_triangle_cleared: 0.00 (not achieved unanimously)
+- cvs_gallbladder_separated: 0.00 (not achieved unanimously)
+- labeled_structure_or_tool_classes_present: cystic_artery, cystic_duct, cystic_plate, gallbladder, tool
+- class_presence_limit: names only; no appearance, condition, motion, or position may be inferred
+
+**Qwen3.8-27B**
+
+> The most urgent patient‑safety concern at 8:09 is hemorrhage from the dissection site in Calot's triangle. The frames show a dark red clot and a pool of blood accumulating in the operative field once the dissection instrument is withdrawn, indicating active or recent bleeding, most likely from the cystic artery or a cystic‑pedicle vessel. This bleeding must be controlled promptly to prevent hemodynamic compromise. It also obscures the anatomy, so continuing to dissect before hemostasis is achieved would raise the risk of a bile‑duct or vascular injury.
+
+**Qwen3-VL-8B-Instruct**
+
+> At 8:09, the most urgent patient-safety concern is active bleeding from the surgical site, as evidenced by the visible blood pooling and the instrument actively engaged in the area of hemorrhage. The presence of significant blood loss suggests a risk of hypovolemic shock if not promptly controlled.
+
+---
+
+## 10. endoscapes_B1_b1_endoscapes_10
+
+Frames shown: 31, from 9:08 to 9:38
+
+**Question.** At timestamp 9:38, identify the most urgent patient-safety concern.
+
+**Recorded**
+
+- cvs_structures_identified: 0.67 (achieved by a majority, not unanimously)
+- cvs_hepatocystic_triangle_cleared: 0.67 (achieved by a majority, not unanimously)
+- cvs_gallbladder_separated: 0.33 (not achieved by a majority)
+- labeled_structure_or_tool_classes_present: cystic_artery, cystic_duct, gallbladder, tool
+- class_presence_limit: names only; no appearance, condition, motion, or position may be inferred
+
+**Qwen3.8-27B**
+
+> The most urgent patient-safety concern at 9:38 is the risk of iatrogenic bile-duct injury from the clip applier now positioned over the tubular structure in the hepatocystic triangle. Its jaws sit directly on what appears to be the cystic duct, but the surrounding dissection still contains fat and the cystic artery is not clearly isolated as a second separate structure, so the critical view of safety is not unambiguously confirmed. If the clip is fired on the common bile duct, or too close to it, the result would be a major biliary injury. The immediate priority is therefore to pause and confirm positive identification of the cystic duct (and that the CBD is free) before clipping or cutting. No active hemorrhage or liver laceration is visible in this frame, so biliary misidentification is the dominant concern.
+
+**Qwen3-VL-8B-Instruct**
+
+> At 9:38, the most urgent patient-safety concern is the proximity of the surgical instrument to a major blood vessel or bile duct, as indicated by the visible anatomical structures and the instrument’s position near a potential critical area. The risk of inadvertent injury to these vital structures during dissection or manipulation is high.
+
+---
+
+## 11. endoscapes_B1_b1_endoscapes_11
+
+Frames shown: 31, from 15:28 to 15:58
+
+**Question.** At timestamp 15:58, identify the most urgent patient-safety concern.
+
+**Recorded**
+
+- cvs_structures_identified: 0.00 (not achieved unanimously)
+- cvs_hepatocystic_triangle_cleared: 0.33 (not achieved by a majority)
+- cvs_gallbladder_separated: 0.00 (not achieved unanimously)
+- labeled_structure_or_tool_classes_present: calot_triangle, cystic_artery, gallbladder, tool
+- class_presence_limit: names only; no appearance, condition, motion, or position may be inferred
+
+**Qwen3.8-27B**
+
+> At 15:58 the most urgent patient‑safety concern is the risk of biliary injury—i.e., clipping or transecting the common bile duct or cystic duct—because the dissecting instrument is engaged at the gallbladder neck immediately adjacent to a tubular structure whose identity has not been confirmed. A concurrent hazard is hemorrhage from the cystic artery, which lies in the same dissection plane and does not yet appear to be clipped or controlled. In this frame the critical view of safety is not fully established, so the two critical structures cannot be reliably distinguished from the CBD. Before any clip is applied or a cut is made, the dissection should be completed to obtain a clear critical view and positively identify the duct and the vessel.
+
+**Qwen3-VL-8B-Instruct**
+
+> At 15:58, the most urgent patient-safety concern is the instrument’s proximity to a major blood vessel or bile duct, as the dissection appears to be near critical anatomy with potential for inadvertent injury. The surgeon’s focus and tool placement suggest an ongoing delicate dissection where vascular or biliary structures may be at risk of being damaged. There is no visible bleeding or bile leak in this frame, but the anatomical context implies a high-stakes maneuver. Any deviation could lead to significant hemorrhage or bile duct injury, requiring immediate intervention if complications arise.
+
+---
+
+## 12. endoscapes_B1_b1_endoscapes_12
+
+Frames shown: 31, from 48:00 to 48:30
+
+**Question.** At timestamp 48:30, identify the most urgent patient-safety concern.
+
+**Recorded**
+
+- cvs_structures_identified: 0.00 (not achieved unanimously)
+- cvs_hepatocystic_triangle_cleared: 0.00 (not achieved unanimously)
+- cvs_gallbladder_separated: 0.33 (not achieved by a majority)
+- labeled_structure_or_tool_classes_present: cystic_duct, cystic_plate, gallbladder, tool
+- class_presence_limit: names only; no appearance, condition, motion, or position may be inferred
+
+**Qwen3.8-27B**
+
+> The most urgent patient‑safety concern at 48:30 is the risk of iatrogenic bile‑duct injury. The dissecting instrument is engaged deep in a bloody, edematous hepatocystic triangle in which the cystic duct and cystic artery are not clearly distinguishable from the common bile duct, so the critical view of safety has not been established. Oozing blood further obscures the landmarks and the instrument tip lies immediately adjacent to the biliary confluence. Until the two critical structures are individually identified and the common bile duct is positively excluded, any dissection, clip, or cut risks transecting or ligating the common bile duct. This potential duct injury outweighs the minor oozing as the dominant safety issue at this moment.
+
+**Qwen3-VL-8B-Instruct**
+
+> At 48:30, the most urgent patient-safety concern is the risk of injury to underlying structures, such as vessels or bile ducts, as the surgical instrument is actively dissecting near critical anatomy with visible bleeding and tissue trauma. The proximity to major blood vessels and bile ducts during dissection increases the risk of significant hemorrhage or bile leak, which can lead to life-threatening complications if not carefully managed.
+
+---
+
+## 13. endoscapes_B1_b1_endoscapes_13
+
+Frames shown: 31, from 18:48 to 19:18
+
+**Question.** At timestamp 19:18, identify the most urgent patient-safety concern.
+
+**Recorded**
+
+- cvs_structures_identified: 0.00 (not achieved unanimously)
+- cvs_hepatocystic_triangle_cleared: 0.00 (not achieved unanimously)
+- cvs_gallbladder_separated: 0.00 (not achieved unanimously)
+- labeled_structure_or_tool_classes_present: gallbladder, tool
+- class_presence_limit: names only; no appearance, condition, motion, or position may be inferred
+
+**Qwen3.8-27B**
+
+> At 19:18 the most urgent patient‑safety concern is active hemorrhage in the hepatocystic triangle / cystic plate, seen as fresh blood pooling on the dissected tissue and streaking down the right side of the field. This bleeding, most likely from a small cystic‑artery branch or the liver bed, needs immediate control with pressure, a clip, or coagulation. If it is not stopped it will flood the field, destroy the critical view of safety, and greatly raise the chance of misidentifying the common bile duct and injuring it. The downstream risk is therefore a bile‑duct injury secondary to the obscured field, but the immediate priority at this moment is hemostasis.
+
+**Qwen3-VL-8B-Instruct**
+
+> At 19:18, the most urgent patient-safety concern is the ongoing dissection near major vascular structures, as indicated by the visible redness and bleeding, which could lead to significant hemorrhage if not controlled immediately. The surgical field shows active manipulation of tissues adjacent to what appears to be the hepatic artery or portal vein, increasing the risk of catastrophic bleeding. There is no sign of hemostasis being applied at this moment, making control of bleeding the immediate priority.
+
+---
+
+## 14. endoscapes_B1_b1_endoscapes_14
+
+Frames shown: 31, from 48:32 to 49:02
+
+**Question.** At timestamp 49:02, identify the most urgent patient-safety concern.
+
+**Recorded**
+
+- cvs_structures_identified: 0.33 (not achieved by a majority)
+- cvs_hepatocystic_triangle_cleared: 0.00 (not achieved unanimously)
+- cvs_gallbladder_separated: 0.33 (not achieved by a majority)
+- labeled_structure_or_tool_classes_present: cystic_artery, cystic_duct, gallbladder, tool
+- class_presence_limit: names only; no appearance, condition, motion, or position may be inferred
+
+**Qwen3.8-27B**
+
+> The most urgent patient‑safety concern at 49:02 is the hemorrhage in the dissected cystic plate – the dark, blood‑filled area in the gallbladder bed – which is filling and obscuring the hepatocystic triangle. Blood pooling in this space destroys a safe critical view of safety, so the immediate priority is to obtain hemostasis (cautery or clip) and re‑establish a clear field before any further dissection. Only once the field is dry should the surgeon positively confirm that the structure being grasped is the cystic duct and not the common bile duct before clipping or transecting, since proceeding through a blood‑obscured field is the setup for a bile‑duct injury. In short, control the bleeding first; the obscured view makes inadvertent biliary or arterial injury the principal danger at this moment.
+
+**Qwen3-VL-8B-Instruct**
+
+> At 49:02, the most urgent patient-safety concern is the risk of bile duct or vascular injury due to the instrument’s proximity to the gallbladder neck and surrounding structures, which could lead to bleeding or bile leak if not carefully managed. The area appears inflamed and friable, increasing the risk of inadvertent damage during dissection or manipulation. There is no visible active bleeding or perforation at this exact moment, but the anatomical complexity demands extreme caution.
+
+---
+
+## 15. endoscapes_B1_b1_endoscapes_15
+
+Frames shown: 31, from 12:28 to 12:58
+
+**Question.** At timestamp 12:58, identify the most urgent patient-safety concern.
+
+**Recorded**
+
+- cvs_structures_identified: 0.33 (not achieved by a majority)
+- cvs_hepatocystic_triangle_cleared: 0.00 (not achieved unanimously)
+- cvs_gallbladder_separated: 0.33 (not achieved by a majority)
+- labeled_structure_or_tool_classes_present: cystic_artery, cystic_duct, gallbladder
+- class_presence_limit: names only; no appearance, condition, motion, or position may be inferred
+
+**Qwen3.8-27B**
+
+> At 12:58 the most urgent patient‑safety concern is the active, uncontrolled hemorrhage in the cystohepatic triangle/gallbladder bed, with dark blood pooling in the recess and no instrument in the field to control it. This bleeding obscures the critical view of safety, so the relationship between the cystic duct and the common bile duct cannot be confirmed. Continuing to dissect blindly under these conditions carries a high risk of inadvertent bile‑duct injury as well as ongoing blood loss. The field must be irrigated and the bleeding source controlled (clip, ligature, or cautery) to re‑establish a clear view before any further dissection. If hemostasis and a safe critical view cannot be obtained, the case should be converted to open surgery.
+
+**Qwen3-VL-8B-Instruct**
+
+> At 12:58, the most urgent patient-safety concern is active bleeding from the gallbladder bed, as evidenced by the visible oozing of blood and the presence of clotted blood around the surgical site, which could lead to significant hemorrhage if not controlled.
+
+---
+
+## 16. endoscapes_B1_b1_endoscapes_16
+
+Frames shown: 31, from 20:18 to 20:48
+
+**Question.** At timestamp 20:48, identify the most urgent patient-safety concern.
+
+**Recorded**
+
+- cvs_structures_identified: 0.00 (not achieved unanimously)
+- cvs_hepatocystic_triangle_cleared: 0.33 (not achieved by a majority)
+- cvs_gallbladder_separated: 0.67 (achieved by a majority, not unanimously)
+- labeled_structure_or_tool_classes_present: calot_triangle, cystic_duct, cystic_plate, gallbladder, tool
+- class_presence_limit: names only; no appearance, condition, motion, or position may be inferred
+
+**Qwen3.8-27B**
+
+> The most urgent patient‑safety concern at 20:48 is hemorrhage: fresh dark blood is tracking down the bare liver surface (upper right) and the cystic‑plate dissection bed is saturated with blood, indicating active or recent bleeding that must be controlled before continuing. This bleeding is dangerous both because it can compromise hemodynamics and because it obscures the critical view of safety, so the cystic duct and cystic artery can no longer be positively identified. With the anatomy hidden in a bloody field, the immediate risk of an unrecognized bile‑duct or cystic‑artery injury is high. The priority is therefore to evacuate the blood, re‑establish a clear view, and secure hemostasis (and confirm the critical view) before any further dissection.
+
+**Qwen3-VL-8B-Instruct**
+
+> At 20:48, the most urgent patient-safety concern is active bleeding from the surgical site, indicated by the fresh, glistening red blood and visible oozing around the dissection area. This suggests a potential vascular injury that requires immediate hemostasis to prevent hemorrhage. The surrounding tissue appears inflamed and traumatized, increasing the risk of uncontrolled bleeding or other complications if not addressed promptly.
+
+---
+
+## 17. endoscapes_B1_b1_endoscapes_17
+
+Frames shown: 31, from 16:55 to 17:25
+
+**Question.** At timestamp 17:25, identify the most urgent patient-safety concern.
+
+**Recorded**
+
+- cvs_structures_identified: 0.67 (achieved by a majority, not unanimously)
+- cvs_hepatocystic_triangle_cleared: 0.33 (not achieved by a majority)
+- cvs_gallbladder_separated: 0.33 (not achieved by a majority)
+- labeled_structure_or_tool_classes_present: cystic_artery, cystic_duct, cystic_plate, gallbladder, tool
+- class_presence_limit: names only; no appearance, condition, motion, or position may be inferred
+
+**Qwen3.8-27B**
+
+> At 17:25 the most urgent patient‑safety concern is the sudden loss of adequate visualization: a bright, over‑exposed beam of light floods the right side of the laparoscopic field, obscuring the liver edge and the region of the cystic plate/cystic duct where dissection is proceeding. This glare prevents the surgeon from confirming the critical view of safety, so the cystic artery and the bile ducts (cystic/common bile duct) cannot be positively identified. Continuing to dissect or apply energy under this obscured view carries an immediate risk of inadvertent bile‑duct injury or hemorrhage. The light source or offending instrument should be repositioned to clear the lens and restore a full, unobstructed view before any further dissection is attempted.
+
+**Qwen3-VL-8B-Instruct**
+
+> At 17:25, the most urgent patient-safety concern is the bright, intense light source entering the field of view, which could temporarily impair the surgeon’s vision and increase the risk of accidental injury to the patient.
+
+---
+
+## 18. endoscapes_B1_b1_endoscapes_18
+
+Frames shown: 31, from 27:42 to 28:12
+
+**Question.** At timestamp 28:12, identify the most urgent patient-safety concern.
+
+**Recorded**
+
+- cvs_structures_identified: 0.00 (not achieved unanimously)
+- cvs_hepatocystic_triangle_cleared: 0.33 (not achieved by a majority)
+- cvs_gallbladder_separated: 0.00 (not achieved unanimously)
+- labeled_structure_or_tool_classes_present: cystic_artery, cystic_plate, gallbladder, tool
+- class_presence_limit: names only; no appearance, condition, motion, or position may be inferred
+
+**Qwen3.8-27B**
+
+> The most urgent patient‑safety concern at 28:12 is the risk of an inadvertent bile‑duct injury (to the common bile duct or common hepatic duct). The white‑tipped instrument is working directly on a ductal structure in Calot's triangle while a clip is already in place on an adjacent structure, and the field is congested, inflamed and oozing, so the cystic duct and the common bile duct cannot be confidently distinguished and a clear "critical view of safety" is not established. Clipping or dividing the wrong structure in this plane would produce a major bile‑duct injury. The secondary immediate concern is haemorrhage from the cystic artery given the bloody dissection plane. Before any further clipping or division, the surgeon should stop, re‑establish the critical view of safety, and confirm the identity of each structure.
+
+**Qwen3-VL-8B-Instruct**
+
+> At 28:12, the most urgent patient-safety concern is the proximity of the surgical instrument to a major blood vessel or bile duct, as indicated by the visible bleeding and the instrument’s position near critical anatomical structures. The surgeon must maintain precise control to avoid accidental injury, which could lead to significant hemorrhage or bile leak.
+
+---
+
+## 19. endoscapes_B1_b1_endoscapes_19
+
+Frames shown: 31, from 19:50 to 20:20
+
+**Question.** At timestamp 20:20, identify the most urgent patient-safety concern.
+
+**Recorded**
+
+- cvs_structures_identified: 0.00 (not achieved unanimously)
+- cvs_hepatocystic_triangle_cleared: 0.00 (not achieved unanimously)
+- cvs_gallbladder_separated: 0.00 (not achieved unanimously)
+- labeled_structure_or_tool_classes_present: cystic_artery, cystic_plate, gallbladder, tool
+- class_presence_limit: names only; no appearance, condition, motion, or position may be inferred
+
+**Qwen3.8-27B**
+
+> At 20:20 the most urgent patient‑safety concern is active, uncontrolled hemorrhage from the dissection site (the gallbladder bed / cystic plate and the adjacent liver edge). The blood‑soaked gauze pad held by the grasper shows the surgeon is already tamponading the bleeding, yet a fresh stream of dark blood is still visible at the tip of the MicroForce forceps. This ongoing bleeding risks hemodynamic instability and obscures the operative field, so immediate hemostasis—by sustained compression, coagulation, or clipping of the bleeding point—is the priority before any further dissection.
+
+**Qwen3-VL-8B-Instruct**
+
+> At 20:20, the most urgent patient-safety concern is active bleeding from the surgical site, as evidenced by the visible blood pooling and the use of a gauze pad to control it. The surgical instruments are actively engaged in managing this bleeding, indicating ongoing hemostasis efforts. Failure to control this bleeding could lead to significant blood loss or complications.
+
+---
+
+## 20. endoscapes_B1_b1_endoscapes_20
+
+Frames shown: 31, from 24:37 to 25:07
+
+**Question.** At timestamp 25:07, identify the most urgent patient-safety concern.
+
+**Recorded**
+
+- cvs_structures_identified: 0.67 (achieved by a majority, not unanimously)
+- cvs_hepatocystic_triangle_cleared: 0.67 (achieved by a majority, not unanimously)
+- cvs_gallbladder_separated: 0.33 (not achieved by a majority)
+- labeled_structure_or_tool_classes_present: calot_triangle, cystic_artery, cystic_duct, gallbladder, tool
+- class_presence_limit: names only; no appearance, condition, motion, or position may be inferred
+
+**Qwen3.8-27B**
+
+> At 25:07 the most urgent patient‑safety concern is active bleeding (hemorrhage) from the dissection site in Calot's triangle / the cystic pedicle, visible as the fresh red blood pooling around the grasper and at the tip of the dissector. This is the immediate threat because ongoing bleeding obscures the critical view of safety and can lead to a mis‑dissection. The dissection is also being carried very deep, right at the biliary confluence, so the bleeding compounds the risk of a common bile duct injury if the field is not cleared and the vessel controlled. In short, uncontrolled hilar hemorrhage with the instruments working at the CBD confluence is the priority to address at this moment.
+
+**Qwen3-VL-8B-Instruct**
+
+> At 25:07, the most urgent patient-safety concern is the active bleeding from the surgical site, indicated by the visible blood and the use of a suction device to manage it. The ongoing manipulation of tissues and the proximity of instruments to vessels suggest a risk of further hemorrhage if control is not maintained.
+
+---
+
+## 21. endoscapes_B1_b1_endoscapes_21
+
+Frames shown: 31, from 41:37 to 42:07
+
+**Question.** At timestamp 42:07, identify the most urgent patient-safety concern.
+
+**Recorded**
+
+- cvs_structures_identified: 0.00 (not achieved unanimously)
+- cvs_hepatocystic_triangle_cleared: 0.00 (not achieved unanimously)
+- cvs_gallbladder_separated: 0.33 (not achieved by a majority)
+- labeled_structure_or_tool_classes_present: cystic_duct, gallbladder, tool
+- class_presence_limit: names only; no appearance, condition, motion, or position may be inferred
+
+**Qwen3.8-27B**
+
+> At 42:07 the most urgent patient‑safety concern is the risk of inadvertent injury to a major bile duct (common bile or common hepatic duct) rather than the cystic duct. The hepatocystic (Calot's) triangle is inflamed and fibrofatty, the anatomy is distorted, and a clear "critical view of safety" has not yet been established, so the structure being dissected at the base could be a hepatic duct. There is no active arterial bleeding or frank bile leak visible in this frame, so the immediate priority is to pause the dissection and confirm the anatomy (e.g., fundus‑first dissection or intraoperative cholangiography) before any clipping or transection. Proceeding to divide the identified tubular structure without this confirmation would be the highest‑risk action at this point.
+
+**Qwen3-VL-8B-Instruct**
+
+> At 42:07, the most urgent patient-safety concern is the risk of bile duct injury, as the dissection appears to be near or within the hepatocystic triangle where the common bile duct lies, and there is significant tissue manipulation close to critical structures. The surgeon must maintain extreme caution to avoid inadvertently damaging the bile duct, which could lead to serious postoperative complications like leakage or obstruction.
+
+---
+
+## 22. endoscapes_B1_b1_endoscapes_22
+
+Frames shown: 31, from 17:06 to 17:36
+
+**Question.** At timestamp 17:36, identify the most urgent patient-safety concern.
+
+**Recorded**
+
+- cvs_structures_identified: 1.00 (achieved unanimously)
+- cvs_hepatocystic_triangle_cleared: 0.67 (achieved by a majority, not unanimously)
+- cvs_gallbladder_separated: 0.67 (achieved by a majority, not unanimously)
+- labeled_structure_or_tool_classes_present: cystic_artery, cystic_duct, cystic_plate, gallbladder, tool
+- class_presence_limit: names only; no appearance, condition, motion, or position may be inferred
+
+**Qwen3.8-27B**
+
+> At 17:36 the most urgent patient‑safety concern is the risk of (or an in‑progress) major bile‑duct injury, because the open clip applier at the lower right is engaged directly on the ductal structure in the critical view of safety, where a misfired clip would occlude or transect the common bile duct. The pale gallbladder is still attached above and the liver bed lies below, confirming the instruments are working at the cystic–common duct junction, the highest‑risk zone for misidentification. The congested, reddish cystic pedicle held by the upper grasper adds a second concern: a slipping or incomplete clip on the cystic artery could produce hemorrhage. The correct immediate action is to pause, re‑establish the critical view of safety, and positively identify the two pedicle structures before any clip is fired. If the reddish structure is in fact a bleeding vessel, hemostasis must be obtained before the dissection proceeds.
+
+**Qwen3-VL-8B-Instruct**
+
+> At 17:36, the most urgent patient-safety concern is potential injury to the bile duct or surrounding vascular structures as the gallbladder is being dissected and mobilized, with instruments actively manipulating the area near critical anatomical landmarks.
+
+---
+
+## 23. endoscapes_B1_b1_endoscapes_23
+
+Frames shown: 31, from 11:20 to 11:50
+
+**Question.** At timestamp 11:50, identify the most urgent patient-safety concern.
+
+**Recorded**
+
+- cvs_structures_identified: 0.33 (not achieved by a majority)
+- cvs_hepatocystic_triangle_cleared: 0.67 (achieved by a majority, not unanimously)
+- cvs_gallbladder_separated: 0.33 (not achieved by a majority)
+- labeled_structure_or_tool_classes_present: calot_triangle, cystic_artery, cystic_duct, cystic_plate, gallbladder, tool
+- class_presence_limit: names only; no appearance, condition, motion, or position may be inferred
+
+**Qwen3.8-27B**
+
+> The most urgent patient-safety concern at 11:50 is the risk of a major bile-duct or right-hepatic-artery injury, because the dissection is now at the infundibulum/cystic duct where a clear critical view of safety is not established and the field is partly obscured by oozing blood. The white-tipped retractor is applying lateral traction on a tubular structure that must be positively identified as the cystic duct before any clip is placed or tissue divided. The red oozing around the cystic plate should be controlled to restore a clean, dry field, since poor visualization at this step is
+
+**Qwen3-VL-8B-Instruct**
+
+> At 11:50, the most urgent patient-safety concern is the risk of bile duct injury or bleeding from the exposed area near the gallbladder bed, as the surgical field shows significant dissection and potential damage to surrounding structures. The instrument is actively engaged in the area, increasing the likelihood of inadvertent harm to critical anatomy like the cystic duct or artery, which could lead to serious complications such as bile leakage or hemorrhage if not carefully managed.
+
+---
+
+## 24. endoscapes_B1_b1_endoscapes_24
+
+Frames shown: 31, from 28:03 to 28:33
+
+**Question.** At timestamp 28:33, identify the most urgent patient-safety concern.
+
+**Recorded**
+
+- cvs_structures_identified: 0.67 (achieved by a majority, not unanimously)
+- cvs_hepatocystic_triangle_cleared: 1.00 (achieved unanimously)
+- cvs_gallbladder_separated: 0.33 (not achieved by a majority)
+- labeled_structure_or_tool_classes_present: calot_triangle, cystic_artery, cystic_duct, gallbladder, tool
+- class_presence_limit: names only; no appearance, condition, motion, or position may be inferred
+
+**Qwen3.8-27B**
+
+> The most urgent patient‑safety concern at 28:33 is active bleeding from the hepatocystic triangle (the cystic artery / cystic‑plate dissection site), as shown by the fresh blood pooling in the dependent field that is not currently being controlled by any instrument. This hemorrhage is the most time‑critical issue because it can quickly obscure the critical view of safety and, if uncontrolled, cause hemodynamic compromise. Compounding the risk, the grasper is holding tissue in immediate proximity to the biliary structures, so the ongoing dissection also carries a high risk of bile‑duct injury if the cystic duct or common hepatic duct is misidentified. The combination of an uncontrolled bleed and the grasper's position on the critical structures makes securing hemostasis and re‑confirming the critical view of safety the immediate priority.
+
+**Qwen3-VL-8B-Instruct**
+
+> At 28:33, the most urgent patient-safety concern is the visible active bleeding from the surgical site, indicated by the pooling of fresh red blood around the liver and near the gallbladder bed, which requires immediate hemostasis to prevent significant blood loss or hematoma formation.
+
+---
+
+## 25. endoscapes_B1_b1_endoscapes_25
+
+Frames shown: 31, from 36:17 to 36:47
+
+**Question.** At timestamp 36:47, identify the most urgent patient-safety concern.
+
+**Recorded**
+
+- cvs_structures_identified: 0.00 (not achieved unanimously)
+- cvs_hepatocystic_triangle_cleared: 0.67 (achieved by a majority, not unanimously)
+- cvs_gallbladder_separated: 0.67 (achieved by a majority, not unanimously)
+- labeled_structure_or_tool_classes_present: calot_triangle, cystic_duct, cystic_plate, gallbladder, tool
+- class_presence_limit: names only; no appearance, condition, motion, or position may be inferred
+
+**Qwen3.8-27B**
+
+> At 36:47 the most urgent patient‑safety concern is hemorrhage – active/pooling blood from the dissected gallbladder bed and cystic pedicle is accumulating on the liver surface and in the operative field. This blood is beginning to degrade the view, and loss of a clear "critical view of safety" at this stage risks inadvertent clipping or transection of the common bile duct or hepatic artery if the surgeon cuts or coagulates blindly to tamponade the bleeding. The immediate priority is therefore to secure hemostasis and re‑establish the critical view before any further dissection.
+
+**Qwen3-VL-8B-Instruct**
+
+> At 36:47, the most urgent patient-safety concern is potential bile duct injury or bleeding from the surgical field, as the instrument is actively engaged in a delicate area near major vascular and biliary structures, with visible blood and tissue trauma. The proximity of the instrument to critical anatomy increases the risk of inadvertent damage, which could lead to significant complications like hemorrhage or bile leakage.
+
+---
+
+## 26. endoscapes_B1_b1_endoscapes_26
+
+Frames shown: 31, from 19:00 to 19:30
+
+**Question.** At timestamp 19:30, identify the most urgent patient-safety concern.
+
+**Recorded**
+
+- cvs_structures_identified: 0.00 (not achieved unanimously)
+- cvs_hepatocystic_triangle_cleared: 0.00 (not achieved unanimously)
+- cvs_gallbladder_separated: 0.33 (not achieved by a majority)
+- labeled_structure_or_tool_classes_present: cystic_artery, cystic_duct, cystic_plate, gallbladder, tool
+- class_presence_limit: names only; no appearance, condition, motion, or position may be inferred
+
+**Qwen3.8-27B**
+
+> The most urgent patient‑safety concern at 19:30 is the risk of (or a possible) injury to the common bile duct / cystic duct and to a major vessel, because the critical view of safety is not clearly established and both instruments are working directly on a tubular/vascular structure in the hepatocystic triangle. The reddish tissue being grasped and dissected looks like a vascular structure (the cystic artery or a branch of the right hepatic artery), so uncontrolled hemorrhage is an immediate secondary risk. No definite bile leak or pooled blood is visible in this frame, but the two key structures are not positively identified, so dissection should pause until the cystic duct and cystic artery are clearly separated from the gallbladder.
+
+**Qwen3-VL-8B-Instruct**
+
+> At 19:30, the most urgent patient-safety concern is the proximity of the surgical instrument to the gallbladder neck and cystic duct, which are still attached and could be at risk for injury or bleeding if manipulated further without careful dissection. The area appears inflamed and vascular, increasing the risk of inadvertent damage to surrounding structures.
+
+---
+
+## 27. endoscapes_B1_b1_endoscapes_27
+
+Frames shown: 31, from 7:24 to 7:54
+
+**Question.** At timestamp 7:54, identify the most urgent patient-safety concern.
+
+**Recorded**
+
+- cvs_structures_identified: 0.67 (achieved by a majority, not unanimously)
+- cvs_hepatocystic_triangle_cleared: 0.33 (not achieved by a majority)
+- cvs_gallbladder_separated: 1.00 (achieved unanimously)
+- labeled_structure_or_tool_classes_present: calot_triangle, cystic_artery, cystic_duct, cystic_plate, gallbladder, tool
+- class_presence_limit: names only; no appearance, condition, motion, or position may be inferred
+
+**Qwen3.8-27B**
+
+> The most urgent patient‑safety concern at 7:54 is the imminent risk of iatrogenic bile‑duct injury (common bile duct / cystic duct). The dissecting/energy instrument tip is being applied directly on a ductal structure in the hepatocystic triangle, and the surrounding dissection does not yet establish the critical view of safety (the cystic duct and artery are not clearly isolated as two separate structures with the gallbladder fully off the cystic plate). This places the common bile duct in the direct path of the instrument, so a clip, cut, or thermal burn could be made on the CBD rather than the cystic duct. Because bile‑duct injury is a catastrophic, low‑tolerance error, the immediate priority is to stop, re‑establish the critical view of safety, and confirm the identity of the structure before any further dissection or energy is applied.
+
+**Qwen3-VL-8B-Instruct**
+
+> At 7:54, the most urgent patient-safety concern is the proximity of the surgical instrument to a major blood vessel or bile duct, which could lead to inadvertent injury and bleeding or bile leakage if not carefully controlled. The instrument appears to be actively engaged with tissue near critical anatomy, increasing the risk of catastrophic complication.
+
+---
+
+## 28. endoscapes_B1_b1_endoscapes_28
+
+Frames shown: 31, from 7:23 to 7:53
+
+**Question.** At timestamp 7:53, identify the most urgent patient-safety concern.
+
+**Recorded**
+
+- cvs_structures_identified: 0.00 (not achieved unanimously)
+- cvs_hepatocystic_triangle_cleared: 0.00 (not achieved unanimously)
+- cvs_gallbladder_separated: 0.00 (not achieved unanimously)
+- labeled_structure_or_tool_classes_present: cystic_duct, gallbladder, tool
+- class_presence_limit: names only; no appearance, condition, motion, or position may be inferred
+
+**Qwen3.8-27B**
+
+> At 7:53 the most urgent patient‑safety concern is active hemorrhage: a dark red stream of blood is tracking down the exposed liver bed (cystic plate), indicating an uncontrolled bleeding point from the liver surface or an injured hepatic/cystic vessel. This is the priority because ongoing bleeding can rapidly cause hemodynamic compromise and will flood the field, obscuring the critical anatomy and increasing the risk of a bile‑duct or vascular injury if dissection continues blindly. The smooth, glistening surface on the left is the liver, with the dissected gallbladder fossa and the bleeding line in the center‑right, and the metallic instrument on the right is positioned to address it. Immediate hemostasis—suction/irrigation to clear the field followed by pressure, cautery, or clips on the bleeding point—is therefore the next required step before any further dissection.
+
+**Qwen3-VL-8B-Instruct**
+
+> At 7:53, the most urgent patient-safety concern is potential bleeding or vessel injury, as the view shows a surgical instrument near a site with visible blood vessels and recent tissue manipulation, which could lead to hemorrhage if not carefully controlled.
+
+---
+
+## 29. endoscapes_B1_b1_endoscapes_29
+
+Frames shown: 31, from 8:42 to 9:12
+
+**Question.** At timestamp 9:12, identify the most urgent patient-safety concern.
+
+**Recorded**
+
+- cvs_structures_identified: 0.67 (achieved by a majority, not unanimously)
+- cvs_hepatocystic_triangle_cleared: 0.67 (achieved by a majority, not unanimously)
+- cvs_gallbladder_separated: 0.33 (not achieved by a majority)
+- labeled_structure_or_tool_classes_present: calot_triangle, cystic_artery, cystic_duct, gallbladder, tool
+- class_presence_limit: names only; no appearance, condition, motion, or position may be inferred
+
+**Qwen3.8-27B**
+
+> The most urgent patient‑safety concern at 9:12 is the risk of a major bile‑duct injury from misidentifying the common bile duct as the cystic duct. At this moment the instrument tip is in direct contact with a tubular structure in the hepatocystic (Calot's) triangle, in the immediate vicinity of the common bile duct, just before it would be clipped or divided. Because the critical view of anatomy is not fully established in the frame, applying a clip or cut here could inadvertently occlude or transect the common bile duct. The surgeon must therefore pause to confirm that the structure being engaged is truly the cystic duct (and that the common bile duct is clearly identified and out of harm's way) before proceeding. Until that identification is secured, this potential CBD injury is the dominant safety issue over the minor oozing seen in the field.
+
+**Qwen3-VL-8B-Instruct**
+
+> At 9:12, the most urgent patient-safety concern is the presence of a large, active bleeding vessel or disrupted tissue in the surgical field that has not yet been fully controlled or cauterized, as indicated by the ongoing blood pooling and the instrument’s position near the bleeding site. The surgeon must immediately address this to prevent hemorrhage.
+
+---
+
+## 30. endoscapes_B1_b1_endoscapes_30
+
+Frames shown: 31, from 12:18 to 12:48
+
+**Question.** At timestamp 12:48, identify the most urgent patient-safety concern.
+
+**Recorded**
+
+- cvs_structures_identified: 0.33 (not achieved by a majority)
+- cvs_hepatocystic_triangle_cleared: 0.00 (not achieved unanimously)
+- cvs_gallbladder_separated: 0.00 (not achieved unanimously)
+- labeled_structure_or_tool_classes_present: cystic_artery, cystic_duct, gallbladder, tool
+- class_presence_limit: names only; no appearance, condition, motion, or position may be inferred
+
+**Qwen3.8-27B**
+
+> At 12:48 there is no active hemorrhage or obvious bile‑duct injury in view — the dissected hepatocystic (Calot's) triangle appears hemostatic — so no immediate life‑threatening event is apparent. The most pressing safety concern is the close proximity of the dissection to the common bile duct, with the cystic duct/infundibulum under traction and a clipped structure in the triangle that must be positively identified as the cystic duct/artery. Before any further transection the surgeon should confirm the critical view of safety and inspect the field for a bile leak or occult bleeding. I do not see a jet or pooling of blood in this frame, so a vascular injury is not evident, but the area should be irrigated and re‑examined to be sure.
+
+**Qwen3-VL-8B-Instruct**
+
+> At 12:48, the most urgent patient-safety concern is the incomplete dissection and potential for bile duct or vascular injury due to the proximity of the surgical instruments to critical anatomical structures, with no visible hemostasis or protective measures in place.
+
+---
+
+## 31. endoscapes_B1_b1_endoscapes_31
+
+Frames shown: 31, from 14:52 to 15:22
+
+**Question.** At timestamp 15:22, identify the most urgent patient-safety concern.
+
+**Recorded**
+
+- cvs_structures_identified: 0.00 (not achieved unanimously)
+- cvs_hepatocystic_triangle_cleared: 0.00 (not achieved unanimously)
+- cvs_gallbladder_separated: 0.33 (not achieved by a majority)
+- labeled_structure_or_tool_classes_present: cystic_duct, gallbladder, tool
+- class_presence_limit: names only; no appearance, condition, motion, or position may be inferred
+
+**Qwen3.8-27B**
+
+> At 15:22 the most urgent patient‑safety concern is an impending bile‑duct injury. The dissecting/electrocautery instrument is in direct contact with, and its tip appears to be within the lumen of, the tubular biliary structure in the triangle of Calot, while a clearly established critical view of safety is not evident, so the common bile duct is at immediate risk of transection or thermal injury. The red tubular structure lying just to the left (cystic artery) and the oozing blood on the cystic plate constitute a secondary hemorrhage risk.
+
+**Qwen3-VL-8B-Instruct**
+
+> At 15:22, the most urgent patient-safety concern is the risk of bile duct injury or bleeding from the dissection area, as the instruments are actively working near critical vascular and biliary structures within the gallbladder bed, which could lead to serious complications if not carefully controlled.
+
+---
+
+## 32. endoscapes_B1_b1_endoscapes_32
+
+Frames shown: 30, from 10:55 to 11:24
+
+**Question.** At timestamp 11:24, identify the most urgent patient-safety concern.
+
+**Recorded**
+
+- cvs_structures_identified: 0.00 (not achieved unanimously)
+- cvs_hepatocystic_triangle_cleared: 0.33 (not achieved by a majority)
+- cvs_gallbladder_separated: 0.33 (not achieved by a majority)
+- labeled_structure_or_tool_classes_present: calot_triangle, cystic_duct, gallbladder, tool
+- class_presence_limit: names only; no appearance, condition, motion, or position may be inferred
+
+**Qwen3.8-27B**
+
+> At 11:24 the most urgent patient‑safety concern is the high risk of iatrogenic bile‑duct injury, because the dissecting instrument is working in immediate proximity to the pale, tubular cystic duct while the surrounding hepatocystic triangle is edematous and hemorrhagic, so a clear "critical view of safety" of the cystic duct and common bile duct has not been established. The dark, blood‑stained bed and ongoing oozing further obscure the relationship between the cystic duct and the common bile duct, meaning that any further dissection, clipping, or transection at this point could easily involve or transect the common bile duct. In short, the combination of a bloody, distorted field and the dissector abutting the duct makes a bile‑duct injury the dominant immediate threat, with uncontrolled oozing as a contributing hazard that must be controlled before the duct can be safely isolated.
+
+**Qwen3-VL-8B-Instruct**
+
+> At 11:24, the most urgent patient-safety concern is the risk of bile duct injury or bleeding from the exposed surgical field, as the instruments are actively dissecting near critical anatomical structures with significant inflammation and tissue trauma visible.
+
+---
+
+## 33. endoscapes_B1_b1_endoscapes_33
+
+Frames shown: 31, from 14:59 to 15:29
+
+**Question.** At timestamp 15:29, identify the most urgent patient-safety concern.
+
+**Recorded**
+
+- cvs_structures_identified: 0.67 (achieved by a majority, not unanimously)
+- cvs_hepatocystic_triangle_cleared: 0.33 (not achieved by a majority)
+- cvs_gallbladder_separated: 1.00 (achieved unanimously)
+- labeled_structure_or_tool_classes_present: cystic_artery, cystic_duct, cystic_plate, gallbladder, tool
+- class_presence_limit: names only; no appearance, condition, motion, or position may be inferred
+
+**Qwen3.8-27B**
+
+> At 15:29 the most urgent patient‑safety concern is the risk of injuring the common bile duct or cystic artery, because the critical view of safety is not clearly established – the cystic duct and artery are not seen as two distinct structures entering the gallbladder and the gallbladder is not fully separated from the cystic plate. The monopolar hook is being applied directly to the raw liver bed, where the gray coagulated/fulgurated patch indicates ongoing hemostasis, so there is also an immediate local risk of liver‑bed hemorrhage or thermal liver injury. Before any further energy is delivered, the field should be cleared and the critical view of safety confirmed to prevent a bile‑duct injury or uncontrolled bleeding.
+
+**Qwen3-VL-8B-Instruct**
+
+> At 15:29, the most urgent patient-safety concern is the proximity of the surgical instrument to a major blood vessel or bile duct structure, as indicated by the instrument's position near a critical anatomical landmark within the gallbladder bed. This risks inadvertent injury leading to significant bleeding or bile leakage. The surgeon must exercise extreme caution to avoid damaging these vital structures during dissection.
+
+---
+
+## 34. endoscapes_B1_b1_endoscapes_34
+
+Frames shown: 31, from 43:13 to 43:43
+
+**Question.** At timestamp 43:43, identify the most urgent patient-safety concern.
+
+**Recorded**
+
+- cvs_structures_identified: 0.00 (not achieved unanimously)
+- cvs_hepatocystic_triangle_cleared: 0.00 (not achieved unanimously)
+- cvs_gallbladder_separated: 0.00 (not achieved unanimously)
+- labeled_structure_or_tool_classes_present: calot_triangle, cystic_artery, cystic_duct, gallbladder, tool
+- class_presence_limit: names only; no appearance, condition, motion, or position may be inferred
+
+**Qwen3.8-27B**
+
+> The most urgent patient‑safety concern at 43:43 is the risk of injury to the extrahepatic bile duct (common bile/common hepatic duct). The metallic instrument is engaged deep in Calot's triangle in a bloody, poorly defined field, and the cystic duct and cystic artery are not clearly isolated as two separate structures, so the critical view of safety does not appear to be established. This makes misidentifying the CBD as the cystic duct the principal danger at this moment. A related secondary risk is occult bleeding from the cystic artery within the obscured, hemorrhagic field. The safest action is to stop dissecting, clear the field, and confirm the critical view before any clipping or cutting is performed.
+
+**Qwen3-VL-8B-Instruct**
+
+> At 43:43, the most urgent patient-safety concern is the active bleeding from the surgical site, indicated by the visible fresh blood and the instrument’s position near a vessel or disrupted tissue, which could lead to significant hemorrhage if not controlled immediately.
+
+---
+
+## 35. endoscapes_B1_b1_endoscapes_35
+
+Frames shown: 31, from 30:48 to 31:18
+
+**Question.** At timestamp 31:18, identify the most urgent patient-safety concern.
+
+**Recorded**
+
+- cvs_structures_identified: 0.67 (achieved by a majority, not unanimously)
+- cvs_hepatocystic_triangle_cleared: 1.00 (achieved unanimously)
+- cvs_gallbladder_separated: 0.67 (achieved by a majority, not unanimously)
+- labeled_structure_or_tool_classes_present: cystic_artery, cystic_duct, cystic_plate, gallbladder, tool
+- class_presence_limit: names only; no appearance, condition, motion, or position may be inferred
+
+**Qwen3.8-27B**
+
+> At 31:18 the most urgent patient-safety concern is the risk of injuring the bile ducts or the hepatic artery, because the open jaws of the working instrument are engaged with a thin tubular structure of uncertain identity in a distorted, fat- and fibrosis-laden Calot's triangle. The critical view of safety—clear isolation of the cystic duct and cystic artery with the common bile duct and right hepatic artery out of the field—has not been established, so the structure being held could be the common bile duct or a branch of the right hepatic artery rather than the cystic duct or cystic artery. The next clip or cut therefore risks a major ductal or vascular injury. No brisk active hemorrhage is visible, so the dominant threat is misidentification and inadvertent injury, and the surgeon should pause to confirm the anatomy (critical view of safety or cholangiography) before proceeding.
+
+**Qwen3-VL-8B-Instruct**
+
+> At 31:18, the most urgent patient-safety concern is the potential for bile duct or vascular injury due to the ongoing dissection near the hepatobiliary junction, where major structures are at risk of inadvertent damage. The instruments are actively manipulating tissue around a complex anatomical area, increasing the likelihood of unintended trauma. There is no visible active bleeding or leakage in this frame, but the proximity to critical vessels and ducts remains a high-risk scenario requiring extreme precision.
+
+---
+
+## 36. endoscapes_B1_b1_endoscapes_36
+
+Frames shown: 31, from 26:26 to 26:56
+
+**Question.** At timestamp 26:56, identify the most urgent patient-safety concern.
+
+**Recorded**
+
+- cvs_structures_identified: 0.33 (not achieved by a majority)
+- cvs_hepatocystic_triangle_cleared: 0.00 (not achieved unanimously)
+- cvs_gallbladder_separated: 0.00 (not achieved unanimously)
+- labeled_structure_or_tool_classes_present: calot_triangle, cystic_artery, cystic_duct, gallbladder, tool
+- class_presence_limit: names only; no appearance, condition, motion, or position may be inferred
+
+**Qwen3.8-27B**
+
+> At 26:56 the most urgent patient‑safety concern is active, uncontrolled bleeding from the raw dissection site (the liver bed / cystic plate), seen as the dark‑red oozing area at the bottom of the field where the energy instrument is being applied. This is the priority because continued hemorrhage can flood and obscure the operative field, raising the risk of inadvertent injury to the bile duct or hepatic vessels. The surgeon must secure hemostasis (cauterization or pressure) and re‑establish a clear view before continuing. No clip or ligature is yet visible controlling that bleeding point, so it remains an open, active source.
+
+**Qwen3-VL-8B-Instruct**
+
+> At 26:56, the most urgent patient-safety concern is the proximity of the surgical instrument to a major blood vessel or bile duct, as indicated by the exposed, reddened tissue and the ongoing manipulation near a critical anatomical structure. There is also visible bleeding from the area being dissected, which poses a risk for significant hemorrhage if not controlled immediately. The surgeon must maintain constant vigilance to avoid damaging vital structures while continuing dissection.
+
+---
+
+## 37. endoscapes_B1_b1_endoscapes_37
+
+Frames shown: 31, from 32:20 to 32:50
+
+**Question.** At timestamp 32:50, identify the most urgent patient-safety concern.
+
+**Recorded**
+
+- cvs_structures_identified: 1.00 (achieved unanimously)
+- cvs_hepatocystic_triangle_cleared: 1.00 (achieved unanimously)
+- cvs_gallbladder_separated: 0.67 (achieved by a majority, not unanimously)
+- labeled_structure_or_tool_classes_present: cystic_artery, cystic_duct, cystic_plate, gallbladder, tool
+- class_presence_limit: names only; no appearance, condition, motion, or position may be inferred
+
+**Qwen3.8-27B**
+
+> The most urgent patient‑safety concern at 32:50 is the risk of a biliary (common bile duct) injury. The dissected triangle is edematous and inflamed and a clear critical view of safety has not been established, so the tubular structure being grasped and dissected superiorly cannot be confidently distinguished from the common bile duct. No active hemorrhage or bile leak is visible in the frame, which makes misidentification or inadvertent clipping of the CBD the dominant hazard. The grasper is working immediately adjacent to the ductal openings, so any further clipping or cutting risks injuring or occluding the common bile duct. The surgeon should therefore pause to re‑establish the critical view of safety and positively identify each structure before proceeding.
+
+**Qwen3-VL-8B-Instruct**
+
+> At 32:50, the most urgent patient-safety concern is potential bile duct injury, as the instrument is actively dissecting or manipulating tissue near the gallbladder bed where major ducts lie, risking inadvertent damage to the common bile duct or hepatic ducts. The area shows significant inflammation and bleeding, indicating ongoing dissection and vascular structures are at risk of being compromised. There is no visual evidence of active hemorrhage in this specific frame, but the proximity to critical anatomy makes the procedure inherently high-risk.
+
+---
+
+## 38. endoscapes_B1_b1_endoscapes_38
+
+Frames shown: 31, from 26:57 to 27:27
+
+**Question.** At timestamp 27:27, identify the most urgent patient-safety concern.
+
+**Recorded**
+
+- cvs_structures_identified: 0.00 (not achieved unanimously)
+- cvs_hepatocystic_triangle_cleared: 0.67 (achieved by a majority, not unanimously)
+- cvs_gallbladder_separated: 0.33 (not achieved by a majority)
+- labeled_structure_or_tool_classes_present: calot_triangle, cystic_artery, gallbladder, tool
+- class_presence_limit: names only; no appearance, condition, motion, or position may be inferred
+
+**Qwen3.8-27B**
+
+> At 27:27 the most urgent patient‑safety concern is active/oozing hemorrhage from the raw gallbladder bed (cystic plate/liver fossa), with blood pooling in the dissection plane. This bed lies immediately adjacent to the hepatic hilum, so the accumulating blood obscures the critical structures – the cystic duct, common bile duct and hepatic artery – that must be identified before any further cutting. Continuing to dissect with the hook/cautery in this bloody, poorly visualized field therefore carries a high risk of an inadvertent bile‑duct or vascular injury. The priority is to establish hemostasis and clear the field (suction/irrigation, cautery or a clip) before resuming dissection.
+
+**Qwen3-VL-8B-Instruct**
+
+> At 27:27, the most urgent patient-safety concern is the significant bleeding and active oozing from the surgical site, which could lead to hemorrhage if not controlled immediately. The area appears highly vascular and inflamed, with blood pooling and visible vessel rupture, indicating a risk of uncontrolled blood loss during the procedure. This necessitates immediate attention to hemostasis to prevent complications such as hypovolemic shock.
+
+---
+
+## 39. endoscapes_B1_b1_endoscapes_39
+
+Frames shown: 31, from 22:38 to 23:08
+
+**Question.** At timestamp 23:08, identify the most urgent patient-safety concern.
+
+**Recorded**
+
+- cvs_structures_identified: 0.00 (not achieved unanimously)
+- cvs_hepatocystic_triangle_cleared: 0.00 (not achieved unanimously)
+- cvs_gallbladder_separated: 0.00 (not achieved unanimously)
+- labeled_structure_or_tool_classes_present: cystic_duct, gallbladder, tool
+- class_presence_limit: names only; no appearance, condition, motion, or position may be inferred
+
+**Qwen3.8-27B**
+
+> At 23:08 the most urgent patient‑safety concern is active hemorrhage in the dissected gallbladder bed / cystic pedicle, with fresh blood pooling and beginning to obscure the critical anatomy. This uncontrolled bleeding threatens hemodynamic stability and, by flooding the field, greatly increases the risk of misidentifying the cystic duct/common bile duct or a major vessel and causing a bile‑duct or vascular injury. The gauze sponge and the two instruments are being used to tamponade and probe the bleeding point, so immediate hemostasis (compression, clipping, or coagulation) is the priority before any further dissection.
+
+**Qwen3-VL-8B-Instruct**
+
+> At 23:08, the most urgent patient-safety concern is the active bleeding from the surgical site, as indicated by the visible fresh blood and the surgeon’s instruments being actively engaged in managing the hemorrhage. The presence of significant blood suggests potential vessel injury or disruption during dissection, which could lead to uncontrolled bleeding if not promptly addressed. The surgeon is likely applying pressure or cauterizing to control the bleeding, but the ongoing active hemorrhage remains a critical risk for hemodynamic instability.
+
+---
+
+## 40. endoscapes_B1_b1_endoscapes_40
+
+Frames shown: 31, from 25:13 to 25:43
+
+**Question.** At timestamp 25:43, identify the most urgent patient-safety concern.
+
+**Recorded**
+
+- cvs_structures_identified: 0.00 (not achieved unanimously)
+- cvs_hepatocystic_triangle_cleared: 0.33 (not achieved by a majority)
+- cvs_gallbladder_separated: 0.00 (not achieved unanimously)
+- labeled_structure_or_tool_classes_present: calot_triangle, cystic_artery, cystic_plate, gallbladder, tool
+- class_presence_limit: names only; no appearance, condition, motion, or position may be inferred
+
+**Qwen3.8-27B**
+
+> The most urgent patient‑safety concern at 25:43 is the risk of iatrogenic injury to the extrahepatic bile duct (common bile duct / common hepatic duct). The dissection is deep in the hepatocystic triangle and the instrument is engaged with a tubular structure, but the field is filled with blood so a critical view of safety has not been established. This makes it impossible to confirm that the structure being held is the cystic duct rather than the common bile duct, the most feared and irreversible complication of this step. The pooled/oozing blood is a secondary concern that further degrades visualization and should be controlled before any clipping or division is performed.
+
+**Qwen3-VL-8B-Instruct**
+
+> At 25:43, the most urgent patient-safety concern is active bleeding from the surgical site, as indicated by the profuse blood and visible vessel structures being manipulated. The presence of a blue-tipped instrument suggests attempts to control hemorrhage or manage tissue, but the ongoing blood flow poses immediate risk for hypovolemic shock or other complications if not addressed promptly.
+
+---
+
+## 41. endoscapes_B1_b1_endoscapes_41
+
+Frames shown: 30, from 8:45 to 9:14
+
+**Question.** At timestamp 9:14, identify the most urgent patient-safety concern.
+
+**Recorded**
+
+- cvs_structures_identified: 0.00 (not achieved unanimously)
+- cvs_hepatocystic_triangle_cleared: 0.00 (not achieved unanimously)
+- cvs_gallbladder_separated: 0.33 (not achieved by a majority)
+- labeled_structure_or_tool_classes_present: gallbladder, tool
+- class_presence_limit: names only; no appearance, condition, motion, or position may be inferred
+
+**Qwen3.8-27B**
+
+> At 9:14 the most urgent patient‑safety concern is active hemorrhage in the hepatocystic triangle – the dark red pool/ooze visible at the top of the field – rather than a clean dissection plane. This bleeding is obscuring the "critical view of safety," so the cystic duct, cystic artery and the common bile duct can no longer be reliably distinguished. Because the working instrument tip is sitting immediately against a tubular structure in that bloody field, any further cutting or cautery risks converting the bleed into a major bile‑duct or vascular injury. The priority is to stop dissecting, achieve hemostasis (suction/pressure/clips), and re‑establish clear anatomy before proceeding.
+
+**Qwen3-VL-8B-Instruct**
+
+> At 9:14, the most urgent patient-safety concern is the potential for bile duct injury or bleeding due to the close proximity of the instrument to critical structures in the hepatobiliary anatomy, which could result in significant complications if not carefully managed.
+
+---
+
+## 42. endoscapes_B1_b1_endoscapes_42
+
+Frames shown: 31, from 17:05 to 17:35
+
+**Question.** At timestamp 17:35, identify the most urgent patient-safety concern.
+
+**Recorded**
+
+- cvs_structures_identified: 0.67 (achieved by a majority, not unanimously)
+- cvs_hepatocystic_triangle_cleared: 0.00 (not achieved unanimously)
+- cvs_gallbladder_separated: 0.33 (not achieved by a majority)
+- labeled_structure_or_tool_classes_present: calot_triangle, cystic_artery, cystic_duct, gallbladder, tool
+- class_presence_limit: names only; no appearance, condition, motion, or position may be inferred
+
+**Qwen3.8-27B**
+
+> At 17:35 the most urgent patient‑safety concern is active hemorrhage: fresh blood is visible pooling in the dependent pericholecystic space at the base of the gallbladder / hepatocystic triangle, indicating an uncontrolled bleeding point that must be identified and secured before any further dissection. The gallbladder wall itself is markedly congested, edematous and ecchymotic (mottled purple‑red), so it is friable and at high risk of perforation, which would aggravate the bleeding and spill bile. The white gauze/sponge in the field is being used for retraction/packing and should be accounted for, but the bleeding is the immediate threat to the patient. Continued traction on this friable, congested organ without first achieving hemostasis risks hemodynamic compromise and contamination of the field. The priority is therefore to stop the bleeding (energy, clip, or packing) and reassess the dissection plane before proceeding.
+
+**Qwen3-VL-8B-Instruct**
+
+> At 17:35, the most urgent patient-safety concern is the visible bleeding and active hemorrhage from the gallbladder bed, which risks significant blood loss and requires immediate hemostasis. The ongoing oozing suggests that the surgical field has not yet been adequately controlled, posing a direct threat to the patient’s hemodynamic stability.
+
+---
+
+## 43. endoscapes_B1_b1_endoscapes_43
+
+Frames shown: 31, from 22:50 to 23:20
+
+**Question.** At timestamp 23:20, identify the most urgent patient-safety concern.
+
+**Recorded**
+
+- cvs_structures_identified: 0.67 (achieved by a majority, not unanimously)
+- cvs_hepatocystic_triangle_cleared: 1.00 (achieved unanimously)
+- cvs_gallbladder_separated: 0.67 (achieved by a majority, not unanimously)
+- labeled_structure_or_tool_classes_present: calot_triangle, cystic_artery, cystic_duct, cystic_plate, gallbladder, tool
+- class_presence_limit: names only; no appearance, condition, motion, or position may be inferred
+
+**Qwen3.8-27B**
+
+> The most urgent patient‑safety concern at 23:20 is the high risk of common bile duct / hepatic duct injury, because the dissection is being carried out in a bloody, distorted hepatocystic triangle in which the critical view of safety is not clearly established—the lower gallbladder is still adherent to the liver bed and the cystic duct and cystic artery are not yet cleanly separated into two distinct structures. The dissecting instrument is working in close proximity to these undifferentiated structures, so a misidentified duct could be clipped or transected. Ongoing oozing/bleeding in the triangle further obscures the anatomy and compounds the danger. The immediate priority is therefore to pause the dissection, secure hemostasis, and obtain a true critical view (or perform an intraoperative cholangiogram / convert to open) before any clipping or cutting is attempted.
+
+**Qwen3-VL-8B-Instruct**
+
+> At 23:20, the most urgent patient-safety concern is the active bleeding from the surgical site, indicated by the visible blood and the surgeon’s continued use of the cautery device to control hemorrhage. The proximity of critical structures and the ongoing manipulation increase the risk of significant blood loss or injury to surrounding organs if hemostasis is not achieved promptly.
+
+---
+
+## 44. endoscapes_B1_b1_endoscapes_44
+
+Frames shown: 31, from 23:42 to 24:12
+
+**Question.** At timestamp 24:12, identify the most urgent patient-safety concern.
+
+**Recorded**
+
+- cvs_structures_identified: 0.33 (not achieved by a majority)
+- cvs_hepatocystic_triangle_cleared: 0.00 (not achieved unanimously)
+- cvs_gallbladder_separated: 0.00 (not achieved unanimously)
+- labeled_structure_or_tool_classes_present: calot_triangle, cystic_artery, cystic_duct, cystic_plate, gallbladder, tool
+- class_presence_limit: names only; no appearance, condition, motion, or position may be inferred
+
+**Qwen3.8-27B**
+
+> The most urgent patient‑safety concern at 24:12 is active bleeding from the dissection site (cystic plate / liver bed), which is pooling in the field and obscuring the biliary anatomy. The blood hides the cystic duct and common bile duct, so continuing to dissect in this plane risks misidentifying and injuring the common bile duct. The dissecting instrument is working directly within this bloody plane at the base of the gallbladder, where the critical view of safety is not established. The immediate priority is to pause dissection, achieve hemostasis, and clear the field to re‑visualize the structures before proceeding.
+
+**Qwen3-VL-8B-Instruct**
+
+> At 24:12, the most urgent patient-safety concern is potential bile duct or vascular injury due to the instrument’s proximity to delicate structures in the surgical field, which could lead to bleeding or bile leakage if not carefully controlled.
+
+---
+
+## 45. endoscapes_B1_b1_endoscapes_45
+
+Frames shown: 30, from 13:23 to 13:52
+
+**Question.** At timestamp 13:52, identify the most urgent patient-safety concern.
+
+**Recorded**
+
+- cvs_structures_identified: 0.00 (not achieved unanimously)
+- cvs_hepatocystic_triangle_cleared: 0.00 (not achieved unanimously)
+- cvs_gallbladder_separated: 0.33 (not achieved by a majority)
+- labeled_structure_or_tool_classes_present: calot_triangle, cystic_plate, gallbladder, tool
+- class_presence_limit: names only; no appearance, condition, motion, or position may be inferred
+
+**Qwen3.8-27B**
+
+> The most urgent patient‑safety concern at 13:52 is the risk of bile‑duct (common bile duct) injury. At that moment the dissecting/energy instrument tip is in direct contact with a tubular structure whose lumen is visible, yet the hepatocystic triangle is fibrotic and the two critical structures are not cleanly separated, so the critical view of safety has not been achieved. Because the anatomy is distorted, the structure being engaged—and possibly the already‑clipped stub below it—could be the common bile duct rather than the cystic duct, making any further clipping, division, or thermal application immediately hazardous. The correct urgent response is to stop, re‑establish the critical view of safety and confirm the anatomy (e.g., with intraoperative cholangiography) before proceeding.
+
+**Qwen3-VL-8B-Instruct**
+
+> At 13:52, the most urgent patient-safety concern is the potential for bile duct injury, as the instrument is actively engaged in dissecting or manipulating tissue near the biliary anatomy, which is highly vulnerable to accidental damage during cholecystectomy. The proximity of the dissection to critical structures and the ongoing manipulation increase the risk of inadvertent injury, which could lead to serious complications like bile leakage or obstruction.
+
+---
+
+## 46. endoscapes_B1_b1_endoscapes_46
+
+Frames shown: 31, from 27:59 to 28:29
+
+**Question.** At timestamp 28:29, identify the most urgent patient-safety concern.
+
+**Recorded**
+
+- cvs_structures_identified: 0.00 (not achieved unanimously)
+- cvs_hepatocystic_triangle_cleared: 0.00 (not achieved unanimously)
+- cvs_gallbladder_separated: 0.00 (not achieved unanimously)
+- labeled_structure_or_tool_classes_present: cystic_duct, gallbladder, tool
+- class_presence_limit: names only; no appearance, condition, motion, or position may be inferred
+
+**Qwen3.8-27B**
+
+> The most urgent patient‑safety concern at 28:29 is the risk of biliary injury: the instrument tip is inserted into a small dark opening in a congested, inflamed, and oozing hepatocystic triangle where the cystic duct and the common bile duct/common hepatic duct cannot be clearly distinguished, so the critical view of safety has not been achieved. The persistent oozing and blood‑stained field further obscure the anatomy, making it easy to misidentify the common bile duct as the cystic duct and to clip or transect it. Because the structure at the instrument could be the biliary tree rather than the cystic duct, any further dissection, clipping, or cutting at this point carries a high risk of a major bile duct injury, compounded by the active oozing. Suction/irrigation to clear the blood and careful re‑dissection to establish the critical view of safety—or conversion to an open procedure—would be the safest next step.
+
+**Qwen3-VL-8B-Instruct**
+
+> At 28:29, the most urgent patient-safety concern is potential bile duct injury or bleeding from the surgical field, as the instrument is actively dissecting near critical vascular and biliary structures with visible bleeding and tissue trauma. The proximity of the instrument to these vital anatomical structures increases the risk of inadvertent damage.
+
+---
+
+## 47. endoscapes_B1_b1_endoscapes_47
+
+Frames shown: 31, from 19:40 to 20:10
+
+**Question.** At timestamp 20:10, identify the most urgent patient-safety concern.
+
+**Recorded**
+
+- cvs_structures_identified: 0.00 (not achieved unanimously)
+- cvs_hepatocystic_triangle_cleared: 0.33 (not achieved by a majority)
+- cvs_gallbladder_separated: 1.00 (achieved unanimously)
+- labeled_structure_or_tool_classes_present: calot_triangle, cystic_duct, cystic_plate, gallbladder, tool
+- class_presence_limit: names only; no appearance, condition, motion, or position may be inferred
+
+**Qwen3.8-27B**
+
+> The most urgent patient‑safety concern at 20:10 is active/ongoing bleeding in the hepatocystic (Calot's) triangle that is filling and obscuring the operative field. The frame shows a vertical track of dark blood running down from the dissected cystic pedicle while both instruments are still working in a blood‑stained field, so the critical view of safety is compromised. This obscuration raises the immediate risk of misidentifying the common bile duct or cystic duct (bile‑duct injury) and of progressive haemorrhage with haemodynamic compromise. The priority is therefore to obtain haemostasis (compression, cautery, or a clip) and clear the field of blood before any further dissection. Until the bleeding is controlled and the anatomy is clearly visualised, continuing to dissect would be unsafe.
+
+**Qwen3-VL-8B-Instruct**
+
+> At 20:10, the most urgent patient-safety concern is the risk of bile duct injury or bleeding from the exposed and inflamed biliary anatomy, as the surgical instrument is directly manipulating a delicate area with visible vessels and ducts. The proximity of instruments to critical structures increases the chance of inadvertent damage, which could lead to severe complications like bile leakage or hemorrhage. There is no active bleeding visible at this exact moment, but the tissue appears inflamed and friable, heightening the risk during manipulation.
+
+---
+
+## 48. endoscapes_B1_b1_endoscapes_48
+
+Frames shown: 31, from 7:29 to 7:59
+
+**Question.** At timestamp 7:59, identify the most urgent patient-safety concern.
+
+**Recorded**
+
+- cvs_structures_identified: 0.67 (achieved by a majority, not unanimously)
+- cvs_hepatocystic_triangle_cleared: 0.33 (not achieved by a majority)
+- cvs_gallbladder_separated: 0.67 (achieved by a majority, not unanimously)
+- labeled_structure_or_tool_classes_present: calot_triangle, cystic_artery, cystic_duct, cystic_plate, gallbladder, tool
+- class_presence_limit: names only; no appearance, condition, motion, or position may be inferred
+
+**Qwen3.8-27B**
+
+> At 7:59 the most urgent patient-safety concern is the risk of a major biliary injury. A second instrument (clip applier/grasper) has entered from the right and is engaging a tubular structure in the hepatocystic triangle that is not clearly identified as the cystic duct, while the left grasper holds the gallbladder neck. Because the dissection field is blood-stained and the critical view of safety does not appear to be fully established, there is a real possibility that the common bile duct or common hepatic duct is about to be clipped or cut. No active hemorrhage is visible, so the dominant immediate threat is misidentification of the CBD rather than bleeding. The safest action is to pause, re-establish the critical view of safety, and confirm the identity of the structure before any clipping or transection.
+
+**Qwen3-VL-8B-Instruct**
+
+> At 7:59, the most urgent patient-safety concern is the presence of a large, actively bleeding vessel or site of hemorrhage in the surgical field, which is being managed with clamps and cautery. The surgical team must ensure hemostasis is achieved to prevent significant blood loss, as evidenced by the ongoing use of instruments to control the bleeding.
+
+---
+
+## 49. endoscapes_B1_b1_endoscapes_49
+
+Frames shown: 31, from 18:07 to 18:37
+
+**Question.** At timestamp 18:37, identify the most urgent patient-safety concern.
+
+**Recorded**
+
+- cvs_structures_identified: 1.00 (achieved unanimously)
+- cvs_hepatocystic_triangle_cleared: 1.00 (achieved unanimously)
+- cvs_gallbladder_separated: 0.67 (achieved by a majority, not unanimously)
+- labeled_structure_or_tool_classes_present: calot_triangle, cystic_artery, cystic_duct, cystic_plate, gallbladder, tool
+- class_presence_limit: names only; no appearance, condition, motion, or position may be inferred
+
+**Qwen3.8-27B**
+
+> The most urgent patient‑safety concern at 18:37 is the risk of iatrogenic bile‑duct injury – i.e. clipping or transecting the common hepatic or common bile duct instead of the cystic duct. At this moment the clip applier is seated on a ductal structure deep in the triangle of Calot, but the critical view of safety is not clearly established: the gallbladder is not fully separated from the cystic plate and the "two‑tubes‑entering‑the‑gallbladder" relationship is not unambiguously demonstrated, so the structure under the jaws cannot be positively identified as the cystic duct. Placing a clip or cutting here without that confirmation risks a major, potentially life‑altering biliary injury, the most serious preventable complication of cholecystectomy. The correct response is to stop, improve retraction and dissection (or obtain intraoperative cholangiography / convert if anatomy remains unclear) to obtain a true critical view before any clip is fired.
+
+**Qwen3-VL-8B-Instruct**
+
+> At 18:37, the most urgent patient-safety concern is the proximity of the surgical instrument to a major blood vessel or bile duct, as indicated by the instrument's position near the gallbladder bed and surrounding structures, which could lead to inadvertent injury if not carefully controlled. The area shows active bleeding and exposed anatomy, increasing the risk of hemorrhage or bile leak.
+
+---
+
+## 50. endoscapes_B1_b1_endoscapes_50
+
+Frames shown: 31, from 1:18 to 1:48
+
+**Question.** At timestamp 1:48, identify the most urgent patient-safety concern.
+
+**Recorded**
+
+- cvs_structures_identified: 0.67 (achieved by a majority, not unanimously)
+- cvs_hepatocystic_triangle_cleared: 1.00 (achieved unanimously)
+- cvs_gallbladder_separated: 0.00 (not achieved unanimously)
+- labeled_structure_or_tool_classes_present: calot_triangle, cystic_artery, cystic_duct, gallbladder, tool
+- class_presence_limit: names only; no appearance, condition, motion, or position may be inferred
+
+**Qwen3.8-27B**
+
+> At 1:48 the most urgent patient‑safety concern is active hemorrhage from the dissection bed (cystic‑artery/cystic‑duct vessels), with blood and clot filling the field. The fresh blood is obscuring the anatomy, so the critical view of safety—two clearly identified structures and a fat‑/fibrosis‑free triangle—is not established. This combination of uncontrolled bleeding and poor visualization creates an immediate risk of both ongoing blood loss and misidentification of the common bile duct. The priority is to stop the bleeding (clip/ligate the offending vessel, irrigate and suction to clear the field) before any further dissection. Until hemostasis and a clear critical view are achieved, cutting or clipping in this area is unsafe.
+
+**Qwen3-VL-8B-Instruct**
+
+> At 1:48, the most urgent patient-safety concern is the presence of active bleeding and exposed vessels in the surgical field, which could lead to significant hemorrhage if not controlled immediately. The surgical instruments are actively engaged near these structures, indicating ongoing manipulation that may exacerbate bleeding risk. There is also a visible accumulation of blood and tissue debris, suggesting potential for clotting or vessel rupture. The view shows no signs of hemostasis being applied at this moment, heightening the immediate danger.

@@ -1,0 +1,1084 @@
+# JIGSAWS VTS: 50 questions
+
+Each model saw only the frames listed and the question. *Recorded* is what the annotation records, word for word as the judge got it. [All question types](../README.md#questions)
+
+## 1. jigsaws_VTS_Needle_Passing_C003_vts_event_027.5-040.4
+
+Frames shown: 64, from 0:00.9 to 1:58.3
+
+**Question.** When in this recording does a needle drop occur?
+
+**Recorded**
+
+- Error: Needle drop -- the needle came out of the instrument's grasp
+- During: orienting the needle
+- Time span: from 0:27.5 to 0:40.4
+
+**Qwen3.8-27B**
+
+> The needle drop occurs at roughly 0:43–0:45 in the recording. In the 0:43.8 frame the needle is no longer gripped in either instrument's jaws and is seen free, after having been released from the raised needle holder visible at 0:41.9. It is then re‑grasped by the left instrument by the 0:45.6 frame, so the drop‑and‑recovery event is localized to about 0:42–0:46.
+
+**Qwen3-VL-8B-Instruct**
+
+> A needle drop occurs at 1:56.4.
+
+---
+
+## 2. jigsaws_VTS_Suturing_I003_vts_event_121.5-126.8
+
+Frames shown: 64, from 0:01.1 to 2:21.8
+
+**Question.** When in this recording does a needle orientation error occur?
+
+**Recorded**
+
+- Error: Needle orientation error -- the needle was held at the wrong angle
+- During: transferring the needle from left to right
+- Time span: from 1:21.5 to 1:26.8
+
+**Qwen3.8-27B**
+
+*No answer: its thinking used the whole 8,000-token budget on all three tries.*
+
+**Qwen3-VL-8B-Instruct**
+
+> A needle orientation error occurs at 0:52.5, when the needle appears to be misaligned or improperly positioned during the suturing process, as seen by its awkward angle relative to the suture path.
+
+---
+
+## 3. jigsaws_VTS_Needle_Passing_E001_vts_event_nth_114.9-118.5
+
+Frames shown: 64, from 0:00.9 to 1:48.1
+
+**Question.** Where in this recording is the sixth needle orientation error? Show the trainee when it happens.
+
+**Recorded**
+
+- Error: Needle orientation error -- the needle was held at the wrong angle
+- Which: the sixth of the nine times it happens in this recording
+- During: pushing the needle through the tissue
+- Time span: from 1:14.9 to 1:18.5
+
+**Qwen3.8-27B**
+
+> The sixth needle orientation error occurs at roughly **1:00–1:05** in the recording. In this window the trainee holds the needle held by the right‑hand instrument upright (tip pointing up) while the left grasper comes in horizontally, so the needle is presented in the wrong orientation and the left instrument cannot take it cleanly. The left jaws stay open and empty at 1:00–1:02, the needle is re‑angled, and only by 1:03–1:04 does the left grasper finally close on the needle to complete the pass. This is the sixth such mis‑presentation in the sequence of back‑and‑forth passes (the earlier ones falling near 0:09–0:14, 0:17–0:23, 0:26–0:36, 0:40–0:48, and 0:50–0:58).
+
+**Qwen3-VL-8B-Instruct**
+
+> The sixth needle orientation error occurs at 1:20.9, when the needle passes through the target suture material but is misaligned, causing it to exit at an incorrect angle relative to the intended path. This misalignment is evident as the needle’s trajectory deviates from the expected direction during the pass.
+
+---
+
+## 4. jigsaws_VTS_Suturing_B001_vts_event_nth_241.6-246.1
+
+Frames shown: 64, from 0:01.5 to 3:06.5
+
+**Question.** When in this recording does the seventh needle orientation error occur?
+
+**Recorded**
+
+- Error: Needle orientation error -- the needle was held at the wrong angle
+- Which: the seventh of the seven times it happens in this recording
+- During: transferring the needle from left to right
+- Time span: from 2:41.6 to 2:46.1
+
+**Qwen3.8-27B**
+
+> The seventh needle orientation error occurs around **1:47–1:56** in the recording. In these frames the two robot instruments converge on the needle at the top of the suture line and the needle is released and re‑grasped, which is the visual signature of a wrong‑orientation correction. Counting the instrument‑to‑needle contact/re‑grasp episodes in order from the start (≈
+
+**Qwen3-VL-8B-Instruct**
+
+> The seventh needle orientation error occurs at 2:48.9 in the recording.
+
+---
+
+## 5. jigsaws_VTS_Needle_Passing_C002_vts_phase_054.5-106.7
+
+Frames shown: 64, from 0:00.9 to 2:00
+
+**Question.** When in this recording does the third pass through a ring take place?
+
+**Recorded**
+
+- Phase: the third pass through a ring, of the four in this recording
+- Time span: from 0:54.5 to 1:06.7
+
+**Qwen3.8-27B**
+
+*No answer: its thinking used the whole 8,000-token budget on all three tries.*
+
+**Qwen3-VL-8B-Instruct**
+
+> The third pass through a ring occurs at 1:29.8 in the recording.
+
+---
+
+## 6. jigsaws_VTS_Suturing_E005_vts_phase_054.7-106.9
+
+Frames shown: 64, from 0:00.6 to 1:22.3
+
+**Question.** When in this recording does the fourth stitch take place?
+
+**Recorded**
+
+- Phase: the fourth stitch, of the four in this recording
+- Time span: from 0:54.7 to 1:06.9
+
+**Qwen3.8-27B**
+
+> The fourth (topmost) stitch is placed in the final portion of the recording, spanning roughly **1:09 to 1:20**. The needle is passed through the top pair of holes at about 1:10–1:14, and the suture is then tightened and tied off by about 1:19–1:22. This top stitch follows the three lower stitches, which were made at the bottom, third, and second rows (≈0:00–0:17, 0:22–0:35, and 0:36–1:08). So the fourth stitch corresponds to the last activity seen before the instruments release the suture at the end of the clip.
+
+**Qwen3-VL-8B-Instruct**
+
+> The fourth stitch takes place between 0:46 and 0:48.
+
+---
+
+## 7. jigsaws_VTS_Knot_Tying_I002_vts_redo_045.5-054.2
+
+Frames shown: 64, from 0:00.6 to 1:20.4
+
+**Question.** Where in this recording does the surgeon return to reaching for the suture with the right hand right after pulling the suture with both hands? Show the trainee when it happens.
+
+**Recorded**
+
+- Action: reaching for the suture with the right hand, done again right after pulling the suture with both hands
+- Time span: from 0:45.5 to 0:54.2
+
+**Qwen3.8-27B**
+
+*No answer: its thinking used the whole 8,000-token budget on all three tries.*
+
+**Qwen3-VL-8B-Instruct**
+
+> The surgeon returns to reaching for the suture with the right hand right after pulling the suture with both hands at 0:28.5, as shown in frame [0:28.5].
+
+---
+
+## 8. jigsaws_VTS_Needle_Passing_D005_vts_redo_007.0-012.8
+
+Frames shown: 64, from 0:00.6 to 1:10.4
+
+**Question.** Where in this recording does the surgeon return to moving to the centre with the needle in grip right after reaching for the needle with the right hand? Show the trainee when it happens.
+
+**Recorded**
+
+- Action: moving to the centre with the needle in grip, done again right after reaching for the needle with the right hand
+- Time span: from 0:07.0 to 0:12.8
+
+**Qwen3.8-27B**
+
+*No answer: its thinking used the whole 8,000-token budget on all three tries.*
+
+**Qwen3-VL-8B-Instruct**
+
+> The surgeon returns to moving toward the center with the needle in grip right after reaching for the needle with the right hand at 0:43. This is when the right-hand instrument re-engages the needle and begins guiding it back toward the center of the board, as seen from 0:43 to 0:46.
+
+---
+
+## 9. jigsaws_VTS_Suturing_D004_vts_redo_038.5-045.1
+
+Frames shown: 64, from 0:00.7 to 1:30.9
+
+**Question.** Where in this recording does the surgeon return to pulling suture with the left hand right after using the right hand to help tighten the suture? Show the trainee when it happens.
+
+**Recorded**
+
+- Action: pulling suture with the left hand, done again right after using the right hand to help tighten the suture
+- Time span: from 0:38.5 to 0:45.1
+
+**Qwen3.8-27B**
+
+*No answer: its thinking used the whole 8,000-token budget on all three tries.*
+
+**Qwen3-VL-8B-Instruct**
+
+> The surgeon returns to pulling suture with the left hand right after using the right hand to help tighten the suture at 1:03.7 in the recording. This is when the left instrument resumes pulling while the right instrument was just used to tighten.
+
+---
+
+## 10. jigsaws_VTS_Knot_Tying_H004_vts_step_001.4-008.7
+
+Frames shown: 64, from 0:00.6 to 1:14.6
+
+**Question.** A trainee wants to review the surgeon reaching for the needle with the left hand. When in this recording does it happen?
+
+**Recorded**
+
+- Action: reaching for the needle with the left hand, the only time the surgeon does it in this recording
+- Time span: from 0:01.4 to 0:08.7
+
+**Qwen3.8-27B**
+
+> The left hand reaches for the needle in the early part of the clip, between about **0:08 and 0:12**. In these frames the left instrument leaves its lower‑left resting position, moves up to the centre of the field, and closes on the suture/needle, then returns to the lower left by 0:12–0:13. This is the first hand‑switch in which the left hand takes the needle (the right hand had held it first, around 0:02–0:07). The same left‑hand reach is repeated later (roughly 0:24–0:29) for the next throw. So for review, start at about 0:08 and watch through 0:12.
+
+**Qwen3-VL-8B-Instruct**
+
+> The surgeon reaches for the needle with the left hand at 0:02.9.
+
+---
+
+## 11. jigsaws_VTS_Needle_Passing_C005_vts_step_027.1-033.4
+
+Frames shown: 64, from 0:00.7 to 1:24.7
+
+**Question.** A trainee wants to review the surgeon using the right hand to help tighten the suture. When in this recording does it happen?
+
+**Recorded**
+
+- Action: using the right hand to help tighten the suture, the only time the surgeon does it in this recording
+- Time span: from 0:27.1 to 0:33.4
+
+**Qwen3.8-27B**
+
+*No answer: its thinking used the whole 8,000-token budget on all three tries.*
+
+**Qwen3-VL-8B-Instruct**
+
+> The surgeon uses the right hand to help tighten the suture starting at 0:52 and continuing through 1:07.
+
+---
+
+## 12. jigsaws_VTS_Suturing_B003_vts_step_000.3-003.4
+
+Frames shown: 64, from 0:00.9 to 1:53.7
+
+**Question.** Show the trainee where in this recording the surgeon reaches for the needle with the right hand.
+
+**Recorded**
+
+- Action: reaching for the needle with the right hand, the only time the surgeon does it in this recording
+- Time span: from 0:00.3 to 0:03.4
+
+**Qwen3.8-27B**
+
+> The right hand reaches for the needle at the very start of the clip: at **0:00.9** the right‑hand instrument is open and positioned just beside the needle at the marked point, and by **0:02.7** it has closed on the needle (still holding it as it begins the first pass at 0:04.5). So the "reach‑for‑the‑needle with the right hand" action spans roughly **0:00.9–0:02.7**. After this initial grasp the right hand mainly holds the suture tail to pull, while the passes alternate between the two hands, so this opening moment is the clear right‑hand needle pickup.
+
+**Qwen3-VL-8B-Instruct**
+
+> The surgeon reaches for the needle with the right hand at 0:02.7, as shown by the right-hand instrument moving toward the needle.
+
+---
+
+## 13. jigsaws_VTS_Knot_Tying_D002_vts_step_nth_009.8-013.7
+
+Frames shown: 42, from 0:00 to 0:41
+
+**Question.** Where in this recording does the surgeon reach for the suture with the right hand for the first time? Give the time span.
+
+**Recorded**
+
+- Action: reaching for the suture with the right hand, the first of the three times the surgeon does it in this recording
+- Time span: from 0:09.8 to 0:13.7
+
+**Qwen3.8-27B**
+
+*No answer: its thinking used the whole 8,000-token budget on all three tries.*
+
+**Qwen3-VL-8B-Instruct**
+
+> The surgeon reaches for the suture with the right hand for the first time at 0:03, as the right instrument moves to grasp the suture near the yellow rod.
+
+---
+
+## 14. jigsaws_VTS_Needle_Passing_D003_vts_step_nth_125.1-130.3
+
+Frames shown: 64, from 0:00.8 to 1:47.5
+
+**Question.** Where in this recording does the surgeon position the needle for the fourth time? Give the time span.
+
+**Recorded**
+
+- Action: positioning the needle, the fourth of the four times the surgeon does it in this recording
+- Time span: from 1:25.1 to 1:30.3
+
+**Qwen3.8-27B**
+
+> The surgeon positions the needle for the fourth time from **0:46.5 to 0:58.4**. In this span the instrument pair leaves the central working sites and moves up to the upper pads, seating and passing the needle there. This follows the first three positionings, seen at roughly 0:11–0:19.5 (central pads), 0:21.2–0:34.7 (right‑hand pad), and 0:36.4–0:44.9 (central pads again). After 0:58.4 the instruments shift to the left‑hand pads for the subsequent passes.
+
+**Qwen3-VL-8B-Instruct**
+
+> The surgeon positions the needle for the fourth time between 0:36.4 and 0:41.5.
+
+---
+
+## 15. jigsaws_VTS_Suturing_H001_vts_step_nth_245.9-253.1
+
+Frames shown: 64, from 0:01.5 to 3:07.1
+
+**Question.** Where in this recording does the surgeon pull the suture with the left hand for the seventh time? Give the time span.
+
+**Recorded**
+
+- Action: pulling suture with the left hand, the seventh of the seven times the surgeon does it in this recording
+- Time span: from 2:45.9 to 2:53.1
+
+**Qwen3.8-27B**
+
+> The seventh left‑hand suture pull occurs at the end of the clip, spanning roughly **2:49.4 to 2:52.4**. In these frames the left instrument grips the suture at the left edge and yanks it taut, drawing a straight diagonal line across the red incision, after which both instruments settle at the outer edges to hold the finished suture. This is the last of the seven left‑hand pulls visible in the sequence; the earlier ones fall around 0:51–0:54, 1:24, 1:30–1:33, 1:39, 1:45 and 2:17.
+
+**Qwen3-VL-8B-Instruct**
+
+> The surgeon pulls the suture with the left hand for the seventh time between 2:25.9 and 2:31.8.
+
+---
+
+## 16. jigsaws_VTS_Knot_Tying_G002_vts_step_in_phase_022.1-034.7
+
+Frames shown: 64, from 0:00.6 to 1:15.6
+
+**Question.** Show the trainee where the surgeon reaches for the needle with the left hand during the second throw of the knot in this recording.
+
+**Recorded**
+
+- Phase: the second throw of the knot
+- Action: reaching for the needle with the left hand, the only time the surgeon does it in that throw of the knot
+- Time span: from 0:22.1 to 0:34.7
+
+**Qwen3.8-27B**
+
+> The left hand reaches for the needle at the very start of the second throw, in the span from about **0:22 to 0:25**. In the 0:22 frame the left instrument lifts off the horizontal suture and rises to the top of the field with its jaws open, and through 0:23–0:24 it stretches across the top to close on the needle. By 0:25–0:26 the left hand is holding the needle at the upper left while the right hand takes the other suture end to form the loop, so this 0:22–0:25 motion is the left‑hand "reach for the needle" that begins the second throw.
+
+**Qwen3-VL-8B-Instruct**
+
+> The surgeon reaches for the needle with the left hand at 0:26.8, as seen when the left instrument moves toward the needle to prepare for the second throw of the knot.
+
+---
+
+## 17. jigsaws_VTS_Needle_Passing_D002_vts_step_in_phase_135.0-138.6
+
+Frames shown: 64, from 0:00.9 to 1:48.8
+
+**Question.** A trainee wants to see how the needle is pushed through the tissue in the fourth pass through a ring. Show them when the surgeon does it in this recording.
+
+**Recorded**
+
+- Phase: the fourth pass through a ring
+- Action: pushing the needle through the tissue, the only time the surgeon does it in that pass through a ring
+- Time span: from 1:35.0 to 1:38.6
+
+**Qwen3.8-27B**
+
+*No answer: its thinking used the whole 8,000-token budget on all three tries.*
+
+**Qwen3-VL-8B-Instruct**
+
+> The surgeon performs the fourth needle pass through a ring at 0:59.1, where the needle is clearly seen entering the tissue of the target ring (labeled '4') and exiting on the opposite side.
+
+---
+
+## 18. jigsaws_VTS_Suturing_H003_vts_step_in_phase_133.6-140.3
+
+Frames shown: 64, from 0:00.9 to 1:52.7
+
+**Question.** A trainee wants to see how the needle is pushed through the tissue in the fourth stitch. Show them when the surgeon does it in this recording.
+
+**Recorded**
+
+- Phase: the fourth stitch
+- Action: pushing the needle through the tissue, the only time the surgeon does it in that stitch
+- Time span: from 1:33.6 to 1:40.3
+
+**Qwen3.8-27B**
+
+> The fourth stitch is the topmost one on the marked line, and the surgeon drives the needle through the tissue there at about 1:35–1:40. In the frames you can see both instruments converging on the upper pair of marks, the needle passing across the line, and the suture then being pulled tight so that the fourth diagonal stitch is fully seated by 1:43.9. To show the trainee the whole needle pass and seating of that final stitch, point them to the segment from roughly 1:33 to 1:42.
+
+**Qwen3-VL-8B-Instruct**
+
+> The surgeon pushes the needle through the tissue for the fourth stitch at 0:25.7, as shown in the frame where the needle tip enters the material and begins to emerge on the other side.
+
+---
+
+## 19. jigsaws_VTS_Knot_Tying_B002_vts_worst_027.2-033.4
+
+Frames shown: 50, from 0:00 to 0:49
+
+**Question.** Where in this recording does the surgeon lose the most time on a single step, and how much?
+
+**Recorded**
+
+- The step that runs furthest over time in this recording
+- Action: making a C loop around the right hand
+- Duration: 6.2 seconds, where the strongest recorded attempts at the same action take about 1.9 seconds
+- Time span: from 0:27.2 to 0:33.4
+
+**Qwen3.8-27B**
+
+> The most time is lost on the knot‑loop step in the middle of the clip, from about **0:28 to 0:35**, a span of roughly **8 seconds**. During those frames both robotic jaws remain clamped on the same small suture loop at the top of the tube and the loop's shape barely changes, so the surgeon is repeatedly fiddling with the loop rather than advancing the knot. This is the longest single repeated, non‑productive action in the recording; the comparable holds elsewhere (the first loop at 0:08–0:13, the zig‑zag hold at 0:16–0:22, and the final triangle hold at 0:36–0:42) are each shorter. The clip then closes with a brief hand‑assisted cut at 0:43–0:44, so no later step rivals the 0:28–0:35 delay.
+
+**Qwen3-VL-8B-Instruct**
+
+> The surgeon loses the most time on a single step between 0:38 and 0:42, which is a span of 4 seconds, during which the robotic arms are paused or moving slowly while adjusting the suture.
+
+---
+
+## 20. jigsaws_VTS_Needle_Passing_I002_vts_worst_050.8-102.1
+
+Frames shown: 64, from 0:00.9 to 1:53.9
+
+**Question.** Where in this recording does the surgeon lose the most time on a single step, and how much?
+
+**Recorded**
+
+- The step that runs furthest over time in this recording
+- Action: pulling suture with the left hand
+- Duration: 11.3 seconds, where the strongest recorded attempts at the same action take about 4.6 seconds
+- Time span: from 0:50.8 to 1:02.1
+
+**Qwen3.8-27B**
+
+> The biggest time sink is the needle‑transfer step that runs from about **0:18.8 to 0:31.4**. In that span the left instrument just holds the suture/needle at the centre of the board while the right instrument lingers open at the upper‑right port without completing the exchange, so the surgeon is effectively stalled on one pass. That single step lasts roughly **12–13 seconds**, much longer than the other transfers, which each take only a few seconds. In short, the surgeon loses the most time on that one stalled transfer near the 20–30 s mark, costing about 13 s.
+
+**Qwen3-VL-8B-Instruct**
+
+> The surgeon loses the most time on a single step between 0:42.2 and 0:54.7, which is 12.5 seconds, as the needle is manipulated around the pegs in that segment.
+
+---
+
+## 21. jigsaws_VTS_Suturing_B002_vts_worst_006.8-018.3
+
+Frames shown: 64, from 0:00.9 to 1:54.5
+
+**Question.** Show the trainee the step in this recording where the surgeon loses the most time.
+
+**Recorded**
+
+- The step that runs furthest over time in this recording
+- Action: orienting the needle
+- Duration: 11.5 seconds, where the strongest recorded attempts at the same action take about 3.8 seconds
+- Time span: from 0:06.8 to 0:18.3
+
+**Qwen3.8-27B**
+
+> The step that costs the most time is the second suture pass, which runs from about **0:31 to 1:10**. In that span the needle is never cleanly passed: the right instrument holds a large suture loop almost motionless from roughly 0:44 to 1:00, and the left instrument repeatedly lifts the free suture tail to gain slack (0:33–0:37 and again 1:02–1:04) before the diagonal stitch finally appears at ~1:10. The first stitch (0:00–0:29) and the later stitches (1:10–1:34 and 1:34–1:49) all progress with far less fiddling by comparison. So the segment to show the trainee is the second pass, with the worst dead time concentrated around **0:44–1:00**, where the operator is repositioning the loop and re‑grasping the suture instead of driving the needle through.
+
+**Qwen3-VL-8B-Instruct**
+
+> The surgeon loses the most time between 0:33.4 and 0:40.6, when the needle is pulled back out of the tissue and reinserted, causing a pause in the suturing motion.
+
+---
+
+## 22. jigsaws_VTS_Needle_Passing_D001_vts_event_014.3-020.2
+
+Frames shown: 64, from 0:01.2 to 2:34
+
+**Question.** Where in this recording is there a needle drop? Show the trainee when it happens.
+
+**Recorded**
+
+- Error: Needle drop -- the needle came out of the instrument's grasp
+- During: reaching for the needle with the right hand
+- Time span: from 0:14.3 to 0:20.2
+
+**Qwen3.8-27B**
+
+> The needle drop occurs at about **0:18** in the recording (clearly visible in the 0:18.2 and 0:20.6 frames). At that moment the left needle‑holder opens and the needle is no longer gripped by either instrument, so it is released onto the model between the two arms. The trainee then re‑grasps the needle and continues, with the left instrument back over cone 7 by 0:23. So the drop event spans roughly 0:15.8–0:23, with the needle actually loose on the table at 0:18.2–0:20.6.
+
+**Qwen3-VL-8B-Instruct**
+
+> The needle drop occurs at 2:34, when the needle is released from the clamp and falls onto the training board.
+
+---
+
+## 23. jigsaws_VTS_Suturing_I002_vts_event_127.7-131.7
+
+Frames shown: 64, from 0:01.2 to 2:26.1
+
+**Question.** When in this recording does a needle orientation error occur?
+
+**Recorded**
+
+- Error: Needle orientation error -- the needle was held at the wrong angle
+- During: transferring the needle from left to right
+- Time span: from 1:27.7 to 1:31.7
+
+**Qwen3.8-27B**
+
+*No answer: its thinking used the whole 8,000-token budget on all three tries.*
+
+**Qwen3-VL-8B-Instruct**
+
+> A needle orientation error occurs around 1:26, when the needle is pulled through the tissue in a way that causes it to bend or kink instead of passing cleanly through the marked points. This results in an improper stitch alignment and requires correction by repositioning the needle before continuing the suture.
+
+---
+
+## 24. jigsaws_VTS_Needle_Passing_B002_vts_event_nth_037.8-043.4
+
+Frames shown: 64, from 0:00.8 to 1:45.2
+
+**Question.** When in this recording does the first needle orientation error occur?
+
+**Recorded**
+
+- Error: Needle orientation error -- the needle was held at the wrong angle
+- Which: the first of the six times it happens in this recording
+- During: transferring the needle from left to right
+- Time span: from 0:37.8 to 0:43.4
+
+**Qwen3.8-27B**
+
+> The first needle orientation error occurs at the very first needle grasp, around **0:15–0:17**, when the left (needle‑driver) arm closes on the pre‑loaded needle with the curve facing the wrong way. This mis‑orientation is what triggers the long, unsuccessful passing attempt that follows, in which the left arm carries the needle across to the right side (≈0:19) and the two instruments fumble without completing the pass until about 0:35, when the needle is finally re‑oriented. No needle is handled before this, so this initial wrong‑orientation grasp is the first such error in the recording.
+
+**Qwen3-VL-8B-Instruct**
+
+> The first needle orientation error occurs at 0:47.2.
+
+---
+
+## 25. jigsaws_VTS_Suturing_G002_vts_event_nth_016.0-023.2
+
+Frames shown: 64, from 0:00.9 to 1:52
+
+**Question.** Where in this recording is the first step that takes multiple attempts? Show the trainee when it happens.
+
+**Recorded**
+
+- Error: Multiple attempts -- the step needed several attempts before it succeeded
+- Which: the first of the two times it happens in this recording
+- During: pulling suture with the left hand
+- Time span: from 0:16.0 to 0:23.2
+
+**Qwen3.8-27B**
+
+> The first step that needs more than one try is the first needle pass (the first stitch), and it runs from the opening of the clip until the suture finally comes through the tissue, i.e. about 0:00 to 0:22. The repeated attempts are most obvious from 0:07 to 0:20, where both instruments keep re‑working the needle at the lower end of the red incision line without the suture emerging, after the initial fumbling at the top (0:00–0:06). The pass only succeeds when the thread is pulled across the incision at 0:22–0:24. So the trainee's first multiple‑attempt step is this initial needle insertion, spanning 0:00–0:22.
+
+**Qwen3-VL-8B-Instruct**
+
+> The first step requiring multiple attempts begins around 0:02.6, when the trainee tries to grasp and pull the suture through the first stitch mark but fails, needing to reposition and retry several times before successfully pulling the suture taut by 0:07.9.
+
+---
+
+## 26. jigsaws_VTS_Needle_Passing_I003_vts_phase_117.2-146.8
+
+Frames shown: 64, from 0:01.2 to 2:38
+
+**Question.** When in this recording does the second pass through a ring take place?
+
+**Recorded**
+
+- Phase: the second pass through a ring, of the four in this recording
+- Time span: from 1:17.2 to 1:46.8
+
+**Qwen3.8-27B**
+
+> The second pass through a ring occurs in the early‑middle part of the clip, roughly between **0:23.6 and 0:33.6** (i.e. about 0:24–0:34). The instruments first enter at ~0:11 and make the initial pass at the right‑hand ring (~0:11–0:21), after which they reposition to the central ring and complete the second pass in that ~0:24–0:34 window before moving on to the next rings. So, on the recording's clock, the second ring‑pass is the episode centered around 0:26–0:31.
+
+**Qwen3-VL-8B-Instruct**
+
+> The second pass through a ring takes place at 1:13.4.
+
+---
+
+## 27. jigsaws_VTS_Suturing_E002_vts_phase_107.8-122.4
+
+Frames shown: 64, from 0:00.8 to 1:37.7
+
+**Question.** When in this recording does the fourth stitch take place?
+
+**Recorded**
+
+- Phase: the fourth stitch, of the four in this recording
+- Time span: from 1:07.8 to 1:22.4
+
+**Qwen3.8-27B**
+
+> The fourth stitch is the one placed during the middle‑to‑late part of the recording, after the third stitch has been tied off and before the fourth suture segment is completed on the tissue. Tracing the diagonal suture lines that appear on the model (first at the bottom point ≈0:22, second ≈0:43, third ≈1:00–1:02), the next segment is laid down in the interval from about **1:02 to 1:20**, after which the instruments move on to the final (fifth) stitch. So the fourth stitch takes place roughly from 1:02 to 1:20 in the recording's clock.
+
+**Qwen3-VL-8B-Instruct**
+
+> The fourth stitch takes place between 0:42.3 and 0:45.4.
+
+---
+
+## 28. jigsaws_VTS_Knot_Tying_I003_vts_redo_024.6-028.8
+
+Frames shown: 64, from 0:00.5 to 1:08.4
+
+**Question.** Where in this recording does the surgeon return to reaching for the suture with the right hand right after pulling the suture with both hands? Show the trainee when it happens.
+
+**Recorded**
+
+- Action: reaching for the suture with the right hand, done again right after pulling the suture with both hands
+- Time span: from 0:24.6 to 0:28.8
+
+**Qwen3.8-27B**
+
+*No answer: its thinking used the whole 8,000-token budget on all three tries.*
+
+**Qwen3-VL-8B-Instruct**
+
+> The surgeon returns to reaching for the suture with the right hand right after pulling the suture with both hands at 0:24.2.
+
+---
+
+## 29. jigsaws_VTS_Needle_Passing_E001_vts_redo_023.7-029.9
+
+Frames shown: 64, from 0:00.9 to 1:48.1
+
+**Question.** Where in this recording does the surgeon return to positioning the needle right after orienting the needle? Show the trainee when it happens.
+
+**Recorded**
+
+- Action: positioning the needle, done again right after orienting the needle
+- Time span: from 0:23.7 to 0:29.9
+
+**Qwen3.8-27B**
+
+> The trainee returns to positioning the needle immediately after the first orienting maneuver, i.e. in the span from about **0:14.5 to 0:19.6**. In the frames just before this (≈0:09.4–0:12.8) the two instruments meet at the centre to orient the needle, and then from 0:14.5 onward the needle‑holder carries the needle out to the right‑hand site (around cone 7) while the grasper re‑positions, which is the "positioning" phase that follows the orienting. This is the first clear orient‑then‑position transition in the recording.
+
+**Qwen3-VL-8B-Instruct**
+
+> The surgeon returns to positioning the needle right after orienting it at 0:36.6, as shown in frame [0:36.6]. This is when the needle is repositioned after being oriented and prepared for the next step of the task.
+
+---
+
+## 30. jigsaws_VTS_Suturing_G003_vts_redo_227.4-231.1
+
+Frames shown: 64, from 0:01.4 to 2:52.5
+
+**Question.** When in this recording does the surgeon go back to positioning the needle after orienting the needle?
+
+**Recorded**
+
+- Action: positioning the needle, done again right after orienting the needle
+- Time span: from 2:27.4 to 2:31.1
+
+**Qwen3.8-27B**
+
+> The surgeon goes back to positioning the needle at roughly **0:09.5 to 0:14.9**. This follows the short orienting maneuver visible around 0:06.8, where the needle is lifted off the tissue and rotated in the jaws. Before that, the needle had first been brought to the marked line (≈0:01–0:04), so the 0:09.5–0:14.9 window is the return to positioning. After 0:14.9 the needle is passed through the tissue and the suture is tightened, ending this positioning phase.
+
+**Qwen3-VL-8B-Instruct**
+
+> The surgeon goes back to positioning the needle after orienting it at 1:36.4.
+
+---
+
+## 31. jigsaws_VTS_Knot_Tying_I005_vts_step_000.0-003.0
+
+Frames shown: 64, from 0:00.7 to 1:28
+
+**Question.** A trainee wants to review the surgeon reaching for the needle with the right hand. When in this recording does it happen?
+
+**Recorded**
+
+- Action: reaching for the needle with the right hand, the only time the surgeon does it in this recording
+- Time span: from 0:00.0 to 0:03.0
+
+**Qwen3.8-27B**
+
+*No answer: its thinking used the whole 8,000-token budget on all three tries.*
+
+**Qwen3-VL-8B-Instruct**
+
+> The surgeon reaches for the needle with the right hand at 0:03.5.
+
+---
+
+## 32. jigsaws_VTS_Needle_Passing_H005_vts_step_017.3-020.4
+
+Frames shown: 64, from 0:00.9 to 1:50.1
+
+**Question.** Show the trainee where in this recording the surgeon orients the needle.
+
+**Recorded**
+
+- Action: orienting the needle, the only time the surgeon does it in this recording
+- Time span: from 0:17.3 to 0:20.4
+
+**Qwen3.8-27B**
+
+> The surgeon orients the needle at the start of the manipulation, from about **0:14 to 0:22**, when the left grasper first reaches in, seizes the needle at the top of the model, and rotates it into the correct bevel‑up position before the right‑hand needle driver takes over to push it through the tissue pieces. You can see this as the left instrument holding the needle steady and turning it (0:14.7–0:19.9) just before the driver on the right begins the first pass. The same orienting motion is then repeated by the left grasper between subsequent passes, so you will notice it again at each hand‑off throughout the active portion of the recording (roughly 0:22–1:43), e.g. around 0:44–0:46 and 1:01–1:18 where the grasper re‑turns the needle before the next pass. After the final pass the instruments withdraw (≈1:44) and only the completed suture line remains. So for a trainee, the clearest single example of "orienting the needle" to point to is the initial **0:14–0:22** segment.
+
+**Qwen3-VL-8B-Instruct**
+
+> The surgeon orients the needle at 0:14.7, when the robotic arm moves into position to grasp and manipulate the needle near the target on the training model.
+
+---
+
+## 33. jigsaws_VTS_Suturing_G001_vts_step_231.9-237.2
+
+Frames shown: 64, from 0:02.4 to 4:58.5
+
+**Question.** A trainee wants to review the surgeon using the right hand to help tighten the suture. When in this recording does it happen?
+
+**Recorded**
+
+- Action: using the right hand to help tighten the suture, the only time the surgeon does it in this recording
+- Time span: from 2:31.9 to 2:37.2
+
+**Qwen3.8-27B**
+
+> It happens at the very end of the recording, during the final cinching of the knot, spanning roughly **4:49.1 to 4:58.5**. In these frames the right instrument releases the needle work, grips the suture tail, and pulls it taut while the left instrument holds the knot, drawing the suture line closed. This is distinct from the earlier part of the clip, where the right hand was mainly driving the needle and forming the loop. So the segment to review for the right hand assisting the tightening is the last ~10 seconds, about 4:49–4:58.
+
+**Qwen3-VL-8B-Instruct**
+
+> The surgeon uses the right hand to help tighten the suture starting around 1:27 and continuing through 1:36.
+
+---
+
+## 34. jigsaws_VTS_Knot_Tying_I001_vts_step_nth_101.8-104.9
+
+Frames shown: 64, from 0:00.6 to 1:17.2
+
+**Question.** A trainee wants to review the third time the surgeon reaches for the suture with the right hand. When in this recording does it happen?
+
+**Recorded**
+
+- Action: reaching for the suture with the right hand, the third of the three times the surgeon does it in this recording
+- Time span: from 1:01.8 to 1:04.9
+
+**Qwen3.8-27B**
+
+> The third reach with the right hand happens at about **0:26.1**. Tracking the right instrument, its first clear reach (drawing back at 0:01.8–0:03, then closing on the suture) is at 0:04.3, the second (back at 0:20.1, closing at 0:21.3) is at 0:21.3, and the third is when it returns from its retracted, open position at 0:23.7–0:24.9 and closes on the suture at 0:26.1. So the trainee should look at the 0:26.1 frame (the reach motion spanning roughly 0:24.9–0:26.1).
+
+**Qwen3-VL-8B-Instruct**
+
+> The third time the surgeon reaches for the suture with the right hand occurs at 0:26.1.
+
+---
+
+## 35. jigsaws_VTS_Needle_Passing_H002_vts_step_nth_120.5-129.8
+
+Frames shown: 64, from 0:01 to 2:02.8
+
+**Question.** Show the trainee the third time the surgeon positions the needle in this recording.
+
+**Recorded**
+
+- Action: positioning the needle, the third of the four times the surgeon does it in this recording
+- Time span: from 1:20.5 to 1:29.8
+
+**Qwen3.8-27B**
+
+> The third time the surgeon positions the needle is at roughly **0:55–1:10** in the recording. In this window the left‑arm needle driver meets the right‑arm grasper in the middle of the model, takes the suture needle from it, and seats the needle into the upper‑right hole, after which the suture line is seen running across the top row of holes. This comes after the first positioning near 0:12–0:22 (right‑middle hole) and the second near 0:30–0:45 (centre hole). So the moment to point out as the third needle positioning is the pass made around the one‑minute mark, about 0:55–1:10.
+
+**Qwen3-VL-8B-Instruct**
+
+> The third time the surgeon positions the needle is at 0:45.5.
+
+---
+
+## 36. jigsaws_VTS_Suturing_H004_vts_step_nth_027.2-033.0
+
+Frames shown: 64, from 0:01.1 to 2:15.6
+
+**Question.** Where in this recording does the surgeon transfer the needle from left to right for the first time? Give the time span.
+
+**Recorded**
+
+- Action: transferring the needle from left to right, the first of the four times the surgeon does it in this recording
+- Time span: from 0:27.2 to 0:33.0
+
+**Qwen3.8-27B**
+
+> The first left‑to‑right transfer of the needle occurs between **0:11.7 and 0:13.9**. Up to 0:11.7 the needle is held in the left instrument's jaws at the lower suture hole, while the right instrument only holds the trailing thread. By the 0:13.9 frame the left jaws are open and empty and the curved needle is now grasped in the right instrument, indicating the hand‑off has just been completed. This follows the earlier right‑to‑left hand‑off seen around 0:03–0:05, so 0:11.7–0:13.9 is the first instance of the needle moving from left to right.
+
+**Qwen3-VL-8B-Instruct**
+
+> The surgeon transfers the needle from left to right for the first time between 0:41.6 and 0:43.8.
+
+---
+
+## 37. jigsaws_VTS_Knot_Tying_E001_vts_step_in_phase_019.7-024.4
+
+Frames shown: 54, from 0:00 to 0:53
+
+**Question.** During the first throw of the knot, when does the surgeon pull the suture with both hands? Give the time span.
+
+**Recorded**
+
+- Phase: the first throw of the knot
+- Action: pulling the suture with both hands, the only time the surgeon does it in that throw of the knot
+- Time span: from 0:19.7 to 0:24.4
+
+**Qwen3.8-27B**
+
+> The surgeon pulls the suture with both hands from **0:14 to 0:21**. In these frames both grippers are closed on the two ends of the suture and drawn apart, cinching the first loop around the rod until the strand lies taut across it. Before this window (0:09–0:13) one instrument is still forming the loop rather than pulling, and after 0:21 only one instrument stays in view as the operator moves on to the second throw.
+
+**Qwen3-VL-8B-Instruct**
+
+> The surgeon pulls the suture with both hands during the first throw of the knot from 0:34 to 0:36.
+
+---
+
+## 38. jigsaws_VTS_Needle_Passing_I004_vts_step_in_phase_120.8-130.4
+
+Frames shown: 64, from 0:01 to 2:12
+
+**Question.** Show the trainee where the surgeon positions the needle during the third pass through a ring in this recording.
+
+**Recorded**
+
+- Phase: the third pass through a ring
+- Action: positioning the needle, the only time the surgeon does it in that pass through a ring
+- Time span: from 1:20.8 to 1:30.4
+
+**Qwen3.8-27B**
+
+> During the third pass the surgeon positions the needle at the third ring, i.e. the top‑right teardrop on the board (the one marked "3"), the right‑hand position in the upper row of rings. In the frames this is the spot where the right‑hand instrument holds the sutured needle up high at the upper‑right while the left instrument comes in to take the needle, seen roughly between 0:23 and 0:40. So when you reach the third pass, aim the needle at that top‑right ring rather than the middle or left one.
+
+**Qwen3-VL-8B-Instruct**
+
+> The surgeon positions the needle at the top of the ring during the third pass, which occurs between 1:09 and 1:15. The needle is then passed from the top to the bottom of the ring, exiting near the bottom.
+
+---
+
+## 39. jigsaws_VTS_Suturing_E001_vts_step_in_phase_048.8-054.6
+
+Frames shown: 64, from 0:00.9 to 1:59.3
+
+**Question.** Show the trainee where the surgeon pulls the suture with the left hand during the second stitch in this recording.
+
+**Recorded**
+
+- Phase: the second stitch
+- Action: pulling suture with the left hand, the only time the surgeon does it in that stitch
+- Time span: from 0:48.8 to 0:54.6
+
+**Qwen3.8-27B**
+
+> The left hand pulls the suture for the second stitch at roughly **0:32.9–0:36.6**. In this span the left grasper holds the thread at the left mark of the second stitch (the third row of dots, just below the middle of the red line) and draws it taut horizontally across the line, while the right needle‑driver holds the opposite end and the loop on the right side. You can see the suture become a straight, tightened line between the two instruments at 0:32.9–0:34.8, which is the left‑hand pull of that second stitch, immediately after the first (bottom) stitch was tightened around 0:25–0:29.
+
+**Qwen3-VL-8B-Instruct**
+
+> The surgeon pulls the suture with the left hand starting at 0:27 and continuing through 0:36, as the left instrument is used to grasp and pull the suture tight while the right instrument guides it through the next puncture site.
+
+---
+
+## 40. jigsaws_VTS_Knot_Tying_C004_vts_worst_024.4-029.0
+
+Frames shown: 47, from 0:00 to 0:46
+
+**Question.** Where in this recording does the surgeon lose the most time on a single step, and how much?
+
+**Recorded**
+
+- The step that runs furthest over time in this recording
+- Action: making a C loop around the right hand
+- Duration: 4.6 seconds, where the strongest recorded attempts at the same action take about 2.1 seconds
+- Time span: from 0:24.4 to 0:29.0
+
+**Qwen3.8-27B**
+
+> The surgeon loses the most time on the step of forming and tightening the knot loop on the upper (top) suture, which runs from about **0:25 to 0:34, roughly 10 seconds** — the longest single step in the clip. During this span both instruments hover at the top of the tube working on the loop with very little visible forward progress before the loop is finally pulled tight. By comparison, the equivalent tying/tightening on the lower suture (≈0:06–0:18) and the final adjustments at the end (≈0:42–0:46) each take noticeably less time, so the upper‑suture loop is where the most time is spent on one step.
+
+**Qwen3-VL-8B-Instruct**
+
+> The surgeon loses the most time on a single step between 0:28 and 0:39, which is a span of 11 seconds, during which they appear to be meticulously adjusting or tightening the knot.
+
+---
+
+## 41. jigsaws_VTS_Needle_Passing_E005_vts_worst_103.7-120.9
+
+Frames shown: 64, from 0:00.9 to 1:50.2
+
+**Question.** Where in this recording does the surgeon lose the most time on a single step, and how much?
+
+**Recorded**
+
+- The step that runs furthest over time in this recording
+- Action: pushing the needle through the tissue
+- Duration: 17.1 seconds, where the strongest recorded attempts at the same action take about 2.9 seconds
+- Time span: from 1:03.7 to 1:20.9
+
+**Qwen3.8-27B**
+
+> The surgeon loses the most time on the very first needle pass, the one made at the right‑hand cone (cone 7), which runs from about **0:09 to 0:53** – roughly **40–45 seconds** of fiddling in that one spot. During this span the needle‑holder and grasper stay engaged with the same cone while the suture loop is worked out, far longer than any later pass. By comparison, the subsequent passes over the top cones (≈1:05–1:24) and the left cone (≈1:27–1:48) each take only about 20 seconds, so the initial pass on the right is clearly the most time‑consuming single step in the recording.
+
+**Qwen3-VL-8B-Instruct**
+
+> The surgeon loses the most time on a single step between 0:39.0 and 0:54.6, spending 15.6 seconds manipulating the needle and thread around peg 7 before successfully passing it through. This is the longest continuous action segment in the recording.
+
+---
+
+## 42. jigsaws_VTS_Suturing_B005_vts_worst_003.4-014.9
+
+Frames shown: 64, from 0:00.7 to 1:34.7
+
+**Question.** Where in this recording does the surgeon lose the most time on a single step, and how much?
+
+**Recorded**
+
+- The step that runs furthest over time in this recording
+- Action: orienting the needle
+- Duration: 11.5 seconds, where the strongest recorded attempts at the same action take about 3.8 seconds
+- Time span: from 0:03.4 to 0:14.9
+
+**Qwen3.8-27B**
+
+> The surgeon loses the most time on the suture‑pulling / knot‑tying step in the middle of the recording, roughly from **0:48 to 1:12**, i.e. about **24 seconds** (≈0:48.5–1:12.3). During this span both instruments stay at the incision line repeatedly re‑looping and fumbling with the thread before the stitch is finally secured, which is far longer than any other single action. By contrast, each individual needle pass or single pull elsewhere in the clip (e.g. 0:02–0:06, 0:24–0:33, 1:16–1:27) lasts only about 5–10 seconds, so this mid‑recording knot‑tying/pull‑through step is clearly the most time‑consuming single step.
+
+**Qwen3-VL-8B-Instruct**
+
+> The surgeon loses the most time on a single step between 0:33.6 and 0:52.9, which is 19.3 seconds, during which the robotic arms are repositioning and the suture is being manipulated in preparation for the next stitch.
+
+---
+
+## 43. jigsaws_VTS_Knot_Tying_H005_vts_redo_015.2-020.3
+
+Frames shown: 64, from 0:00.5 to 1:04.7
+
+**Question.** Where in this recording does the surgeon return to reaching for the suture with the right hand right after pulling the suture with both hands? Show the trainee when it happens.
+
+**Recorded**
+
+- Action: reaching for the suture with the right hand, done again right after pulling the suture with both hands
+- Time span: from 0:15.2 to 0:20.3
+
+**Qwen3.8-27B**
+
+*No answer: its thinking used the whole 8,000-token budget on all three tries.*
+
+**Qwen3-VL-8B-Instruct**
+
+> The surgeon returns to reaching for the suture with the right hand right after pulling the suture with both hands at 0:46.7. This is when the right-hand instrument moves away from the suture and reaches again, indicating a return to manipulation.
+
+---
+
+## 44. jigsaws_VTS_Knot_Tying_I002_vts_step_003.8-014.1
+
+Frames shown: 64, from 0:00.6 to 1:20.4
+
+**Question.** Where in this recording does the surgeon reach for the needle with the left hand? Give the time span.
+
+**Recorded**
+
+- Action: reaching for the needle with the left hand, the only time the surgeon does it in this recording
+- Time span: from 0:03.8 to 0:14.1
+
+**Qwen3.8-27B**
+
+*No answer: its thinking used the whole 8,000-token budget on all three tries.*
+
+**Qwen3-VL-8B-Instruct**
+
+> The surgeon does not reach for the needle with the left hand in this recording. The robotic arms are performing the task, and there is no human hand visible reaching for the needle.
+
+---
+
+## 45. jigsaws_VTS_Suturing_C004_vts_step_in_phase_023.7-028.1
+
+Frames shown: 64, from 0:00.6 to 1:22.5
+
+**Question.** During the second stitch, when does the surgeon position the needle? Give the time span.
+
+**Recorded**
+
+- Phase: the second stitch
+- Action: positioning the needle, the only time the surgeon does it in that stitch
+- Time span: from 0:23.7 to 0:28.1
+
+**Qwen3.8-27B**
+
+> The surgeon positions the needle for the second stitch from about **0:44 to 0:48**. In this window both instruments converge on the second pair of marks (counting up from the bottom), bringing the needle to the entry point and holding it there before it is passed through the tissue (the suture crosses
+
+**Qwen3-VL-8B-Instruct**
+
+> The surgeon positions the needle for the second stitch between 0:34.4 and 0:38.3.
+
+---
+
+## 46. jigsaws_VTS_Suturing_E003_vts_step_036.5-042.2
+
+Frames shown: 64, from 0:00.7 to 1:26.3
+
+**Question.** A trainee wants to review the surgeon orienting the needle. When in this recording does it happen?
+
+**Recorded**
+
+- Action: orienting the needle, the only time the surgeon does it in this recording
+- Time span: from 0:36.5 to 0:42.2
+
+**Qwen3.8-27B**
+
+> The surgeon orients the needle at the very start of the clip, from about 0:00.7 through 0:06. In these frames the right instrument holds the needle at the lower‑right while the left instrument steadies the tissue, and no stitch has yet been placed. The first pass of the needle through the tissue begins around 0:07, which ends the orientation phase. So the segment to review is the opening span, 0:00–0:06.
+
+**Qwen3-VL-8B-Instruct**
+
+> The surgeon orients the needle at 0:07.5, when the needle is first clearly visible being manipulated by the robotic instrument, and again at 0:10.2, when the needle is positioned for the initial stitch. The orientation becomes more evident as the needle is brought into position for each subsequent stitch, particularly around 0:36 and 0:48.
+
+---
+
+## 47. jigsaws_VTS_Needle_Passing_E004_vts_step_nth_057.8-100.9
+
+Frames shown: 64, from 0:00.9 to 1:51.8
+
+**Question.** Show the trainee the second time the surgeon transfers the needle from left to right in this recording.
+
+**Recorded**
+
+- Action: transferring the needle from left to right, the second of the three times the surgeon does it in this recording
+- Time span: from 0:57.8 to 1:00.9
+
+**Qwen3.8-27B**
+
+> The second left‑to‑right needle transfer occurs between **1:13.1 and 1:14.8**. In the 1:13.1 frame the curved needle is still clamped in the left instrument's jaws (the right instrument holds only the suture loop), and by the 1:14.8 frame the left jaws are open and the needle is now gripped by the right instrument at the top of the field. This is the second of the two left‑to‑right hand‑offs, the first having happened around 0:18.5, with a right‑to‑left hand‑off in between around 0:41.4. To show the trainee, point to the 1:13.1 → 1:14.8 pair and have them track the needle moving out of the left jaws and into the right jaws.
+
+**Qwen3-VL-8B-Instruct**
+
+> The second time the surgeon transfers the needle from left to right occurs between 0:43.1 and 0:46.7, where the needle is passed across the field from the left side instruments to the right side instruments.
+
+---
+
+## 48. jigsaws_VTS_Knot_Tying_B004_vts_step_in_phase_042.3-048.4
+
+Frames shown: 61, from 0:00 to 1:00
+
+**Question.** During the second throw of the knot, when does the surgeon make a C loop around the right hand? Give the time span.
+
+**Recorded**
+
+- Phase: the second throw of the knot
+- Action: making a C loop around the right hand, the only time the surgeon does it in that throw of the knot
+- Time span: from 0:42.3 to 0:48.4
+
+**Qwen3.8-27B**
+
+> The C loop around the right‑hand instrument during the second throw is made from about **0:42 to 0:47**. In these frames the right instrument brings the suture end down to the centre and curls it into a loop while the left instrument holds the standing part, and the two jaws then converge at 0:48 to pass the loop through and begin tightening. This is the mirror image of the first throw, whose loop
+
+**Qwen3-VL-8B-Instruct**
+
+> The surgeon makes the C loop around the right hand during the second throw of the knot between 0:34 and 0:36.
+
+---
+
+## 49. jigsaws_VTS_Needle_Passing_E003_vts_phase_034.3-048.6
+
+Frames shown: 64, from 0:00.9 to 1:53.4
+
+**Question.** When in this recording does the second pass through a ring take place?
+
+**Recorded**
+
+- Phase: the second pass through a ring, of the four in this recording
+- Time span: from 0:34.3 to 0:48.6
+
+**Qwen3.8-27B**
+
+> The second pass through a ring takes place roughly between **0:13 and 0:25** in the recording. The first pass (needle through the first ring on the right) is completed by about 0:13, after which the left instrument holds the needle at the top while the right instrument reaches in to grasp it; the needle is then pulled through the second ring during this 0:13–0:25 window, leaving the suture visible in that top ring by ~0:25. Subsequent passes continue beyond this, building up the suture line seen across the top row in later frames.
+
+**Qwen3-VL-8B-Instruct**
+
+> The second pass through a ring takes place between 0:27.7 and 0:31.3.
+
+---
+
+## 50. jigsaws_VTS_Needle_Passing_B004_vts_step_in_phase_058.2-103.0
+
+Frames shown: 64, from 0:00.8 to 1:35.7
+
+**Question.** During the third pass through a ring, when does the surgeon pull the suture with the left hand? Give the time span.
+
+**Recorded**
+
+- Phase: the third pass through a ring
+- Action: pulling suture with the left hand, the only time the surgeon does it in that pass through a ring
+- Time span: from 0:58.2 to 1:03.0
+
+**Qwen3.8-27B**
+
+*No answer: its thinking used the whole 8,000-token budget on all three tries.*
+
+**Qwen3-VL-8B-Instruct**
+
+> The surgeon pulls the suture with the left hand during the third pass through a ring from 0:49 to 0:51.

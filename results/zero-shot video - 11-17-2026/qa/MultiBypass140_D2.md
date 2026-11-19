@@ -1,0 +1,775 @@
+# MultiBypass140 D2: 31 questions
+
+Each model saw only the frames listed and the question. *Recorded* is what the annotation records, word for word as the judge got it. [All question types](../README.md#questions)
+
+## 1. mb140_d2_BBP30_2543
+
+Frames shown: 64, from 0:42:33.5 to 1:04:35.5
+
+**Question.** Given the trainee's performance during 0:42:23-1:04:46, which adverse event should the trainee address first, and why?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Bern center), video BBP30
+- PHASE: jejunojejunal anastomosis, from 0:42:23 to 1:04:46
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:49:49 to 0:53:10 (3 min 22 s; say about three and a half minutes): mechanical injury, "Deep penetration to vital tissue". Say it as: a mechanical injury, a deep penetration to vital tissue. It began and ended during the step "jejunojejunal defect closing".
+  - 2\. From 0:56:44 to 0:59:23 (2 min 40 s; say about two and a half minutes): bleeding, "Intermediate amount of blood lost". Say it as: a bleed with an intermediate amount of blood lost. It began and ended during the step "jejunojejunal defect closing".
+
+**Qwen3.8-27B**
+
+> The trainee should address the active bleeding at the anastomotic/staple line first. Across the hand‑sewn phase (approximately 0:50:57 through 1:04:35) the frames show repeated pooling of bright‑red blood and a forming hematoma at the gastrojejunostomy, indicating ongoing hemorrhage rather than just oozing. This is the priority because uncontrolled bleeding risks hemodynamic compromise and, by flooding the field, makes it impossible to visualize the anastomosis safely enough to finish or inspect it. Only after hemostasis is secured should the trainee complete the oversewing and confirm anastomotic integrity (i.e., rule out or repair any leak or dehiscence). In short, control of hemorrhage must come before completing the suture line or managing a potential leak.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee should address bleeding first, as it is actively occurring and visible in multiple frames (e.g., 0:43:15.5, 0:48:09.2, 0:51:18.1), which can compromise surgical field visibility and safety. While the frames show suturing and anastomosis work, the presence of active bleeding requires immediate attention to control hemorrhage before proceeding with other steps.
+
+---
+
+## 2. mb140_d2_SBP20_9920
+
+Frames shown: 64, from 2:45:23.5 to 2:52:48.5
+
+**Question.** Given the trainee's performance during 2:45:20-2:52:52, which adverse event should the trainee address first, and why?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Strasbourg center), video SBP20
+- PHASE: disassembling, from 2:45:20 to 2:52:52
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 2:45:51 to 2:46:43 (53 s; say about a minute): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began and ended during the step "parietal closure".
+  - 2\. From 2:48:55 to 2:49:01 (7 s; say 7 seconds): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began and ended during the step "trocar removal".
+  - 3\. From 2:50:27 to 2:54:24 (3 min 58 s; say about four minutes): bleeding, "High amount of blood lost". Say it as: a bleed with a high amount of blood lost. It began during the step "parietal closure" and ran on through "irrigation aspiration", and on into the "cleaning coagulation" phase.
+
+**Qwen3.8-27B**
+
+> The trainee should address the active hemorrhage (bleeding from the anastomotic/suture line) first. In the latter part of the clip the field fills with bright red blood that progressively obscures the view, indicating uncontrolled bleeding rather than the minor oozing seen while the bougie was in place. This is the priority because ongoing hemorrhage risks hemodynamic instability, can form a hematoma that jeopardizes the new anastomosis, and—once the field is flooded—makes any further suturing or inspection impossible. Controlling the bleeding point (with pressure, a clip, or a suture) must therefore precede completing or checking the gastrojejunostomy.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee should address bleeding first, as it is actively occurring and visible in frames like 2:46:13 and 2:46:20, where blood is clearly seen pooling. Uncontrolled bleeding can obscure the surgical field, compromise visibility, and potentially lead to significant blood loss or injury, making it the most urgent issue requiring immediate attention.
+
+---
+
+## 3. mb140_d2_BBP43_1350
+
+Frames shown: 64, from 0:22:42.9 to 0:49:44.1
+
+**Question.** Given the trainee's performance during 0:22:30-0:49:57, which adverse event should the trainee address first, and why?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Bern center), video BBP43
+- PHASE: gastrojejunal anastomosis, from 0:22:30 to 0:49:57
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:31:17 to 0:31:34 (18 s; say about 20 seconds): mechanical injury, "Deep penetration to vital tissue". Say it as: a mechanical injury, a deep penetration to vital tissue. It began and ended during the step "gastrojejunal defect closing".
+  - 2\. From 0:46:53 to 0:47:13 (21 s; say about 20 seconds): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began and ended during the step "gastrojejunal defect closing".
+
+**Qwen3.8-27B**
+
+> The adverse event that must be dealt with first is active bleeding (hemorrhage) from the mesenteric/anastomotic bed, seen as blood staining the bowel and pooling in the field throughout the hand‑sewn phase (roughly 0:31:17–0:49:44). It takes priority over completing the anastomosis because uncontrolled bleeding is the most immediate threat to the patient (risk of blood loss and hemodynamic compromise) and it floods the operative field, obscuring the suture line and making each bite inaccurate—which is exactly why the trainee's suturing is slow and imprecise. The trainee should therefore first clear the field with suction/irrigation and secure hemostasis (direct pressure, clips, or a hemostatic suture) before resuming the closure. Only once the source is controlled and the view is dry can the anastomosis be finished safely.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee should address bleeding first, as it is actively occurring and visible in frames from 0:26:08.7 onward, with significant blood pooling and active oozing from the surgical site. This requires immediate attention to prevent excessive blood loss or compromising visibility. While other steps like suturing or anastomosis are important, controlling hemorrhage is a priority for patient safety during surgery.
+
+---
+
+## 4. mb140_d2_SBP65_651
+
+Frames shown: 64, from 0:11:10.5 to 0:52:06.5
+
+**Question.** Given the trainee's performance during 0:10:51-0:52:26, which adverse event should the trainee address first, and why?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Strasbourg center), video SBP65
+- PHASE: gastric pouch creation, from 0:10:51 to 0:52:26
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:22:53 to 0:25:26 (2 min 34 s; say about two and a half minutes): bleeding, "Intermediate amount of blood lost". Say it as: a bleed with an intermediate amount of blood lost. It began and ended during the step "His angle dissection".
+  - 2\. From 0:26:59 to 0:33:31 (6 min 33 s; say about six and a half minutes): bleeding, "High amount of blood lost". Say it as: a bleed with a high amount of blood lost. It began and ended during the step "His angle dissection".
+  - 3\. From 0:40:09 to 0:41:36 (1 min 28 s; say about a minute and a half): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began during the step "vertical stapling" and ran on through "retrogastric dissection", then back to "vertical stapling", then back to "retrogastric dissection".
+
+**Qwen3.8-27B**
+
+> The trainee should address the active hemorrhage first. From roughly 0:24 to 0:35 the field fills with bright red blood and the packing gauze becomes saturated, indicating uncontrolled bleeding from the dissection/staple site. This is the priority because ongoing bleeding is the most immediately life‑threatening event, it risks hemodynamic instability, and it obscures the camera view so that safe identification of structures and any further dissection or stapling cannot proceed until it is controlled. Only after hemostasis is secured should the trainee resume the bypass steps.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee should address bleeding first, as it is actively occurring and visible in frames from 0:24:49 to 0:27:25, where significant blood is pooling and obscuring the surgical field. Controlling hemorrhage is critical to maintain visibility, prevent hypovolemia, and avoid complications before proceeding with other steps of the procedure.
+
+---
+
+## 5. mb140_d2_BBP44_3053
+
+Frames shown: 64, from 0:50:55.2 to 0:55:33.8
+
+**Question.** Given the trainee's performance during 0:50:53-0:55:36, which adverse event should the trainee address first, and why?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Bern center), video BBP44
+- PHASE: cleaning coagulation, from 0:50:53 to 0:55:36
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:51:02 to 0:54:09 (3 min 8 s; say about three minutes): mechanical injury, "Superficial penetration to vital tissue". Say it as: a mechanical injury, a superficial penetration to vital tissue. It began and ended during the step "jejunojejunal anastomosis reinforcement".
+  - 2\. From 0:54:33 to 0:55:36 (1 min 4 s; say about a minute): mechanical injury, "Deep penetration to vital tissue". Say it as: a mechanical injury, a deep penetration to vital tissue. It began and ended during the step "coagulation".
+
+**Qwen3.8-27B**
+
+> The adverse event to address first is active bleeding from the anastomotic suture line and mesentery, which from about 0:54:27 onward has pooled in the field and is progressively obscuring the endoscopic view. This must come before finishing or checking the anastomosis, because continued hemorrhage can form a hematoma that distorts and weakens the fresh suture line, and the blood‑filled, hazy view makes further suturing dangerous to the bowel. The trainee has already introduced a hemostatic/fibrin sealant (the blue CleanCoat applicator), a reasonable sealing step, but they should secure definitive hemostasis—suction/irrigation to clear the field plus pressure, cautery, a clip, or a hemostatic suture as needed—before resuming. In short, stop the bleeding and restore a clear field first, then verify the anastomosis.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee should address the bleeding first, which becomes apparent around 0:54:31 when a blue suction/irrigation device is used to clear blood obscuring the view. The frames from 0:54:36 onward show significant blood pooling and obscuration, making visualization and continued precise suturing impossible. Clearing the field of view is critical to ensure accurate anastomotic closure and prevent complications like leakage or vessel injury. Addressing bleeding takes priority over other tasks because it directly threatens surgical safety and visibility.
+
+---
+
+## 6. mb140_d2_SBP08_3129
+
+Frames shown: 64, from 0:52:14.4 to 1:03:33.6
+
+**Question.** Given the trainee's performance during 0:52:09-1:03:39, which adverse event should the trainee address first, and why?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Strasbourg center), video SBP08
+- PHASE: closure mesenteric defect, from 0:52:09 to 1:03:39
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:55:55 to 0:57:00 (1 min 6 s; say about a minute): bleeding, "Intermediate amount of blood lost". Say it as: a bleed with an intermediate amount of blood lost. It began and ended during the step "mesenteric defect closing".
+  - 2\. From 1:03:28 to 1:05:01 (1 min 34 s; say about a minute and a half): insufficient closure of the anastomosis, "All insufficient closure of anastomosis". Say it as: an insufficient closure of the anastomosis. It began during the step "mesenteric defect closing" and ran on through "jejunojejunal defect closing", and on into the "jejunojejunal anastomosis" phase.
+
+**Qwen3.8-27B**
+
+> The adverse event that must be dealt with first is the active hemorrhage, most evident as the pooling of dark blood at the anastomotic/mesenteric site around 0:56:00–0:56:30. This takes priority over finishing the suture line because uncontrolled bleeding can quickly compromise hemodynamic stability and, just as critically, floods the operative field, destroying the visualization the trainee needs to place safe, tension‑free bites. Continuing to sew over an active bleed risks missing the source, tearing tissue further, and leaving a leaking, poorly hemostased anastomosis. The trainee should therefore pause the anastomosis, secure the bleeding point with pressure, a clip, or a reinforcing suture, confirm hemostasis, and only then resume closure. In short, restoring a blood‑free field and patient stability is the prerequisite for safely completing the bypass anastomosis.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee should address bleeding first, as it is actively occurring and visible in frames like 0:56:11 and 0:57:16, where pooling blood is evident. Uncontrolled bleeding poses an immediate risk to patient safety and can obscure the surgical field, making other tasks like suturing or anastomosis more difficult. Addressing hemorrhage promptly is critical to maintaining hemodynamic stability and ensuring clear visualization for accurate surgical maneuvers.
+
+---
+
+## 7. mb140_d2_BBP68_216
+
+Frames shown: 64, from 0:03:39 to 0:09:52
+
+**Question.** Given the trainee's performance during 0:03:36-0:09:55, which adverse event should the trainee address first, and why?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Bern center), video BBP68
+- PHASE: gastric pouch creation, from 0:03:36 to 0:09:55
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:03:57 to 0:04:22 (26 s; say about 25 seconds): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began and ended during the step "His angle dissection".
+  - 2\. From 0:08:40 to 0:14:01 (5 min 22 s; say about five and a half minutes): bleeding, "Very high amount of blood lost". Say it as: a bleed with a very high amount of blood lost. It began during the step "retrogastric dissection" and ran on through "vertical stapling", then "irrigation aspiration", then "coagulation", then back to "irrigation aspiration", then back to "coagulation", then back to "irrigation aspiration", then back to "coagulation", then back to "irrigation aspiration", and on into the "cleaning coagulation" phase.
+
+**Qwen3.8-27B**
+
+> The adverse event that must be addressed first is active hemorrhage from the mesenteric dissection site, which pools and progressively obscures the field (most evident around 0:08:23–0:08:52). This takes priority over any further dissection or stapling because uncontrolled bleeding degrades visualization, risks hemodynamic compromise, and—while the trainee keeps firing the Harmonic and the stapler in a blood‑filled field—greatly increases the chance of thermal or mechanical injury to the adjacent bowel. The correct response is to stop advancing, obtain hemostasis with the Harmonic, a clip, or a suture, and only resume once the field is clear. Any secondary concern, such as a possible serosal or thermal injury to the bowel seen later, can then be inspected and managed in a controlled way. Bleeding is therefore addressed first because it is the immediate threat to both patient safety and the surgeon's ability to see what he is doing.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee should address bleeding first, as it is actively occurring and visible in frames like 0:04:20 and 0:07:47, where blood is pooling and obscuring the surgical field. Uncontrolled bleeding can compromise visibility, increase risk of complications, and may require urgent intervention to stabilize the patient before proceeding with other steps of the procedure.
+
+---
+
+## 8. mb140_d2_SBP02_722
+
+Frames shown: 64, from 0:12:07.1 to 0:22:47.9
+
+**Question.** Given the trainee's performance during 0:12:02-0:22:53, which adverse event should the trainee address first, and why?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Strasbourg center), video SBP02
+- PHASE: omentum division, from 0:12:02 to 0:22:53
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:12:29 to 0:15:04 (2 min 36 s; say about two and a half minutes): bleeding, "Intermediate amount of blood lost". Say it as: a bleed with an intermediate amount of blood lost. It began and ended during the step "omental lifting".
+  - 2\. From 0:16:21 to 0:17:56 (1 min 36 s; say about a minute and a half): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began during the step "omental lifting" and ran on through "omental section".
+  - 3\. From 0:20:20 to 0:21:06 (47 s; say about 45 seconds): bleeding, "High amount of blood lost". Say it as: a bleed with a high amount of blood lost. It began and ended during the step "omental section".
+
+**Qwen3.8-27B**
+
+> The adverse event that must be addressed first is the active hemorrhage flooding the operative field, which is most evident from about 0:12:37 to 0:14:50. The trainee should pause the dissection, apply the LigaSure (or clips) to the bleeding mesenteric vessel and suction/irrigate to clear the pooled blood, because the blood obscures the mesentery and the underlying bowel. Continuing to cut in a blood‑filled field risks injuring the Roux limb or its mesenteric vessels, and an unsealed vessel will cause recurrent bleeding and possible hemodynamic compromise. Only after hemostasis and visualization are restored can the mesenteric division be safely continued.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee should address bleeding first, as it is actively occurring and visible in multiple frames (e.g., 0:12:37.6, 0:13:08.1, 0:14:09.1) and poses an immediate risk to patient safety by causing significant blood loss and obscuring the surgical field. The bleeding appears to be from vessel dissection or cutting, requiring urgent hemostasis with energy devices like the LigaSure seen in use later (e.g., 0:16:31.6), which is essential before proceeding with anastomosis or other steps. While tissue manipulation and instrument handling are also important, controlling bleeding takes priority to maintain a clear field and prevent complications.
+
+---
+
+## 9. mb140_d2_BBP63_398
+
+Frames shown: 64, from 0:06:45.6 to 0:22:41.4
+
+**Question.** Given the trainee's performance during 0:06:38-0:22:49, which adverse event should the trainee address first, and why?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Bern center), video BBP63
+- PHASE: gastrojejunal anastomosis, from 0:06:38 to 0:22:49
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:10:32 to 0:13:06 (2 min 35 s; say about two and a half minutes): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began during the step "gastrojejunal stapling" and ran on through "gastric tube placement", then "gastrojejunal defect closing".
+  - 2\. From 0:19:10 to 0:19:28 (19 s; say about 20 seconds): bleeding, "High amount of blood lost". Say it as: a bleed with a high amount of blood lost. It began and ended during the step "gastrojejunal defect closing".
+
+**Qwen3.8-27B**
+
+> The adverse event that must be dealt with first is the active hemorrhage / blood pooling around the anastomosis, which is increasingly evident from about 0:09:30 onward (dark clotted blood at 0:10:48, 0:13:35, 0:16:37, 0:19:24) and persists through the suturing to 0:22:41. This takes priority over completing the hand‑sewn anastomosis because the accumulating blood obscures the operative field, so the trainee cannot safely place further sutures or identify the bleeding source. Uncontrolled bleeding also risks ongoing blood loss and hemodynamic compromise, and a suture line placed into a blood‑filled field is more likely to miss tissue or pull through. Therefore the trainee should first evacuate the blood and achieve hemostasis (cautery, clip, or ligating suture) to restore a clear, dry view before resuming the anastomosis.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee should address bleeding first, as it is actively occurring and visible in frames from 0:10:02.8 onward, with significant blood pooling and active oozing from the surgical site. This is a critical immediate concern that can compromise visibility, increase risk of hematoma or anemia, and potentially lead to complications if not controlled promptly. While other steps like suturing are underway, bleeding must be managed before proceeding further to ensure patient safety.
+
+---
+
+## 10. mb140_d2_SBP17_49
+
+Frames shown: 64, from 0:01:13.8 to 0:53:13.2
+
+**Question.** Given the trainee's performance during 0:00:49-0:53:38, which adverse event should the trainee address first, and why?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Strasbourg center), video SBP17
+- PHASE: gastric pouch creation, from 0:00:49 to 0:53:38
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:01:16 to 0:01:51 (36 s; say about 35 seconds): bleeding, "Very low amount of blood lost". Say it as: a bleed with a very low amount of blood lost. It began and ended during the step "crura dissection".
+  - 2\. From 0:10:30 to 0:12:08 (1 min 39 s; say about a minute and a half): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began and ended during the step "His angle dissection".
+  - 3\. From 0:15:00 to 0:22:01 (7 min 2 s; say about seven minutes): bleeding, "High amount of blood lost". Say it as: a bleed with a high amount of blood lost. It began and ended during the step "horizontal stapling".
+
+**Qwen3.8-27B**
+
+> The adverse event that must be dealt with first is the uncontrolled hemorrhage at the lesser‑omentum / gastrohepatic dissection site, seen as pooling and streaks of blood from about 0:14:26 through 0:23:30 and recurring at 0:30:06, 0:37:32 and 0:44:08–0:48:16. The trainee has been managing it only with repeated gauze/mesh packing (the white pledgets visible from 0:03:42 onward) instead of definitive hemostasis, so the bleeding is not actually controlled. This has to be resolved before any further dissection or anastomotic work, because ongoing bleeding obscures the laparoscopic field, risks hemodynamic instability, and makes safe creation/suturing of the gastric pouch and Roux limb impossible. In short, the trainee should obtain definitive hemostasis (clips, sutures or energy on the bleeding vessel) first, then resume the bypass.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee should address bleeding first, as it is actively occurring and visible in frames like 0:15:15.5 and 0:21:02.1, where blood is pooling and obscuring the surgical field. Uncontrolled bleeding can compromise visibility, lead to hypovolemia, or cause further tissue damage, making it a priority over other tasks such as suturing or handling instruments.
+
+---
+
+## 11. mb140_d2_BBP03_348
+
+Frames shown: 64, from 0:06:10 to 0:52:20
+
+**Question.** Given the trainee's performance during 0:05:48-0:52:42, which adverse event should the trainee address first, and why?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Bern center), video BBP03
+- PHASE: jejunojejunal anastomosis, from 0:05:48 to 0:52:42
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:10:20 to 0:12:32 (2 min 13 s; say about two minutes): mechanical injury, "Through and through injury to vital tissue" and bleeding, "Low amount of blood lost", recorded together over the same seconds. Say it as: a mechanical injury, a through and through injury to vital tissue, and with it a bleed with a low amount of blood lost. It began and ended during the step "jejunojejunal stapling".
+  - 2\. From 0:39:50 to 0:39:52 (3 s; say 3 seconds): mechanical injury, "Superficial penetration to less vital tissue, needle poke to tissue" and bleeding, "Very low amount of blood lost", recorded together over the same seconds. Say it as: a mechanical injury, a superficial penetration to less vital tissue, or a needle poke to tissue, and with it a bleed with a very low amount of blood lost. It began and ended during the step "jejunojejunal defect closing".
+  - 3\. From 0:44:41 to 0:44:58 (18 s; say about 20 seconds): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began and ended during the step "jejunojejunal defect closing".
+
+**Qwen3.8-27B**
+
+> The adverse event the trainee should address first is the active hemorrhage (ongoing bleeding) that becomes visible from about 0:13 and persists through the rest of the clip. Uncontrolled bleeding is the most immediately dangerous problem here, because it can rapidly cause blood loss and hemodynamic instability. It also fills the operative field with blood, so the trainee cannot safely identify or repair any secondary injury—such as the mesenteric or staple‑line defect they appear to begin suturing only around 0:25—until the bleeding is controlled. The correct first step is therefore definitive hemostasis (identifying the bleeding vessel/point and clipping, cauterizing, or oversewing it) rather than continuing with defect closure. Only once the field is clear and the patient is stable should the less urgent mesenteric/staple‑line defect be addressed, which is why hemostasis must take priority over the suturing the trainee is currently performing.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee should address bleeding first, as it is actively occurring and visible in frames like 0:16:25.5 and 0:20:49.4, where blood is pooling and obscuring the surgical field, which can compromise visibility and safety. Bleeding must be controlled before proceeding with other steps like suturing or anastomosis to ensure a clear view and prevent complications such as hematoma or compromised tissue perfusion.
+
+---
+
+## 12. mb140_d2_SBP46_1719
+
+Frames shown: 64, from 0:29:01.6 to 1:16:35.4
+
+**Question.** Given the trainee's performance during 0:28:39-1:16:58, which adverse event should the trainee address first, and why?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Strasbourg center), video SBP46
+- PHASE: gastrojejunal anastomosis, from 0:28:39 to 1:16:58
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:47:28 to 0:48:23 (56 s; say about a minute): bleeding, "Intermediate amount of blood lost". Say it as: a bleed with an intermediate amount of blood lost. It began and ended during the step "gastrojejunal stapling".
+  - 2\. From 0:49:24 to 0:50:46 (1 min 23 s; say about a minute and a half): bleeding, "Intermediate amount of blood lost". Say it as: a bleed with an intermediate amount of blood lost. It began and ended during the step "gastrojejunal stapling".
+  - 3\. From 0:57:54 to 0:59:15 (1 min 22 s; say about a minute and a half): bleeding, "High amount of blood lost". Say it as: a bleed with a high amount of blood lost. It began and ended during the step "jejunum opening".
+  - 4\. From 1:12:41 to 1:13:56 (1 min 16 s; say about a minute): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began and ended during the step "gastrojejunal defect closing".
+
+**Qwen3.8-27B**
+
+> The adverse event that must be addressed first is the persistent, uncontrolled hemorrhage from the anastomotic/staple‑line site, seen as pooling and streaming blood from roughly 0:46:23 through the end of the clip (e.g., 0:47:54, 1:00:44, 1:15:04). It takes priority over everything else because ongoing bleeding is the most immediately dangerous complication: it obscures the operative field, risks hemodynamic instability, and can form a hematoma that jeopardizes the fresh anastomosis. The trainee's repeated attempts with loose sutures and, at 0:56:12–0:56:57, diffuse electrocautery have failed to control the source, and that cautery near the bowel adds a risk of thermal injury and subsequent leak. The trainee should therefore first secure definitive hemostasis—direct pressure, a clip, or a precise figure‑of‑eight suture placed exactly on the bleeding point—before any further reconstruction is attempted.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee should address bleeding first, as it is actively occurring and visible in frames like 0:47:54 and 0:53:56, where blood is pooling and obscuring the surgical field. Controlling hemorrhage is critical to maintain visibility and prevent hypovolemic shock, making it the priority over other steps like suturing or repositioning instruments.
+
+---
+
+## 13. mb140_d2_BBP46_1775
+
+Frames shown: 64, from 0:29:46.5 to 0:53:49.5
+
+**Question.** Given the trainee's performance during 0:29:35-0:54:01, which adverse event should the trainee address first, and why?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Bern center), video BBP46
+- PHASE: jejunojejunal anastomosis, from 0:29:35 to 0:54:01
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:33:12 to 0:36:16 (3 min 5 s; say about three minutes): mechanical injury, "Superficial penetration to vital tissue" and bleeding, "Low amount of blood lost", recorded together over the same seconds. Say it as: a mechanical injury, a superficial penetration to vital tissue, and with it a bleed with a low amount of blood lost. It began during the step "jejunojejunal stapling" and ran on through "jejunojejunal defect closing".
+  - 2\. From 0:42:33 to 0:44:45 (2 min 13 s; say about two minutes): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began and ended during the step "jejunojejunal defect closing".
+  - 3\. From 0:47:21 to 0:49:32 (2 min 12 s; say about two minutes): mechanical injury, "Deep penetration to vital tissue". Say it as: a mechanical injury, a deep penetration to vital tissue. It began during the step "visual assessment" and ran on through "calibration".
+  - 4\. From 0:50:35 to 0:52:48 (2 min 14 s; say about two minutes): mechanical injury, "Superficial penetration to vital tissue". Say it as: a mechanical injury, a superficial penetration to vital tissue. It began and ended during the step "calibration".
+
+**Qwen3.8-27B**
+
+> The adverse event the trainee should address first is active hemorrhage from the staple line/mesentery, which is most evident from 0:33:35 to 0:35:30 and recurs through roughly 0:49:37. This must be controlled before finishing the hand‑sewn anastomosis, because the accumulating blood floods the field and would force the trainee to suture blindly, increasing the risk of a malformed or leaking closure. Uncontrolled bleeding also threatens hemodynamic stability and can create a perianastomotic hematoma that compromises the new anastomosis. In the priority hierarchy of laparoscopic adverse events, life‑threatening hemorrhage outranks technical problems such as suture handling or instrument slippage. The trainee should therefore pause, obtain hemostasis (Harmonic, clip, or hemostatic suture), and only then resume closing.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee should address bleeding first, as it is actively occurring and visible in multiple frames (e.g., 0:33:35, 0:34:21, 0:35:07, 0:40:04, 0:41:36, 0:42:22, 0:43:31, 0:44:39, 0:45:25, 0:46:34, 0:47:43, 0:48:28, 0:49:37, 0:50:23, 0:51:32, 0:52:17, 0:53:03, 0:53:26), indicating a potential for ongoing blood loss and compromised surgical field. Controlling bleeding is critical to maintain visibility, prevent further injury, and ensure patient safety before proceeding with other steps like suturing or tying off vessels.
+
+---
+
+## 14. mb140_d2_SBP25_0
+
+Frames shown: 64, from 0:00:12.3 to 0:26:06.7
+
+**Question.** Given the trainee's performance during 0:00:00-0:26:19, which adverse event should the trainee address first, and why?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Strasbourg center), video SBP25
+- PHASE: gastric pouch creation, from 0:00:00 to 0:26:19
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:03:19 to 0:08:14 (4 min 56 s; say about five minutes): bleeding, "High amount of blood lost". Say it as: a bleed with a high amount of blood lost. It began and ended during the step "His angle dissection".
+  - 2\. From 0:15:35 to 0:19:51 (4 min 17 s; say about four and a half minutes): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began during the step "retrogastric dissection" and ran on through "vertical stapling", then "calibration", then back to "vertical stapling".
+
+**Qwen3.8-27B**
+
+> The adverse event the trainee should address first is the active intra‑abdominal hemorrhage that begins at about 0:03:29, when blood suddenly gushes from the dissected lesser‑sac/gastrohepatic tissue and pools in the field. This takes priority over the other minor issue seen in the clip—the brief loss of camera view at 0:09:39—because uncontrolled bleeding can produce hemodynamic instability and, by flooding the field with blood, it obscures the anatomy and makes any further safe dissection or stapling impossible until hemostasis is achieved. The trainee's prolonged cautery/clipping efforts between roughly 0:03:29 and 0:08:25 confirm that this bleed is the dominant problem. Controlling it first restores a clear field and a stable patient, after which the gastric‑pouch transection and the subsequent anastomoses can be completed safely.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee should address the bleeding at the anastomotic site first, which becomes evident around 0:03:29.7 and continues through subsequent frames. This is because uncontrolled bleeding poses an immediate risk of hypovolemic shock and obscures the surgical field, making it critical to control before proceeding with other steps. The trainee appears to be using a hemostat and possibly electrocautery to manage this bleed, indicating that prompt attention is being given to this issue. While other steps are important, hemorrhage is the most urgent adverse event requiring immediate intervention.
+
+---
+
+## 15. mb140_d2_BBP54_2697
+
+Frames shown: 64, from 0:45:13.4 to 1:19:39.6
+
+**Question.** Given the trainee's performance during 0:44:57-1:19:56, which adverse event should the trainee address first, and why?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Bern center), video BBP54
+- PHASE: gastrojejunal anastomosis, from 0:44:57 to 1:19:56
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 1:00:17 to 1:03:57 (3 min 41 s; say about three and a half minutes): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began and ended during the step "gastrojejunal defect closing".
+  - 2\. From 1:14:32 to 1:19:53 (5 min 22 s; say about five and a half minutes): insufficient closure of the anastomosis, "All insufficient closure of anastomosis". Say it as: an insufficient closure of the anastomosis. It began during the step "gastrojejunal defect closing" and ran on through "gastrojejunal anastomosis reinforcement".
+
+**Qwen3.8-27B**
+
+> The adverse event to address first is active bleeding at the jejunojejunostomy/mesenteric suture line. Throughout this segment the trainee is hand‑sewing the anastomosis while blood progressively pools and streaks down the field (most obvious around 1:01:37 and again 1:13:38–1:14:44), yet they keep placing sutures instead of securing hemostasis. Because ongoing hemorrhage obscures the suture line, risks a hematoma that can compromise the anastomosis, and is the most immediately dangerous problem, it must be controlled (cautery, clip, or a hemostatic bite) before any further suturing. In short, hemostasis takes priority over completing the anastomosis, since the trainee's continued stitching has allowed the bleed to accumulate and endanger both visualization and tissue integrity.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee should address bleeding first, as it is actively occurring and poses an immediate risk to patient safety. In the frames from 0:44:57 to 1:19:56, there are multiple instances of active bleeding, particularly visible around the surgical site where instruments are manipulating tissues (e.g., at 0:53:25, 0:53:58, 0:54:30, 0:55:03, and 1:02:10). Bleeding can lead to hemodynamic instability, obscuration of the surgical field, and potential complications if not controlled promptly. While other tasks like suturing or anastomosis are important, controlling hemorrhage is a higher priority to maintain a safe surgical environment and prevent further blood loss.
+
+---
+
+## 16. mb140_d2_SBP63_502
+
+Frames shown: 64, from 0:08:30.6 to 0:26:37.4
+
+**Question.** Given the trainee's performance during 0:08:22-0:26:46, which adverse event should the trainee address first, and why?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Strasbourg center), video SBP63
+- PHASE: gastric pouch creation, from 0:08:22 to 0:26:46
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:19:38 to 0:20:15 (38 s; say about 40 seconds): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began during the step "vertical stapling" and ran on through "retrogastric dissection".
+  - 2\. From 0:22:15 to 0:22:29 (15 s; say about 15 seconds): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began and ended during the step "gastric opening".
+  - 3\. From 0:22:38 to 0:22:45 (8 s; say 8 seconds): bleeding, "High amount of blood lost". Say it as: a bleed with a high amount of blood lost. It began and ended during the step "gastric opening".
+  - 4\. From 0:22:48 to 0:26:37 (3 min 50 s; say about four minutes): thermal injury, "Superficial penetration to vital tissue". Say it as: a thermal injury, a superficial penetration to vital tissue. It began during the step "gastric opening" and ran on through "calibration".
+
+**Qwen3.8-27B**
+
+> The active bleeding (hemorrhage from the mesenteric/vascular bed) should be addressed first. It is the most immediately life‑threatening problem in this span – a recurrent red clot and blood‑soaked field are visible from about 0:11:23 and again through 0:21:09–0:24:53 – and uncontrolled loss can quickly produce hemodynamic instability. It also floods the field, so the dissection, stapling and anastomosis cannot be done safely until the source is controlled. Definitive hemostasis, i.e. ligation/suturing of the bleeding vessel (which the trainee is beginning with the needle driver), must therefore precede completing the mesenteric division, the gastrojejunostomy and closure of the mesenteric defects. In short, bleeding takes priority over the non‑urgent mesenteric‑defect closure and anastomosis because it is the only event that can rapidly become fatal and is currently compromising visualization.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee should address bleeding first, as it is actively occurring at 0:10:31.4 and continues through 0:15:41.9, evidenced by visible blood pooling and active oozing from the surgical site. Uncontrolled bleeding poses an immediate risk of hypovolemia and can compromise the surgical field, making it difficult to perform precise maneuvers required for the Roux-en-Y gastric bypass. Addressing bleeding promptly is critical to patient safety and procedural success before proceeding with other steps like handling tissue or suturing.
+
+---
+
+## 17. mb140_d2_BBP29_540
+
+Frames shown: 64, from 0:09:08.5 to 0:26:56.5
+
+**Question.** Given the trainee's performance during 0:09:00-0:27:05, which adverse event should the trainee address first, and why?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Bern center), video BBP29
+- PHASE: gastrojejunal anastomosis, from 0:09:00 to 0:27:05
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:14:45 to 0:16:48 (2 min 4 s; say about two minutes): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began and ended during the step "gastrojejunal stapling".
+  - 2\. From 0:19:27 to 0:21:31 (2 min 5 s; say about two minutes): bleeding, "Very high amount of blood lost". Say it as: a bleed with a very high amount of blood lost. It began and ended during the step "gastrojejunal stapling".
+
+**Qwen3.8-27B**
+
+> The trainee should address the active bleeding (hemorrhage) from the divided mesentery / staple line first. From about 0:12:31 onward, dark blood progressively pools in the operative field (clearly visible at 0:13:05, 0:17:20, 0:19:18, 0:21:00 and still present at 0:26:56), yet the trainee continues to manipulate the needle driver and place oversewing sutures (e.g., 0:15:55–0:16:46 and 0:25:14–0:26:56) without first securing hemostasis. This is the priority because ongoing hemorrhage is the only immediately life‑threatening event in the clip and it progressively obscures the visual field, so further suturing of the mesenteric defect is unsafe and ineffective until the bleeding is controlled. In short, stop and achieve hemostasis before resuming the mesenteric oversewing.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee should address bleeding first, as it is actively occurring and visible in frames like 0:13:39.7 and 0:14:13.6, where copious blood is seen pooling and obscuring the surgical field. Uncontrolled bleeding can compromise visibility, lead to hypovolemia, and increase risk of complications, making it the highest priority over other tasks like suturing or retraction.
+
+---
+
+## 18. mb140_d2_SBP56_205
+
+Frames shown: 64, from 0:03:29 to 0:11:58
+
+**Question.** Given the trainee's performance during 0:03:25-0:12:02, which adverse event should the trainee address first, and why?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Strasbourg center), video SBP56
+- PHASE: gastric pouch creation, from 0:03:25 to 0:12:02
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:07:20 to 0:10:22 (3 min 3 s; say about three minutes): bleeding, "High amount of blood lost". Say it as: a bleed with a high amount of blood lost. It began during the step "retrogastric dissection" and ran on through "vertical stapling", then back to "retrogastric dissection", then "coagulation", then back to "vertical stapling", then back to "coagulation".
+  - 2\. From 0:10:49 to 0:11:28 (40 s; say about 40 seconds): bleeding, "Intermediate amount of blood lost". Say it as: a bleed with an intermediate amount of blood lost. It began and ended during the step "gastric opening".
+
+**Qwen3.8-27B**
+
+> The adverse event the trainee must address first is the active intra‑abdominal hemorrhage (uncontrolled bleeding from the mesenteric/staple line), because it is the most immediately life‑threatening complication and it progressively fills the operative field with blood. From roughly 0:07:30 onward the frames show a growing pool of bright red blood and a large hematoma (most obvious at 0:08:44), yet the trainee continued firing the stapler and dissecting through this blood‑filled field until gauze packing finally appears at 0:09:24. Until hemostasis is secured, the obscured view makes any further dissection or stapling unsafe and risks additional tissue injury or hemodynamic compromise. The immediate priority is therefore to clear the field (suction/irrigation) and apply pressure to the bleeding edge before resuming the mesenteric transection. In short, controlling the bleed outranks completing the bypass step, since it protects both the patient's circulation and the surgeon's ability to see.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee should address bleeding first, as it is actively occurring and visible from 0:06:10 onwards, with significant blood pooling and tissue exposure. Uncontrolled bleeding poses an immediate risk of hypovolemia and obscures the surgical field, making precise manipulation of tissues and suturing impossible. While other events like instrument handling or tissue dissection are ongoing, bleeding is the most urgent threat to patient safety and must be controlled before proceeding with the anastomosis or closure steps.
+
+---
+
+## 19. mb140_d2_BBP05_533
+
+Frames shown: 64, from 0:09:03.5 to 0:31:00.5
+
+**Question.** Given the trainee's performance during 0:08:53-0:31:11, which adverse event should the trainee address first, and why?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Bern center), video BBP05
+- PHASE: gastrojejunal anastomosis, from 0:08:53 to 0:31:11
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:12:05 to 0:26:19 (14 min 15 s; say about fourteen minutes): bleeding, "High amount of blood lost". Say it as: a bleed with a high amount of blood lost. It began during the step "gastrojejunal stapling" and ran on through "gastric tube placement", then "gastrojejunal defect closing".
+  - 2\. From 0:27:50 to 0:30:45 (2 min 56 s; say about three minutes): mechanical injury, "Superficial penetration to less vital tissue, needle poke to tissue" and bleeding, "Intermediate amount of blood lost", recorded together over the same seconds. Say it as: a mechanical injury, a superficial penetration to less vital tissue, or a needle poke to tissue, and with it a bleed with an intermediate amount of blood lost. It began during the step "irrigation aspiration" and ran on through "gastrojejunal anastomosis reinforcement".
+
+**Qwen3.8-27B**
+
+> The adverse event that must be dealt with first is the active bleeding/hemorrhage at the anastomotic–mesenteric site, which becomes evident from about 0:11:29 and continues to pool through the suturing sequence. The trainee should pause and achieve hemostasis—evacuate the clot, identify the bleeding vessel, and secure it with a suture, clip, or coagulation—before resuming the hand‑sewn anastomosis. This takes priority because ongoing hemorrhage obscures the operative field, risks a perianastomotic hematoma that can compromise the new suture/staple line, and may progress to hemodynamic instability. Only once the field is dry and the bleeding source is controlled can the anastomosis be completed safely and with adequate visualization.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee should address bleeding first, as it is actively occurring and visible in multiple frames from 0:11:29.8 through 0:17:46.1, with significant blood pooling and active oozing from the surgical site. Bleeding poses an immediate risk of hypovolemic shock and obscures the surgical field, making it critical to control before proceeding with other steps like suturing or anastomosis. The frames show instruments being used to manage bleeding (e.g., suction, clamping), indicating this is the priority.
+
+---
+
+## 20. mb140_d2_SBP34_1065
+
+Frames shown: 64, from 0:18:10.3 to 1:11:18.7
+
+**Question.** Given the trainee's performance during 0:17:45-1:11:44, which adverse event should the trainee address first, and why?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Strasbourg center), video SBP34
+- PHASE: gastric pouch creation, from 0:17:45 to 1:11:44
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:22:43 to 0:23:14 (32 s; say about 30 seconds): mechanical injury, "Full-thickness injury". Say it as: a mechanical injury, a full-thickness injury. It began and ended during the step "crura dissection".
+  - 2\. From 0:30:07 to 0:36:08 (6 min 2 s; say about six minutes): bleeding, "Intermediate amount of blood lost". Say it as: a bleed with an intermediate amount of blood lost. It began during the step "His angle dissection" and ran on through "horizontal stapling", then back to "His angle dissection", then back to "horizontal stapling".
+  - 3\. From 0:38:18 to 0:44:18 (6 min 1 s; say about six minutes): bleeding, "High amount of blood lost". Say it as: a bleed with a high amount of blood lost. It began and ended during the step "retrogastric dissection".
+
+**Qwen3.8-27B**
+
+> The active hemorrhage is the adverse event the trainee must address first. From about 0:30:49 through the later frames the field is flooded with bright red blood, indicating uncontrolled bleeding from the mesenteric/vascular bed while the trainee divides and staples the Roux limb. This takes priority because ongoing bleeding threatens the patient's hemodynamic stability and simultaneously obscures the operative field, so no safe dissection or stapling can continue until it is controlled. Achieving hemostasis first (suction and irrigation, clips or energy, and gauze packing as seen in the frames) restores both patient stability and visualization. The transient loss of view (black frame at 0:59:30) is secondary and will resolve once the bleeding is controlled and the field is cleared.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee should address bleeding first, as it is actively occurring and visible in multiple frames (e.g., 0:29:58.8, 0:32:30.7, 0:40:56.8), posing an immediate risk to the patient’s hemodynamic stability. The presence of active blood flow and pooling indicates ongoing hemorrhage that requires urgent control before proceeding with other steps like suturing or anastomosis. While tissue manipulation and suturing are important, uncontrolled bleeding can lead to significant complications if not addressed promptly.
+
+---
+
+## 21. mb140_d2_BBP14_176
+
+Frames shown: 64, from 0:03:01.3 to 0:14:06.7
+
+**Question.** Given the trainee's performance during 0:02:56-0:14:12, which adverse event should the trainee address first, and why?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Bern center), video BBP14
+- PHASE: gastric pouch creation, from 0:02:56 to 0:14:12
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:03:33 to 0:04:03 (31 s; say about 30 seconds): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began and ended during the step "His angle dissection".
+  - 2\. From 0:04:28 to 0:05:10 (43 s; say about 45 seconds): bleeding, "High amount of blood lost". Say it as: a bleed with a high amount of blood lost. It began and ended during the step "crura dissection".
+  - 3\. From 0:11:05 to 0:11:43 (39 s; say about 40 seconds): bleeding, "Intermediate amount of blood lost". Say it as: a bleed with an intermediate amount of blood lost. It began and ended during the step "gastric opening".
+
+**Qwen3.8-27B**
+
+> The trainee should address the active mesenteric hemorrhage first. It appears around 0:03:43, when a bleeding vessel in the divided mesentery floods the field with bright red and then dark pooling blood that persists through roughly 0:06:00. This is the priority because uncontrolled bleeding is the most immediately life‑threatening event and it simultaneously destroys the visualization on which safe dissection and stapling depend. Controlling it—by isolating the bleeding point and applying clips or cautery—restores a dry, bloodless field and prevents hemodynamic compromise before the mesenteric closure and anastomosis proceed. The transient loss of view (e.g., 0:03:33, 0:06:11) is secondary and resolves once the hemorrhage is controlled.
+
+**Qwen3-VL-8B-Instruct**
+
+> The frames from 0:03:01.3 to 0:14:06.7 show a laparoscopic Roux-en-Y gastric bypass, but none occur between 0:02:56 and 0:03:01.3, so no adverse event is visible in that specific window. The first adverse event shown — bleeding or tissue trauma — begins at 0:03:43.5, and the trainee should address it immediately because active bleeding can compromise surgical field visibility, increase risk of hemorrhage, and potentially lead to patient instability if not controlled promptly.
+
+---
+
+## 22. mb140_d2_SBP52_282
+
+Frames shown: 64, from 0:05:04.5 to 0:52:15.5
+
+**Question.** Given the trainee's performance during 0:04:42-0:52:38, which adverse event should the trainee address first, and why?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Strasbourg center), video SBP52
+- PHASE: gastric pouch creation, from 0:04:42 to 0:52:38
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:13:49 to 0:14:52 (1 min 4 s; say about a minute): bleeding, "High amount of blood lost". Say it as: a bleed with a high amount of blood lost. It began and ended during the step "His angle dissection".
+  - 2\. From 0:23:47 to 0:24:24 (38 s; say about 40 seconds): bleeding, "Very low amount of blood lost". Say it as: a bleed with a very low amount of blood lost. It began and ended during the step "retrogastric dissection".
+  - 3\. From 0:31:17 to 0:36:42 (5 min 26 s; say about five and a half minutes): bleeding, "Intermediate amount of blood lost". Say it as: a bleed with an intermediate amount of blood lost. It began during the step "retrogastric dissection" and ran on through "vertical stapling", then back to "retrogastric dissection".
+  - 4\. From 0:43:47 to 0:45:05 (1 min 19 s; say about a minute): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began and ended during the step "coagulation".
+  - 5\. From 0:46:41 to 0:49:52 (3 min 12 s; say about three minutes): bleeding, "Intermediate amount of blood lost". Say it as: a bleed with an intermediate amount of blood lost. It began and ended during the step "gastric remnant reinforcement".
+
+**Qwen3.8-27B**
+
+> The adverse event that must be dealt with first is the active hemorrhage at the gastro‑esophageal / lesser‑curvature dissection site, which appears as pooling and oozing blood from about 0:14:03 and keeps recurring through 0:39:31 despite the white hemostatic material placed from ~0:11:04. It takes priority over completing the gastric division or the anastomosis because uncontrolled bleeding is the most immediate threat to the patient's hemodynamic stability and it fills the field, making safe dissection and stapling impossible. The trainee should first obtain definitive hemostasis (energy, clips, or a suture/ligature on the bleeding vessel, e.g. a short‑gastric or left‑gastric branch) and confirm a clear, blood‑free field. Continuing to dissect or staple while the field is obscured risks enlarging the bleed or injuring the esophagus or adjacent structures. Only once hemostasis is secure should the trainee resume the planned bypass steps.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee should address bleeding first, as it is actively occurring and visible in frames like 0:14:48.7 and 0:15:33.6, where significant blood is pooling and obscuring the surgical field. Controlling hemorrhage is critical to maintain visibility and prevent complications like hypovolemia or anemia, which can jeopardize patient safety. While other tasks are ongoing, uncontrolled bleeding must be managed immediately to ensure a clear view for precise suturing and to avoid further tissue damage.
+
+---
+
+## 23. mb140_d2_BBP41_860
+
+Frames shown: 64, from 0:14:23.3 to 0:21:16.7
+
+**Question.** Given the trainee's performance during 0:14:20-0:21:20, which adverse event should the trainee address first, and why?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Bern center), video BBP41
+- PHASE: gastric pouch creation, from 0:14:20 to 0:21:20
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:15:09 to 0:15:20 (12 s; say 12 seconds): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began and ended during the step "His angle dissection".
+  - 2\. From 0:17:06 to 0:17:23 (18 s; say about 20 seconds): bleeding, "Very high amount of blood lost". Say it as: a bleed with a very high amount of blood lost. It began during the step "horizontal stapling" and ran on through "coagulation".
+  - 3\. From 0:17:25 to 0:17:51 (27 s; say about 25 seconds): bleeding, "Intermediate amount of blood lost". Say it as: a bleed with an intermediate amount of blood lost. It began and ended during the step "coagulation".
+
+**Qwen3.8-27B**
+
+> The adverse event that must be dealt with first is the active intra‑abdominal hemorrhage from the mesenteric dissection and the first staple line, not the incomplete closure of the mesenteric defect. This bleeding is ongoing and progressively floods the field (most evident from about 0:17:07 to 0:18:30, after the first stapler firing), so it obscures the anatomy and makes the next step—firing the stapler to close the mesenteric defect / Petersen's space—unsafe to perform. It also takes precedence on physiological grounds, because an uncontrolled bleed risks hemodynamic instability and would force conversion. The pattern of blood appearing as the trainee dissects and staples suggests the hemorrhage was caused by imprecise tissue handling, so hemostasis (Harmonic coagulation, ligation, or a suture) must be achieved before any further stapling or anastomotic work is attempted.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee should address bleeding first, as it becomes evident starting around 0:17:00 and intensifies through 0:18:39, with significant blood loss obscuring the surgical field and increasing risk of complications. This is a priority because uncontrolled bleeding can compromise visibility, lead to hypovolemia, or cause hemorrhagic shock, directly endangering the patient’s safety. The subsequent frames show active hemostasis efforts (e.g., 0:17:13–0:18:06), confirming that controlling this bleeding is an immediate and critical step before proceeding with other steps like anastomosis or closure.
+
+---
+
+## 24. mb140_d2_BBP47_2977
+
+Frames shown: 64, from 0:49:44.7 to 1:05:49.3
+
+**Question.** Given the trainee's performance during 0:49:37-1:05:57, which adverse event should the trainee address first, and why?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Bern center), video BBP47
+- PHASE: gastric pouch creation, from 0:49:37 to 1:05:57
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:49:54 to 0:50:46 (53 s; say about a minute): bleeding, "Very low amount of blood lost". Say it as: a bleed with a very low amount of blood lost. It began and ended during the step "His angle dissection".
+  - 2\. From 0:56:38 to 0:56:45 (8 s; say 8 seconds): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began and ended during the step "retrogastric dissection".
+  - 3\. From 1:01:58 to 1:02:14 (17 s; say about 15 seconds): bleeding, "High amount of blood lost". Say it as: a bleed with a high amount of blood lost. It began and ended during the step "retrogastric dissection".
+  - 4\. From 1:02:56 to 1:04:21 (1 min 26 s; say about a minute and a half): ischemic injury, "Sign of ischemia with indeterminate nature". Say it as: a ischemic injury, a sign of ischemia with indeterminate nature. It began during the step "horizontal stapling" and ran on through "gastric opening".
+
+**Qwen3.8-27B**
+
+> The trainee should address the active intra‑abdominal hemorrhage first. In the frames from about 1:01:59 to 1:02:30 a brisk bleed suddenly fills the operative field and even coats the lens (the 1:02:30 frame is almost entirely blood), indicating uncontrolled bleeding from the dissection/anastomotic site. This takes priority over any other task—finishing the anastomosis or further mesenteric work—because ongoing hemorrhage threatens hemodynamic stability, obscures the anatomy, and can lead to a hematoma or conversion if left uncontrolled. The immediate step is to suction, apply pressure, restore the view, and secure the bleeding point with the Harmonic or a clip. Only once the bleeding is controlled should the trainee return to the stapled anastomosis seen in the later frames.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee should address the bleeding at 1:02:15 first because it is actively ongoing, obscuring the surgical field, and poses an immediate risk to patient safety by potentially causing hypovolemic shock or compromising the procedure. The other events shown—such as tissue manipulation, dissection, and instrument adjustment—are part of the expected surgical workflow and do not present an acute, life-threatening complication requiring immediate intervention.
+
+---
+
+## 25. mb140_d2_BBP24_460
+
+Frames shown: 64, from 0:07:47.2 to 0:23:00.8
+
+**Question.** Given the trainee's performance during 0:07:40-0:23:08, which adverse event should the trainee address first, and why?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Bern center), video BBP24
+- PHASE: gastric pouch creation, from 0:07:40 to 0:23:08
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:12:36 to 0:14:37 (2 min 2 s; say about two minutes): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began and ended during the step "His angle dissection".
+  - 2\. From 0:16:26 to 0:17:36 (1 min 11 s; say about a minute): bleeding, "High amount of blood lost". Say it as: a bleed with a high amount of blood lost. It began during the step "horizontal stapling" and ran on through "coagulation".
+
+**Qwen3.8-27B**
+
+> The trainee should address the active hemorrhage from the mesenteric dissection first. The field progressively fills with blood—first evident around 0:12:37.2, worst from 0:13:35.2 to 0:14:47.8, and recurring at 0:16:29.2–0:17:41.8 and 0:21:04.8–0:23:00.8—showing that the energy/forceps dissection has injured a mesenteric vessel and the bleeding is not being controlled. This must be dealt with before any further stapling or anastomosis, because ongoing bleeding threatens hemodynamic stability and progressively obscures the operative field, which raises the risk of misidentifying the bowel and injuring it with the stapler. The correct first step is to stop dissecting, apply direct pressure, and achieve hemostasis (pressure, energy, a clip, or a suture) while clearing the field. Only once the bleeding is controlled and visualization is restored should the trainee resume the anastomosis; the transient loss of view from smoke or lens contact is secondary and will improve once the blood is cleared.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee should address bleeding first, as it becomes significant around 0:13:35 and worsens through 0:14:47, requiring suction and hemostatic agents. This is critical because uncontrolled bleeding can obscure the surgical field, compromise visibility, and lead to complications such as hypovolemia or anemia, making it the most urgent issue before proceeding with other steps like anastomosis creation or closure.
+
+---
+
+## 26. mb140_d2_BBP56_0
+
+Frames shown: 64, from 0:00:02.2 to 0:04:44.8
+
+**Question.** Given the trainee's performance during 0:00:00-0:04:47, which adverse event should the trainee address first, and why?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Bern center), video BBP56
+- PHASE: gastric pouch creation, from 0:00:00 to 0:04:47
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:00:10 to 0:03:20 (3 min 11 s; say about three minutes): bleeding, "Very high amount of blood lost". Say it as: a bleed with a very high amount of blood lost. It began during the step "irrigation aspiration" and ran on through "coagulation", then back to "irrigation aspiration", then "gastric opening".
+  - 2\. From 0:03:20 to 0:03:34 (15 s; say about 15 seconds): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began and ended during the step "gastric opening". It began while event 1 was still going.
+
+**Qwen3.8-27B**
+
+> The adverse event the trainee must address first is the active bleeding/hemorrhage that is pooling in the operative field (most evident from 0:00:02 onward, peaking in the first minute and recurring later), because the trainee has kept dissecting through this blood‑filled field instead of first obtaining hemostasis. Pooling blood obscures both the anatomy and the scope lens, so the surgeon cannot reliably identify vessels or the correct plane of dissection and is at high risk of causing further vascular or visceral injury. Uncontrolled hemorrhage can also compromise hemodynamic stability, making it the most time‑critical problem in the case. Therefore the correct priority is to stop, evacuate the blood, clear the optics, and control the bleeding source before resuming the bypass steps. Proceeding with dissection or anastomosis on top of an uncontrolled, blood‑obscured field is the unsafe sequence the frames show.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee should address bleeding first, as it is actively occurring and visible in multiple frames (e.g., 0:00:02.2, 0:00:15.7, 0:00:38.1), which can compromise surgical field visibility and safety. The presence of blood obscures anatomical landmarks and increases risk of further injury or complications if not controlled promptly. While other steps like handling tissue or instrument placement are important, controlling hemorrhage is the immediate priority to maintain a clear view and prevent potential catastrophic outcomes.
+
+---
+
+## 27. mb140_d2_BBP01_1371
+
+Frames shown: 64, from 0:22:56.6 to 0:34:43.4
+
+**Question.** Given the trainee's performance during 0:22:51-0:34:49, which adverse event should the trainee address first, and why?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Bern center), video BBP01
+- PHASE: gastric pouch creation, from 0:22:51 to 0:34:49
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:23:43 to 0:23:44 (2 s; say 2 seconds): thermal injury, "Superficial penetration to vital tissue". Say it as: a thermal injury, a superficial penetration to vital tissue. It began and ended during the step "crura dissection".
+  - 2\. From 0:24:42 to 0:25:02 (21 s; say about 20 seconds): bleeding, "Very low amount of blood lost". Say it as: a bleed with a very low amount of blood lost. It began and ended during the step "crura dissection".
+  - 3\. From 0:25:13 to 0:25:26 (14 s; say 14 seconds): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began and ended during the step "crura dissection".
+  - 4\. From 0:28:28 to 0:28:54 (27 s; say about 25 seconds): ischemic injury, "Sign of permanent tissue ischemia" and bleeding, "Low amount of blood lost", recorded together over the same seconds. Say it as: a ischemic injury, a sign of permanent tissue ischemia, and with it a bleed with a low amount of blood lost. It began during the step "retrogastric dissection" and ran on through "vertical stapling".
+  - 5\. From 0:31:21 to 0:31:44 (24 s; say about 25 seconds): bleeding, "Very low amount of blood lost". Say it as: a bleed with a very low amount of blood lost. It began and ended during the step "vertical stapling".
+
+**Qwen3.8-27B**
+
+> The adverse event to address first is the active hemorrhage in the operative field, which appears as pooling blood from roughly 0:28:44 and persists through the remainder of the clip. Uncontrolled bleeding is the only immediately life‑threatening problem in this sequence (risk of haemodynamic compromise) and it is also the principal cause of the repeated loss of visualization (camera/field fouling seen at 0:28:10, 0:32:06 and 0:33:36), so it outranks the instrument‑positioning and visual issues. The trainee should therefore first tamponade the bleeding site with a laparoscopic sponge or grasper and suction to evacuate the pool, then identify and secure the offending vessel by clipping, ligation or coagulation. Only after the bleed is controlled and the field is clear should a stable view be re‑established and the lesser‑sac/pouch dissection resumed, because cutting or stapling on top of active bleeding would risk worsening the haemorrhage or injuring the pouch or oesophagus.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee should address bleeding first, as it is actively occurring and visible in multiple frames (e.g., 0:25:22, 0:26:18, 0:28:44), which can obscure the surgical field and compromise safety. Controlling hemorrhage is a priority to maintain clear visualization and prevent complications before proceeding with other steps like anastomosis or closure.
+
+---
+
+## 28. mb140_d2_BBP18_411
+
+Frames shown: 64, from 0:06:54.5 to 0:14:21.5
+
+**Question.** Given the trainee's performance during 0:06:51-0:14:25, which adverse event should the trainee address first, and why?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Bern center), video BBP18
+- PHASE: gastric pouch creation, from 0:06:51 to 0:14:25
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:08:37 to 0:09:02 (26 s; say about 25 seconds): bleeding, "Very low amount of blood lost". Say it as: a bleed with a very low amount of blood lost. It began and ended during the step "His angle dissection".
+  - 2\. From 0:09:45 to 0:11:31 (1 min 47 s; say about two minutes): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began during the step "His angle dissection" and ran on through "crura dissection".
+  - 3\. From 0:12:10 to 0:13:53 (1 min 44 s; say about a minute and a half): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began during the step "crura dissection" and ran on through "irrigation aspiration".
+  - 4\. From 0:14:14 to 0:18:49 (4 min 36 s; say about four and a half minutes): bleeding, "High amount of blood lost". Say it as: a bleed with a high amount of blood lost. It began during the step "irrigation aspiration" and ran on through "null step", then back to "irrigation aspiration", then "coagulation", and on into the "cleaning coagulation" phase.
+
+**Qwen3.8-27B**
+
+> The adverse event that must be dealt with first is the active hemorrhage from the lesser‑omentum / gastrohepatic dissection plane near the esophageal hiatus, which starts to pool around 0:09:44 and progressively fills the field from about 0:11:00 to 0:13:40. It takes priority over finishing the dissection or any stapling because uncontrolled bleeding threatens hemodynamic stability and, by flooding the view, makes further safe dissection impossible and greatly increases the risk of injuring the esophagus or the vessels in the hiatus. The trainee should therefore stop dissecting, suction out the blood to identify the bleeding point, and secure hemostasis (clip, energy, or suture ligation of the offending vessel) before proceeding. Only after the field is dry and the vessel is controlled should the bypass steps be resumed.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee should address bleeding first, as it is actively occurring and visible in frames from 0:08:48 onwards, with significant blood pooling and obscuring the surgical field. Uncontrolled bleeding can compromise visibility, increase risk of complications, and potentially lead to hypovolemia or anemia if not managed promptly. While tissue manipulation and dissection are ongoing, hemorrhage is an immediate threat requiring intervention to maintain safety and progress in the procedure.
+
+---
+
+## 29. mb140_d2_BBP35_504
+
+Frames shown: 64, from 0:08:33.4 to 0:28:17.6
+
+**Question.** Given the trainee's performance during 0:08:24-0:28:27, which adverse event should the trainee address first, and why?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Bern center), video BBP35
+- PHASE: gastric pouch creation, from 0:08:24 to 0:28:27
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:11:01 to 0:11:15 (15 s; say about 15 seconds): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began and ended during the step "His angle dissection".
+  - 2\. From 0:18:31 to 0:19:41 (1 min 11 s; say about a minute): bleeding, "Very high amount of blood lost". Say it as: a bleed with a very high amount of blood lost. It began during the step "retrogastric dissection" and ran on through "crura dissection", then "coagulation".
+  - 3\. From 0:23:55 to 0:24:46 (52 s; say about a minute): bleeding, "Intermediate amount of blood lost". Say it as: a bleed with an intermediate amount of blood lost. It began during the step "gastric opening" and ran on through "coagulation".
+  - 4\. From 0:26:18 to 0:27:59 (1 min 42 s; say about a minute and a half): mechanical injury, "Superficial penetration to vital tissue". Say it as: a mechanical injury, a superficial penetration to vital tissue. It began and ended during the step "gastric remnant reinforcement".
+
+**Qwen3.8-27B**
+
+> The trainee should address the active bleeding (hemorrhage) first. Across the clip the mesenteric dissection and staple line produce recurrent, uncontrolled bleeding—most clearly at 0:13:15 and 0:24:13, where a vessel is oozing/spurting and the field is flooded with blood. This must be controlled before completing the anastomosis or refining the suture line, because ongoing hemorrhage risks hemodynamic instability and, as the frames repeatedly show, it obscures the surgical field so that further stapling or suturing cannot be performed safely. Once the bleed is secured (with the Harmonic scalpel, clips, or sutures), visualization and a stable field are restored and the jejunojejunostomy can be finished.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee should address bleeding first, as it is actively occurring and visible in multiple frames (e.g., 0:13:34, 0:14:30, 0:15:26), which can compromise the surgical field and patient safety. Controlling hemorrhage is a priority to maintain visibility and prevent further complications before proceeding with anastomosis or other steps.
+
+---
+
+## 30. mb140_d2_BBP31_366
+
+Frames shown: 64, from 0:06:12.3 to 0:19:21.7
+
+**Question.** Given the trainee's performance during 0:06:06-0:19:28, which adverse event should the trainee address first, and why?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Bern center), video BBP31
+- PHASE: gastric pouch creation, from 0:06:06 to 0:19:28
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:07:47 to 0:08:00 (14 s; say 14 seconds): bleeding, "Intermediate amount of blood lost". Say it as: a bleed with an intermediate amount of blood lost. It began and ended during the step "His angle dissection".
+  - 2\. From 0:08:36 to 0:09:48 (1 min 13 s; say about a minute): bleeding, "High amount of blood lost". Say it as: a bleed with a high amount of blood lost. It began and ended during the step "His angle dissection".
+
+**Qwen3.8-27B**
+
+> The adverse event to address first is the active hemorrhage from the mesenteric (mesojejunal) dissection, which appears as progressive blood pooling from about 0:07:52.5 and is most severe between 0:08:42.6 and 0:11:00.5. It takes priority over any other concern (such as a tenuous staple line or a suspected enterotomy) because uncontrolled bleeding obscures the operative field, raises the risk of inadvertent thermal or mechanical injury to adjacent bowel and vessels, and can compromise hemodynamic stability. The trainee should obtain hemostasis—clipping, ligating, or cauterizing the bleeding mesenteric vessel and irrigating to clear the field—before resuming the stapled anastomoses. Only once the field is dry and the patient is stable can the remaining reconstruction be completed safely.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee should address bleeding first, as it is actively occurring and visible in frames like 0:07:52.5 and 0:08:42.6, where significant blood is pooling and obscuring the surgical field. Controlling bleeding is critical to maintain visibility, prevent hypovolemia, and ensure safe manipulation of tissues and instruments. While other events such as tissue handling or suturing are important, uncontrolled hemorrhage poses an immediate risk to patient safety and must be prioritized.
+
+---
+
+## 31. mb140_d2_BBP51_484
+
+Frames shown: 64, from 0:08:33.4 to 1:10:23.6
+
+**Question.** Given the trainee's performance during 0:08:04-1:10:53, which adverse event should the trainee address first, and why?
+
+**Recorded**
+
+- PROCEDURE: laparoscopic Roux-en-Y gastric bypass (MultiBypass140, Bern center), video BBP51
+- PHASE: gastric pouch creation, from 0:08:04 to 1:10:53
+- EVENTS (surgeon-annotated intraoperative adverse events, each with its grade's description on the SEVERE index, as published, in quotes)
+  - 1\. From 0:08:17 to 0:11:35 (3 min 19 s; say about three and a half minutes): mechanical injury, "Superficial penetration to vital tissue" and bleeding, "Intermediate amount of blood lost", recorded together over the same seconds. Say it as: a mechanical injury, a superficial penetration to vital tissue, and with it a bleed with an intermediate amount of blood lost. It began during the step "His angle dissection" and ran on through "crura dissection".
+  - 2\. From 0:15:24 to 0:18:18 (2 min 55 s; say about three minutes): bleeding, "Intermediate amount of blood lost". Say it as: a bleed with an intermediate amount of blood lost. It began and ended during the step "His angle dissection".
+  - 3\. From 0:31:47 to 0:33:31 (1 min 45 s; say about a minute and a half): bleeding, "Very high amount of blood lost". Say it as: a bleed with a very high amount of blood lost. It began and ended during the step "His angle dissection".
+  - 4\. From 0:37:56 to 0:38:10 (15 s; say about 15 seconds): bleeding, "Very low amount of blood lost". Say it as: a bleed with a very low amount of blood lost. It began and ended during the step "His angle dissection".
+  - 5\. From 0:38:17 to 0:38:27 (11 s; say 11 seconds): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began and ended during the step "His angle dissection".
+  - 6\. From 0:42:45 to 0:43:28 (44 s; say about 45 seconds): bleeding, "Low amount of blood lost". Say it as: a bleed with a low amount of blood lost. It began and ended during the step "His angle dissection".
+
+**Qwen3.8-27B**
+
+> The adverse event the trainee should address first is active, uncontrolled bleeding (hemorrhage). Across this segment the operative field becomes progressively filled with blood, and the trainee repeatedly packs it with gauze and fires the Harmonic scalpel without achieving lasting hemostasis, showing the bleeding is not being controlled. This must take priority over continuing the dissection or completing the staple line, because ongoing hemorrhage obscures the anatomy, raises the risk of inadvertent injury to vessels or bowel, and can cause hemodynamic instability. The trainee should therefore stop cutting, localize the bleeding point, and secure it with sustained pressure, coagulation, or clips/sutures before resuming. Only once the field is clear and hemostasis is confirmed is it safe to proceed with the bypass.
+
+**Qwen3-VL-8B-Instruct**
+
+> The trainee should address bleeding first, as it is actively occurring and poses an immediate risk to patient safety. The frames from 0:08:33.4 to 1:10:23.6 show significant blood loss throughout the procedure, with visible pooling and active oozing in multiple areas, especially around the surgical site where instruments are working. This ongoing hemorrhage can lead to hypovolemic shock or compromise visibility, making it the most urgent issue to manage before proceeding with other steps like anastomosis creation or closure.
