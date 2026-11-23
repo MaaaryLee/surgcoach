@@ -1,0 +1,158 @@
+{
+  "Endoscapes2023_B1": {
+    "questions": 1906,
+    "asked_on_11_17": 50,
+    "pool": {
+      "july_selected": 3,
+      "eligible_pool": 1906,
+      "eligibility": "CVS keyframe in a COCO split with >= 1 criterion < 0.99",
+      "selected": 1906,
+      "in_pool_order": 1906
+    }
+  },
+  "Endoscapes2023_B3": {
+    "questions": 839,
+    "asked_on_11_17": 50,
+    "pool": {
+      "july_selected": 3,
+      "eligible_pool": 839,
+      "eligibility": "CVS keyframe in a COCO split with >= 2 criteria < 0.99 and not all three values equal",
+      "selected": 839,
+      "in_pool_order": 839
+    }
+  },
+  "Endoscapes2023_B5": {
+    "questions": 1906,
+    "asked_on_11_17": 50,
+    "pool": {
+      "july_selected": 3,
+      "eligible_pool": 1906,
+      "eligibility": "CVS keyframe in a COCO split with >= 1 criterion < 0.99",
+      "selected": 1906,
+      "in_pool_order": 1906
+    }
+  },
+  "Endoscapes2023_B7": {
+    "questions": 1350,
+    "asked_on_11_17": 50,
+    "correct_answers": {
+      "No": 675,
+      "Yes": 675
+    },
+    "pool": {
+      "july_selected": 5,
+      "eligible_pool": 11090,
+      "eligibility": "any CVS keyframe (no COCO split passed, as in July B7)",
+      "selected": 1350,
+      "in_pool_order": 11090,
+      "balance": {
+        "yes": 675,
+        "no": 675,
+        "rule": "Yes when all three CVS criteria are achieved, a criterion counting as achieved when at least 2 of its 3 raters marked it; otherwise No"
+      }
+    }
+  },
+  "JIGSAWS_D1": {
+    "questions": 56,
+    "asked_on_11_17": 50,
+    "pool": {
+      "eligible_pool": 56,
+      "selected": 56
+    }
+  },
+  "JIGSAWS_D2": {
+    "questions": 20,
+    "asked_on_11_17": 20,
+    "pool": {
+      "eligible_pool": 20,
+      "selected": 20
+    }
+  },
+  "JIGSAWS_D5": {
+    "questions": 5,
+    "asked_on_11_17": 5,
+    "pool": {
+      "eligible_pool": 5,
+      "selected": 5
+    }
+  },
+  "JIGSAWS_VTS": {
+    "questions": 628,
+    "asked_on_11_17": 50,
+    "pool": {
+      "eligible_pool": 628,
+      "selected": 628,
+      "question_filled_from_batch_record": [
+        "event_Suturing_B001_vts_step_007.3-012.3"
+      ]
+    }
+  },
+  "MultiBypass140_B1": {
+    "questions": 797,
+    "asked_on_11_17": 50,
+    "pool": {
+      "july_selected": 6,
+      "eligible_pool": 797,
+      "eligibility": "any discrete IAE event with a severity level",
+      "selected": 797,
+      "in_pool_order": 797
+    }
+  },
+  "MultiBypass140_B3": {
+    "questions": 54,
+    "asked_on_11_17": 50,
+    "pool": {
+      "july_selected": 6,
+      "eligible_pool": 54,
+      "eligibility": "whole video with >= 2 distinct recorded IAE categories",
+      "selected": 54,
+      "in_pool_order": 54
+    }
+  },
+  "MultiBypass140_B5": {
+    "questions": 797,
+    "asked_on_11_17": 50,
+    "pool": {
+      "july_selected": 6,
+      "eligible_pool": 797,
+      "eligibility": "any discrete IAE event with a severity level",
+      "selected": 797,
+      "in_pool_order": 797
+    }
+  },
+  "MultiBypass140_B6": {
+    "questions": 797,
+    "asked_on_11_17": 50,
+    "pool": {
+      "july_selected": 5,
+      "eligible_pool": 797,
+      "eligibility": "any discrete IAE event with a severity level",
+      "selected": 797,
+      "in_pool_order": 797
+    }
+  },
+  "MultiBypass140_D1": {
+    "questions": 423,
+    "asked_on_11_17": 50,
+    "pool": {
+      "eligible_pool": 423,
+      "selected": 423
+    }
+  },
+  "MultiBypass140_D2": {
+    "questions": 31,
+    "asked_on_11_17": 31,
+    "pool": {
+      "eligible_pool": 31,
+      "selected": 31
+    }
+  },
+  "MultiBypass140_D5": {
+    "questions": 53,
+    "asked_on_11_17": 35,
+    "pool": {
+      "eligible_pool": 53,
+      "selected": 53
+    }
+  }
+}
